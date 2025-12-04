@@ -1,5 +1,5 @@
 package com.sport.model;
 
-public class Member {
+public class Equipement {
     
 }
