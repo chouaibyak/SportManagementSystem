@@ -9,17 +9,16 @@ public class Performance {
     // --- Attributs (selon UML + ID pour BDD) ---
     private int id;
     
-    private Membre membre;
-    private double poids; // En kg
+    private Membre membre; // Obligatoire pour savoir à qui c'est
+    private double poids; 
     private double imc;
-    private double tourTaille; // En cm
-    private double force; // Ex: charge maximale au développé couché
-    private double endurance; // Ex: temps au 10km ou test Cooper
+    private double tourTaille; 
+    private double force; 
+    private double endurance; 
     
-    // Attribut conseillé (non visible sur UML mais indispensable pour suivre l'évolution)
     private LocalDate dateMesure; 
 
-    // Pour stocker les mesures dynamiques (via ajouterMesure)
+    // Pour les mesures supplémentaires (ex: "Biceps", 35.0)
     private Map<String, Double> mesuresSupplementaires;
 
     // --- Constructeur 1 : CRÉATION (Sans ID) ---
@@ -32,9 +31,8 @@ public class Performance {
         this.endurance = endurance;
         this.dateMesure = dateMesure;
         
-        // Initialisation de la Map et calcul automatique
         this.mesuresSupplementaires = new HashMap<>();
-        this.imc = 0.0; // Sera calculé via la méthode
+        this.imc = 0.0; 
     }
 
     // --- Constructeur 2 : RÉCUPÉRATION BDD (Avec ID) ---
@@ -52,54 +50,34 @@ public class Performance {
         this.mesuresSupplementaires = new HashMap<>();
     }
 
-    // --- Méthodes Métier (selon UML) ---
+    // --- Méthodes Métier ---
 
-    /**
-     * Calcule l'IMC.
-     * Note : Pour calculer l'IMC, il faut la taille (m).
-     * Comme 'taille' n'est pas dans les attributs de Performance, on suppose qu'on la passe en paramètre
-     * ou qu'elle devrait être dans la classe Membre.
-     */
     public double calculerIMC(double tailleEnMetres) {
         if (tailleEnMetres > 0) {
             this.imc = this.poids / (tailleEnMetres * tailleEnMetres);
-            // On arrondit à 2 chiffres après la virgule
             this.imc = Math.round(this.imc * 100.0) / 100.0;
         }
         return this.imc;
     }
 
-    /**
-     * Calcule la progression par rapport à une performance précédente.
-     * Ici, on peut choisir de comparer le Poids ou la Force par exemple.
-     * Retourne la différence (négatif = perte, positif = gain).
-     */
     public double calculerProgression(Performance prevPerformance) {
         if (prevPerformance == null) {
             return 0.0;
         }
-        // Exemple : on compare le poids (pour une perte de poids, un résultat négatif est bien)
         return this.poids - prevPerformance.getPoids();
     }
 
-    /**
-     * Ajoute une mesure spécifique (ex: "Tour de bras", 35.5).
-     */
     public void ajouterMesure(String nomMesure, double valeur) {
         if (nomMesure != null && !nomMesure.isEmpty()) {
             this.mesuresSupplementaires.put(nomMesure, valeur);
         }
     }
 
-    /**
-     * Retourne la liste des mesures supplémentaires.
-     */
     public Map<String, Double> consulterMesures() {
         return this.mesuresSupplementaires;
     }
 
     // --- Getters et Setters ---
-
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -124,7 +102,6 @@ public class Performance {
     public LocalDate getDateMesure() { return dateMesure; }
     public void setDateMesure(LocalDate dateMesure) { this.dateMesure = dateMesure; }
     
-    // Getter/Setter pour la Map (optionnel, souvent géré juste par ajouterMesure)
     public void setMesuresSupplementaires(Map<String, Double> mesures) {
         this.mesuresSupplementaires = mesures;
     }
