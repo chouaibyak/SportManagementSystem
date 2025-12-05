@@ -5,6 +5,7 @@ import java.util.Date;
 
 public class Abonnement {
 
+    private int id;
     private TypeAbonnement typeAbonnement;
     private StatutAbonnement statutAbonnement;
     private boolean autorenouvellement;

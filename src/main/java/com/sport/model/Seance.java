@@ -3,14 +3,14 @@ import java.time.LocalDateTime;
 
 public abstract class Seance {
 
-    private int id;
-    private String nom;
-    private int capaciteMax;
-    private Salle salle;
-    private LocalDateTime dateHeure;
-    private Coach entraineur;
-    private TypeCours typeCours;
-    private int duree;
+    protected int id;
+    protected String nom;
+    protected int capaciteMax;
+    protected LocalDateTime dateHeure;
+    protected int duree; // En minutes
+    protected TypeCours typeCours;
+    protected Salle salle;
+    protected Coach entraineur;
 
     // Constructeur par défaut
     public Seance() {
@@ -81,7 +81,7 @@ public abstract class Seance {
         return typeCours;
     }
 
-    public void setTypecours(TypeCours typecpCours) {
+    public void setTypecours(TypeCours typeCours) {
         this.typeCours = typeCours;
     }
 
