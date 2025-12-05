@@ -1,5 +1,5 @@
 package com.sport.model;
 
-public class Trainer {
+public class Salle {
     
 }
