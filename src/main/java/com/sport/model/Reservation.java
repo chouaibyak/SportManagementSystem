@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class Reservation {
 
+    private int id;
     private Membre membre;
     private Seance seance;
     private StatutReservation statut;
@@ -14,6 +15,7 @@ public class Reservation {
 
     // Constructeur avec paramètres
     public Reservation(Membre membre, Seance seance, StatutReservation statut, Date dateReservation) {
+        this.id =0;
         this.membre = membre;
         this.seance = seance;
         this.statut = statut;

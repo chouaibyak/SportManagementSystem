@@ -16,7 +16,17 @@ public abstract class Utilisateur {
     public Utilisateur() {
     }
 
-    public Utilisateur(int id, String nom, String prenom, String dateNaissance,
+    public Utilisateur(String nom, String prenom, String dateNaissance,
+                       String email, String telephone, String adresse) {
+        this.id = 0;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.dateNaissance = dateNaissance;
+        this.email = email;
+        this.telephone = telephone;
+        this.adresse = adresse;
+    }
+     public Utilisateur(int id, String nom, String prenom, String dateNaissance,
                        String email, String telephone, String adresse) {
         this.id = id;
         this.nom = nom;

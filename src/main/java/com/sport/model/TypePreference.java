@@ -1,7 +1,7 @@
 package com.sport.model;
 
 // Enum pour les préférences d'activités
-public enum PreferenceActivite {
+public enum TypePreference {
     CARDIO,
     HALTERES,
     YOGA,
