@@ -42,7 +42,6 @@ public class Coach extends Utilisateur {
     public void noterPerformance(Membre membre, Performance performance) {
         if (membre != null && performance != null) {
             performancesSuivies.add(performance);
-            membre.ajouterPerformance(performance);
         }
     }
 
