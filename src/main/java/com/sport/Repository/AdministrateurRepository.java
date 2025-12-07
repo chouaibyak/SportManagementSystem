@@ -212,4 +212,162 @@ public class AdministrateurRepository {
         }
         return list;
     }
+
+     /**
+     * Ajoute une nouvelle salle dans la base de données
+     */
+    public void ajouterSalle(Salle salle) {
+        String sql = "INSERT INTO Salle (idSalle, nom, capacite, type) VALUES (?, ?, ?, ?)";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, salle.getId());
+            stmt.setString(2, salle.getNom());
+            stmt.setInt(3, salle.getCapacite());
+            stmt.setString(4, salle.getType() != null ? salle.getType().name() : null);
+            stmt.executeUpdate();
+            System.out.println("Salle ajoutée avec succès !");
+
+        } catch (SQLException e) {
+            System.out.println("Erreur ajout salle : " + e.getMessage());
+        }
+    }
+
+    /**
+     * Supprime une salle de la base de données
+     */
+    public void supprimerSalle(int salleId) {
+        String sql = "DELETE FROM Salle WHERE idSalle = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, salleId);
+            int lignesSupprimees = stmt.executeUpdate();
+            System.out.println(lignesSupprimees > 0 ? "Salle supprimée !" : "Aucune salle trouvée !");
+            
+        } catch (SQLException e) {
+            System.out.println("Erreur suppression salle : " + e.getMessage());
+        }
+    }
+
+    /**
+     * Met à jour les informations d'une salle
+     */
+    public void modifierSalle(Salle salle) {
+        String sql = "UPDATE Salle SET nom = ?, capacite = ?, type = ? WHERE idSalle = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, salle.getNom());
+            stmt.setInt(2, salle.getCapacite());
+            stmt.setString(3, salle.getType() != null ? salle.getType().name() : null);
+            stmt.setInt(4, salle.getId());
+            
+            int lignesModifiees = stmt.executeUpdate();
+            System.out.println(lignesModifiees > 0 ? "Salle modifiée !" : "Aucune salle trouvée !");
+
+        } catch (SQLException e) {
+            System.out.println("Erreur modification salle : " + e.getMessage());
+        }
+    }
+    public void ajouterSalle(Salle salle) {
+        String sql = "INSERT INTO Salle (idSalle, nom, capacite, type) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, salle.getId());
+            stmt.setString(2, salle.getNom());
+            stmt.setInt(3, salle.getCapacite());
+            stmt.setString(4, salle.getType() != null ? salle.getType().name() : null);
+            stmt.executeUpdate();
+            System.out.println(" Salle ajoutée avec succès !");
+        } catch (SQLException e) {
+            System.out.println(" Erreur ajout salle : " + e.getMessage());
+        }
+    }
+
+    public void modifierSalle(Salle salle) {
+        String sql = "UPDATE Salle SET nom = ?, capacite = ?, type = ? WHERE idSalle = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, salle.getNom());
+            stmt.setInt(2, salle.getCapacite());
+            stmt.setString(3, salle.getType() != null ? salle.getType().name() : null);
+            stmt.setInt(4, salle.getId());
+            int lignes = stmt.executeUpdate();
+            System.out.println(lignes > 0 ? " Salle modifiée !" : " Salle introuvable !");
+        } catch (SQLException e) {
+            System.out.println(" Erreur modification salle : " + e.getMessage());
+        }
+    }
+
+    public void supprimerSalle(int salleId) {
+        String sql = "DELETE FROM Salle WHERE idSalle = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, salleId);
+            int lignes = stmt.executeUpdate();
+            System.out.println(lignes > 0 ? " Salle supprimée !" : " Salle introuvable !");
+        } catch (SQLException e) {
+            System.out.println(" Erreur suppression salle : " + e.getMessage());
+        }
+    }
+
+    public Salle getSalle(int salleId) {
+        String sql = "SELECT idSalle, nom, capacite, type FROM Salle WHERE idSalle = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, salleId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Salle s = new Salle();
+                    s.setId(rs.getInt("idSalle"));
+                    s.setNom(rs.getString("nom"));
+                    s.setCapacite(rs.getInt("capacite"));
+                    String type = rs.getString("type");
+                    if (type != null) s.setType(Salle.TypeSalle.valueOf(type));
+                    return s;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(" Erreur récupération salle : " + e.getMessage());
+        }
+        return null;
+    }
+
+    public List<Salle> listerSalles() {
+        List<Salle> salles = new ArrayList<>();
+        String sql = "SELECT idSalle, nom, capacite, type FROM Salle";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Salle s = new Salle();
+                s.setId(rs.getInt("idSalle"));
+                s.setNom(rs.getString("nom"));
+                s.setCapacite(rs.getInt("capacite"));
+                String type = rs.getString("type");
+                if (type != null) s.setType(Salle.TypeSalle.valueOf(type));
+                salles.add(s);
+            }
+        } catch (SQLException e) {
+            System.out.println(" Erreur liste salles : " + e.getMessage());
+        }
+        return salles;
+}
+public String genererRapport(TypeRapport type) {
+    switch (type) {
+        case OCCUPATION_COURS:
+            return genererRapportOccupationCours();
+        case FREQUENTATION_SALLE:
+            return genererRapportFrequentationSalle();
+        case SATISFACTION_MEMBRES:
+            return genererRapportSatisfactionMembres();
+        case REVENUS_ABONNEMENTS:
+            return genererRapportRevenusAbonnements();
+        default:
+            return "Type de rapport non reconnu.";
+    }
 }
