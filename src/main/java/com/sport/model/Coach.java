@@ -10,35 +10,30 @@ public class Coach extends Utilisateur {
     private Set<String> specialites = new HashSet<>();  // Utilisation d'un Set pour éviter les doublons
     private Set<Seance> seances = new HashSet<>();     // Utilisation d'un Set pour éviter les doublons
     private List<Performance> performancesSuivies = new ArrayList<>();
-    private String motDePasse;  // Ajout du mot de passe
+    private String motDePasse; 
 
     // Constructeur
     public Coach(int id, String nom, String prenom, String dateNaissance, String email, String telephone, String adresse, String motDePasse) {
-        super(id, nom, prenom, dateNaissance, email, telephone, adresse);  // Appel du constructeur de la classe parente (Utilisateur)
-        this.motDePasse = motDePasse;  // Initialisation du mot de passe
+        super(id, nom, prenom, dateNaissance, email, telephone, adresse); 
+        this.motDePasse = motDePasse; 
     }
+
+    // --- Méthodes Métier ---
 
     // Méthode pour ajouter une spécialité
     public boolean ajouterSpecialite(String specialite) {
-        return specialites.add(specialite);  // Le Set retourne true si l'ajout a réussi (évite les doublons)
-    }
-
-    // Accesseurs pour les séances
-    public Set<Seance> getSeances() {
-        return seances;
-    }
-
-    // Accesseurs pour les spécialités
-    public Set<String> getSpecialites() {
-        return specialites;
+        return specialites.add(specialite);  // Retourne true si ajout réussi
     }
 
     // Ajout de la vérification de doublon pour affecter une séance
     public boolean affecterSeance(Seance seance) {
         if (seance == null) return false;
+        
+        // Vérifier si le coach a déjà une séance à cette heure-là
         for (Seance s : seances) {
-            if (s.getDateHeure().equals(seance.getDateHeure())) {
-                System.out.println("La séance est déjà planifiée pour ce coach.");
+            // Note : Assurez-vous que Seance a bien une méthode getDateHeure()
+            if (s.getDateHeure() != null && s.getDateHeure().equals(seance.getDateHeure())) {
+                System.out.println("La séance est déjà planifiée pour ce coach à cette heure.");
                 return false;
             }
         }
@@ -56,18 +51,33 @@ public class Coach extends Utilisateur {
         }
     }
 
-    // Getter pour le mot de passe
+    // --- Getters et Setters ---
+
+    public Set<Seance> getSeances() {
+        return seances;
+    }
+
+    public void setSeances(Set<Seance> seances) {
+        this.seances = seances;
+    }
+
+    public Set<String> getSpecialites() {
+        return specialites;
+    }
+
+    public void setSpecialites(Set<String> specialites) {
+        this.specialites = specialites;
+    }
+
     public String getMotDePasse() {
         return motDePasse;
     }
 
-    // Setter pour le mot de passe
     public void setMotDePasse(String motDePasse) {
         this.motDePasse = motDePasse;
     }
-}
-
-   
     
-
-   
+    public List<Performance> getPerformancesSuivies() {
+        return performancesSuivies;
+    }
+}

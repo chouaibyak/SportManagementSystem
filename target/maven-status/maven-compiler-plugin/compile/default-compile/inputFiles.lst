@@ -1,3 +1,18 @@
+<<<<<<< HEAD
+C:\Users\AdMin\Desktop\MST\POO\Projet_Java\SportManagementSystem\src\main\java\com\sport\controller\MainController.java
+C:\Users\AdMin\Desktop\MST\POO\Projet_Java\SportManagementSystem\src\main\java\com\sport\controller\MemberController.java
+C:\Users\AdMin\Desktop\MST\POO\Projet_Java\SportManagementSystem\src\main\java\com\sport\model\Subscription.java
+C:\Users\AdMin\Desktop\MST\POO\Projet_Java\SportManagementSystem\src\main\java\com\sport\App.java
+C:\Users\AdMin\Desktop\MST\POO\Projet_Java\SportManagementSystem\src\main\java\com\sport\service\CourseService.java
+C:\Users\AdMin\Desktop\MST\POO\Projet_Java\SportManagementSystem\src\main\java\com\sport\model\Course.java
+C:\Users\AdMin\Desktop\MST\POO\Projet_Java\SportManagementSystem\src\main\java\com\sport\controller\CourseController.java
+C:\Users\AdMin\Desktop\MST\POO\Projet_Java\SportManagementSystem\src\main\java\com\sport\controller\SubscriptionController.java
+C:\Users\AdMin\Desktop\MST\POO\Projet_Java\SportManagementSystem\src\main\java\com\sport\utils\DBConnection.java
+C:\Users\AdMin\Desktop\MST\POO\Projet_Java\SportManagementSystem\src\main\java\com\sport\model\Member.java
+C:\Users\AdMin\Desktop\MST\POO\Projet_Java\SportManagementSystem\src\main\java\com\sport\service\SubscriptionService.java
+C:\Users\AdMin\Desktop\MST\POO\Projet_Java\SportManagementSystem\src\main\java\com\sport\service\MemberService.java
+C:\Users\AdMin\Desktop\MST\POO\Projet_Java\SportManagementSystem\src\main\java\com\sport\model\Trainer.java
+=======
 C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\controller\MainController.java
 C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\service\CourseService.java
 C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\controller\SubscriptionController.java
@@ -31,3 +46,4 @@ C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\spo
 C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\Coach.java
 C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\HistoriqueActivite.java
 C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\Abonnement.java
+>>>>>>> origin/main
