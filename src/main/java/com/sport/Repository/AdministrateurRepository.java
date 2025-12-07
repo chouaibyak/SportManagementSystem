@@ -14,81 +14,202 @@ import com.sport.utils.DBConnection;
 
 public class AdministrateurRepository {
 
-    // Méthodes CRUD 
+    // =========================
+    // MEMBRES
+    // =========================
     public void ajouterMembre(Membre membre) {
-        // Requête SQL d'insertion d'un membre dans la table MEMBRE
         String sql = "INSERT INTO MEMBRE (id_utilisateur, objectifSportif, preferences) VALUES (?, ?, ?)";
-
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, membre.getId());
             stmt.setString(2, membre.getObjectifSportif() != null ? membre.getObjectifSportif().name() : null);
             stmt.setString(3, membre.getPreferences() != null ? membre.getPreferences().name() : null);
-
             stmt.executeUpdate();
 
-    } catch (SQLException e) {
-        System.out.println("Erreur ajout membre : " + e.getMessage());
-    }
+        } catch (SQLException e) {
+            System.out.println("Erreur ajout membre : " + e.getMessage());
+        }
     }
 
     public void supprimerMembre(int membreId) {
-        // Définir la requête SQL pour supprimer un membre
-    String sql = "DELETE FROM MEMBRE WHERE id_utilisateur = ?";
-
-     //Ouvrir la connexion et préparer la requête
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) 
-         {
-
-        // Associer l'identifiant du membre à supprimer
-        stmt.setInt(1, membreId);
-
-        // Exécuter la suppression dans la BDD
-        int lignesSupprimees = stmt.executeUpdate();
-
-        if (lignesSupprimees > 0) {
-            System.out.println("Membre supprimé avec succès !");
-        } else {
-            System.out.println("Aucun membre trouvé avec l'ID : " + membreId);
+        String sql = "DELETE FROM MEMBRE WHERE id_utilisateur = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, membreId);
+            int lignesSupprimees = stmt.executeUpdate();
+            System.out.println(lignesSupprimees > 0 ? "Membre supprimé !" : "Aucun membre trouvé !");
+        } catch (SQLException e) {
+            System.out.println("Erreur suppression membre : " + e.getMessage());
         }
-
-    } catch (SQLException e) {
-        System.out.println("Erreur suppression membre : " + e.getMessage());
-    }
     }
 
     public List<Membre> listerMembres() {
-        // Retourne la liste de tous les membres
-        return null;
+        List<Membre> membres = new ArrayList<>();
+        String sql = "SELECT * FROM MEMBRE";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Membre m = new Membre();
+                m.setId(rs.getInt("id_utilisateur"));
+
+                String objectif = rs.getString("objectifSportif");
+                if (objectif != null) m.setObjectifSportif(Membre.Objectif.valueOf(objectif));
+
+                String pref = rs.getString("preferences");
+                if (pref != null) m.setPreferences(Membre.Preference.valueOf(pref));
+
+                membres.add(m);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erreur récupération des membres : " + e.getMessage());
+        }
+        return membres;
     }
 
+    // =========================
+    // COACHS
+    // =========================
     public void ajouterCoach(Coach coach) {
-        // Ajouter un coach dans la BDD
+        String sqlCoach = "INSERT INTO COACH (id_utilisateur) VALUES (?)";
+        String sqlSpec = "INSERT INTO COACH_SPECIALITE (coach_id, specialite) VALUES (?, ?)";
+        try (Connection conn = DBConnection.getConnection()) {
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement stmtCoach = conn.prepareStatement(sqlCoach)) {
+                stmtCoach.setInt(1, coach.getId());
+                stmtCoach.executeUpdate();
+            }
+
+            if (coach.getSpecialites() != null) {
+                try (PreparedStatement stmtSpec = conn.prepareStatement(sqlSpec)) {
+                    for (String s : coach.getSpecialites()) {
+                        stmtSpec.setInt(1, coach.getId());
+                        stmtSpec.setString(2, s);
+                        stmtSpec.addBatch();
+                    }
+                    stmtSpec.executeBatch();
+                }
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            System.out.println("Erreur ajout coach : " + e.getMessage());
+        }
     }
 
     public void supprimerCoach(int coachId) {
-        // Supprimer un coach de la BDD
+        String sqlSpec = "DELETE FROM COACH_SPECIALITE WHERE coach_id = ?";
+        String sqlCoach = "DELETE FROM COACH WHERE id_utilisateur = ?";
+        try (Connection conn = DBConnection.getConnection()) {
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement stmtSpec = conn.prepareStatement(sqlSpec)) {
+                stmtSpec.setInt(1, coachId);
+                stmtSpec.executeUpdate();
+            }
+
+            try (PreparedStatement stmtCoach = conn.prepareStatement(sqlCoach)) {
+                stmtCoach.setInt(1, coachId);
+                stmtCoach.executeUpdate();
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            System.out.println("Erreur suppression coach : " + e.getMessage());
+        }
     }
 
     public List<Coach> listerCoachs() {
-        // Retourne la liste de tous les coachs
-        return null;
+        List<Coach> coaches = new ArrayList<>();
+        String sqlCoach = "SELECT * FROM COACH";
+        String sqlSpec = "SELECT specialite FROM COACH_SPECIALITE WHERE coach_id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmtCoach = conn.prepareStatement(sqlCoach);
+             ResultSet rsCoach = stmtCoach.executeQuery()) {
+
+            while (rsCoach.next()) {
+                Coach c = new Coach();
+                int id = rsCoach.getInt("id_utilisateur");
+                c.setId(id);
+
+                // récupérer les spécialités
+                try (PreparedStatement stmtSpec = conn.prepareStatement(sqlSpec)) {
+                    stmtSpec.setInt(1, id);
+                    try (ResultSet rsSpec = stmtSpec.executeQuery()) {
+                        List<String> specs = new ArrayList<>();
+                        while (rsSpec.next()) specs.add(rsSpec.getString("specialite"));
+                        c.setSpecialites(specs);
+                    }
+                }
+                coaches.add(c);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erreur liste coachs : " + e.getMessage());
+        }
+        return coaches;
     }
 
-    public void ajouterEquipement(Equipement equipement) {
-        //Implémenter la persistance dans la BDD
+    // =========================
+    // EQUIPEMENTS
+    // =========================
+    public void ajouterEquipement(Equipement e) {
+        String sql = "INSERT INTO EQUIPEMENT (nom, type, etat, date_achat) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, e.getNom());
+            stmt.setString(2, e.getType().name());
+            stmt.setString(3, e.getEtat().name());
+            stmt.setDate(4, new java.sql.Date(e.getDateAchat().getTime()));
+            stmt.executeUpdate();
+
+        } catch (SQLException ex) {
+            System.out.println("Erreur ajout équipement : " + ex.getMessage());
+        }
     }
 
+    public void supprimerEquipement(int id) {
+        String sql = "DELETE FROM EQUIPEMENT WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-    public void supprimerEquipement(int equipementId) {
-        // Implémenter la suppression dans la BDD
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+
+        } catch (SQLException ex) {
+            System.out.println("Erreur suppression équipement : " + ex.getMessage());
+        }
     }
 
-    
     public List<Equipement> listerEquipements() {
-        // Retourner les équipements depuis la BDD
-        return null;
+        List<Equipement> list = new ArrayList<>();
+        String sql = "SELECT * FROM EQUIPEMENT";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Equipement e = new Equipement();
+                e.setId(rs.getInt("id"));
+                e.setNom(rs.getString("nom"));
+                e.setType(Equipement.TypeEquipement.valueOf(rs.getString("type")));
+                e.setEtat(Equipement.EtatEquipement.valueOf(rs.getString("etat")));
+                e.setDateAchat(rs.getDate("date_achat"));
+                list.add(e);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erreur liste équipements : " + e.getMessage());
+        }
+        return list;
     }
 }
