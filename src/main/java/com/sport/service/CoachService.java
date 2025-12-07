@@ -78,33 +78,36 @@ public class CoachService {
                 logger.warning("Erreur : La séance existe déjà pour ce coach.");
                 return;
             }
-            coach.getListeSeances().add(seance);
+            coach.getSeances().add(seance);
             logger.info("Séance ajoutée pour le coach " + coach.getNom());
         }
     }
 
     // Modifier une séance
-    public void modifierSeance(Coach coach, Seance seance) {
-        if (coach != null && seance != null) {
-            boolean found = false;
-            for (int i = 0; i < coach.getListeSeances().size(); i++) {
-                if (coach.getListeSeances().get(i).getId().equals(seance.getId())) {
-                    coach.getListeSeances().set(i, seance);  // Remplacer la séance
-                    found = true;
-                    logger.info("Séance modifiée.");
-                    break;
-                }
-            }
-            if (!found) {
-                logger.warning("Séance non trouvée.");
+ public void modifierSeance(Coach coach, Seance seance) {
+    if (coach != null && seance != null) {
+        boolean found = false;
+        for (Seance s : coach.getSeances()) {  // Boucle sur Set<Seance> au lieu de le convertir en List<Coach>
+            if (s.getId() == seance.getId()) {  // Compare les IDs de Seance
+                coach.getSeances().remove(s);  // Supprimer l'ancienne séance
+                coach.getSeances().add(seance); // Ajouter la nouvelle séance
+                found = true;
+                logger.info("Séance modifiée.");
+                break;
             }
         }
+        if (!found) {
+            logger.warning("Séance non trouvée.");
+        }
     }
+}
+
+    
 
     // Supprimer une séance
     public void supprimerSeance(Coach coach, Seance seance) {
         if (coach != null && seance != null) {
-            if (coach.getListeSeances().remove(seance)) {
+            if (coach.getSeances().remove(seance)) {
                 logger.info("Séance supprimée.");
             } else {
                 logger.warning("Séance non trouvée.");
@@ -115,8 +118,8 @@ public class CoachService {
     // Vérifier la disponibilité d'une salle
     public boolean verifierDisponibiliteSalle(Coach coach, Seance seance) {
         if (coach != null && seance != null) {
-            for (Seance s : coach.getListeSeances()) {
-                if (s.getSalle().equals(seance.getSalle()) && s.getDate().equals(seance.getDate())) {
+            for (Seance s : coach.getSeances()) {
+                if (s.getSalle().equals(seance.getSalle()) && s.getDateHeure().equals(seance.getDateHeure())) {
                     return false;  // Salle déjà occupée
                 }
             }
@@ -163,6 +166,6 @@ public class CoachService {
 
     // Vérification de la validité d'une séance
     private boolean isSeanceValid(Coach coach, Seance seance) {
-        return !coach.getListeSeances().contains(seance);
+        return !coach.getSeances().contains(seance);
     }
 }

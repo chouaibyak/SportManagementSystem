@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.mindrot.jbcrypt.BCrypt;
 
 public class CoachRepository {
 
@@ -28,14 +27,14 @@ public class CoachRepository {
             return;
         }
 
-        String query = "INSERT INTO coaches (id, nom, prenom, email, mot_de_passe) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO coach (id, nom, prenom, email, mot_de_passe) VALUES (?, ?, ?, ?, ?)";
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
 
             // Hachage du mot de passe avant de le sauvegarder
             String hashedPassword = BCrypt.hashpw(coach.getMotDePasse(), BCrypt.gensalt());
 
-            stmt.setString(1, coach.getId());
+            stmt.setLong(1, coach.getId());
             stmt.setString(2, coach.getNom());
             stmt.setString(3, coach.getPrenom());
             stmt.setString(4, coach.getEmail());
@@ -48,19 +47,19 @@ public class CoachRepository {
 
     // Récupérer un Coach par son ID
     public Coach findById(String id) {
-        String query = "SELECT * FROM coaches WHERE id = ?";
+        String query = "SELECT * FROM coache WHERE id = ?";
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, id);
             ResultSet resultSet = stmt.executeQuery();
             if (resultSet.next()) {
                 return new Coach(
-                        resultSet.getString("id"),
+                        0, resultSet.getString("id"),
                         resultSet.getString("nom"),
                         resultSet.getString("prenom"),
                         null,  // Vous pouvez remplacer `null` par une vraie date d'inscription si nécessaire
                         resultSet.getString("email"),
-                        resultSet.getString("mot_de_passe")
+                        resultSet.getString("mot_de_passe"), query
                 );
             }
         } catch (SQLException e) {
@@ -69,32 +68,33 @@ public class CoachRepository {
         return null;
     }
 
-    // Récupérer tous les Coachs
-    public List<Coach> findAll() {
-        List<Coach> coaches = new ArrayList<>();
-        String query = "SELECT * FROM coaches";
-        try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement(query)) {
-            ResultSet resultSet = stmt.executeQuery();
-            while (resultSet.next()) {
-                coaches.add(new Coach(
-                        resultSet.getString("id"),
-                        resultSet.getString("nom"),
-                        resultSet.getString("prenom"),
-                        null,  // Vous pouvez remplacer `null` par une vraie date d'inscription si nécessaire
-                        resultSet.getString("email"),
-                        resultSet.getString("mot_de_passe")
-                ));
-            }
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erreur lors de la récupération des coachs", e);
+public List<Coach> findAll() {
+    List<Coach> coaches = new ArrayList<>();
+    String query = "SELECT * FROM coach";
+    try (Connection connection = getConnection();
+         PreparedStatement stmt = connection.prepareStatement(query)) {
+        ResultSet resultSet = stmt.executeQuery();
+        while (resultSet.next()) {
+            coaches.add(new Coach(
+                resultSet.getInt("id"), // Utilisation de getInt() pour l'ID
+                resultSet.getString("nom"),
+                resultSet.getString("prenom"),
+                resultSet.getString("date_naissance"), // Vous pouvez ajuster cette ligne si nécessaire
+                resultSet.getString("email"),
+                resultSet.getString("telephone"),
+                resultSet.getString("adresse"),
+                resultSet.getString("mot_de_passe")
+            ));
         }
-        return coaches;
+    } catch (SQLException e) {
+        logger.log(Level.SEVERE, "Erreur lors de la récupération des coachs", e);
     }
+    return coaches;
+}
 
     // Supprimer un Coach par son ID
     public void delete(String id) {
-        String query = "DELETE FROM coaches WHERE id = ?";
+        String query = "DELETE FROM coach WHERE id = ?";
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, id);
@@ -104,29 +104,29 @@ public class CoachRepository {
         }
     }
 
-    // Mettre à jour un Coach
-    public void update(Coach coach) {
-        if (coach == null || coach.getNom().isEmpty() || coach.getPrenom().isEmpty() || coach.getEmail().isEmpty()) {
-            logger.warning("Erreur : Le coach doit avoir un nom, un prénom et un email.");
-            return;
-        }
-
-        String query = "UPDATE coaches SET nom = ?, prenom = ?, email = ?, mot_de_passe = ? WHERE id = ?";
-        try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement(query)) {
-
-            // Hachage du mot de passe avant de le sauvegarder
-            String hashedPassword = BCrypt.hashpw(coach.getMotDePasse(), BCrypt.gensalt());
-
-            stmt.setString(1, coach.getNom());
-            stmt.setString(2, coach.getPrenom());
-            stmt.setString(3, coach.getEmail());
-            stmt.setString(4, hashedPassword); // Mot de passe haché
-            stmt.setString(5, coach.getId());
-            stmt.executeUpdate();
-            logger.info("Coach mis à jour avec succès : " + coach.getNom());
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erreur lors de la mise à jour du coach", e);
-        }
+// Méthode pour mettre à jour un Coach
+public void update(Coach coach) {
+    if (coach == null || coach.getNom().isEmpty() || coach.getPrenom().isEmpty() || coach.getEmail().isEmpty()) {
+        logger.warning("Erreur : Le coach doit avoir un nom, un prénom et un email.");
+        return;
     }
+
+    String query = "UPDATE coaches SET nom = ?, prenom = ?, email = ?, mot_de_passe = ? WHERE id = ?";
+    try (Connection connection = getConnection();
+         PreparedStatement stmt = connection.prepareStatement(query)) {
+        // Hachage du mot de passe avant de le sauvegarder
+        String hashedPassword = BCrypt.hashpw(coach.getMotDePasse(), BCrypt.gensalt());
+
+        stmt.setString(1, coach.getNom());
+        stmt.setString(2, coach.getPrenom());
+        stmt.setString(3, coach.getEmail());
+        stmt.setString(4, hashedPassword); // Mot de passe haché
+        stmt.setInt(5, coach.getId()); // Utilisation de setInt() pour l'ID
+        stmt.executeUpdate();
+        logger.info("Coach mis à jour avec succès : " + coach.getNom());
+    } catch (SQLException e) {
+        logger.log(Level.SEVERE, "Erreur lors de la mise à jour du coach", e);
+    }
+}
+
 }

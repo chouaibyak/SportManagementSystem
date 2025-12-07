@@ -77,7 +77,7 @@ public abstract class Seance {
         this.entraineur = entraineur;
     }
 
-    public TypeCours getTypecCours() {
+    public TypeCours getTypeCours() {
         return typeCours;
     }
 

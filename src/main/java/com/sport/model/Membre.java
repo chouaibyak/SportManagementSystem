@@ -5,43 +5,46 @@ import java.util.List;
 
 public class Membre extends Utilisateur {
 
-    private TypeObjectif  objectifSportif;
-    private PreferenceActivite  preferences;
+    private TypeObjectif objectifSportif;
+    private PreferenceActivite preferences;
 
     private List<HistoriqueActivite> historiqueActivite;
     private List<Seance> listeSeances;
+    private List<Performance> performances;  // Liste des performances du membre
 
     public Membre() {
         this.historiqueActivite = new ArrayList<>();
         this.listeSeances = new ArrayList<>();
+        this.performances = new ArrayList<>();  // Initialiser la liste des performances
     }
 
     public Membre(int id, String nom, String prenom, String dateNaissance,
                   String email, String telephone, String adresse,
-                  TypeObjectif  objectifSportif, PreferenceActivite  preferences) {
+                  TypeObjectif objectifSportif, PreferenceActivite preferences) {
 
         super(id, nom, prenom, dateNaissance, email, telephone, adresse);
         this.objectifSportif = objectifSportif;
         this.preferences = preferences;
         this.historiqueActivite = new ArrayList<>();
         this.listeSeances = new ArrayList<>();
+        this.performances = new ArrayList<>();  // Initialiser la liste des performances
     }
 
     // ---------- Getters & Setters ----------
 
-    public TypeObjectif  getObjectifSportif() {
+    public TypeObjectif getObjectifSportif() {
         return objectifSportif;
     }
 
-    public void setObjectifSportif(TypeObjectif  objectifSportif) {
+    public void setObjectifSportif(TypeObjectif objectifSportif) {
         this.objectifSportif = objectifSportif;
     }
 
-    public PreferenceActivite  getPreferences() {
+    public PreferenceActivite getPreferences() {
         return preferences;
     }
 
-    public void setPreferences(PreferenceActivite  preferences) {
+    public void setPreferences(PreferenceActivite preferences) {
         this.preferences = preferences;
     }
 
@@ -59,5 +62,14 @@ public class Membre extends Utilisateur {
 
     public void setListeSeances(List<Seance> listeSeances) {
         this.listeSeances = listeSeances;
+    }
+
+    // ---------- Méthodes pour gérer les performances ----------
+
+
+
+    // Méthode pour récupérer toutes les performances du membre
+    public List<Performance> getPerformances() {
+        return performances;  // Retourner la liste des performances
     }
 }
