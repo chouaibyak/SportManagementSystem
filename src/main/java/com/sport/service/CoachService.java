@@ -14,22 +14,8 @@ public class CoachService {
     private static final Logger logger = Logger.getLogger(CoachService.class.getName());
     private CoachRepository coachRepository = new CoachRepository();
 
-    // Ajouter un coach
-    public void addCoach(Coach coach) {
-        if (isValidCoach(coach)) {
-            try {
-                coachRepository.save(coach);
-                logger.info("Coach ajouté avec succès : " + coach.getNom());
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, "Erreur lors de l'ajout du coach", e);
-            }
-        } else {
-            logger.warning("Erreur : Le coach doit avoir un nom, un prénom et un email valide.");
-        }
-    }
-
     // Récupérer un coach par ID
-    public Coach getCoachById(String id) {
+    public Coach getCoachById(int id) {
         Coach coach = null;
         try {
             coach = coachRepository.findById(id);
@@ -56,21 +42,6 @@ public class CoachService {
         return coaches;
     }
 
-    // Supprimer un coach
-    public void deleteCoach(String id) {
-        try {
-            Coach coach = coachRepository.findById(id);
-            if (coach != null) {
-                coachRepository.delete(id);
-                logger.info("Coach supprimé avec succès : " + coach.getNom());
-            } else {
-                logger.warning("Erreur : Coach non trouvé pour l'ID : " + id);
-            }
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "Erreur lors de la suppression du coach", e);
-        }
-    }
-
     // Ajouter une séance pour un coach
     public void creerSeance(Coach coach, Seance seance) {
         if (coach != null && seance != null) {
@@ -78,7 +49,7 @@ public class CoachService {
                 logger.warning("Erreur : La séance existe déjà pour ce coach.");
                 return;
             }
-            coach.getListeSeances().add(seance);
+            coachRepository.creerSeance(coach, seance);
             logger.info("Séance ajoutée pour le coach " + coach.getNom());
         }
     }
@@ -87,9 +58,10 @@ public class CoachService {
     public void modifierSeance(Coach coach, Seance seance) {
         if (coach != null && seance != null) {
             boolean found = false;
-            for (int i = 0; i < coach.getListeSeances().size(); i++) {
-                if (coach.getListeSeances().get(i).getId().equals(seance.getId())) {
-                    coach.getListeSeances().set(i, seance);  // Remplacer la séance
+            for (Seance s : coach.getSeances()) {
+                if (s.getId() == seance.getId()) {
+                    coach.getSeances().remove(s);  // Supprimer l'ancienne séance
+                    coach.getSeances().add(seance); // Ajouter la nouvelle séance
                     found = true;
                     logger.info("Séance modifiée.");
                     break;
@@ -104,7 +76,7 @@ public class CoachService {
     // Supprimer une séance
     public void supprimerSeance(Coach coach, Seance seance) {
         if (coach != null && seance != null) {
-            if (coach.getListeSeances().remove(seance)) {
+            if (coach.getSeances().remove(seance)) {
                 logger.info("Séance supprimée.");
             } else {
                 logger.warning("Séance non trouvée.");
@@ -115,13 +87,10 @@ public class CoachService {
     // Vérifier la disponibilité d'une salle
     public boolean verifierDisponibiliteSalle(Coach coach, Seance seance) {
         if (coach != null && seance != null) {
-            for (Seance s : coach.getListeSeances()) {
-                if (s.getSalle().equals(seance.getSalle()) && s.getDate().equals(seance.getDate())) {
-                    return false;  // Salle déjà occupée
-                }
-            }
+            // Vérifier la disponibilité de la salle en base de données
+            return coachRepository.verifierDisponibiliteSalle(seance.getSalle(), seance.getDateHeure());
         }
-        return true;  // Salle disponible
+        return true;  // La salle est disponible par défaut
     }
 
     // Consulter la progression d'un membre
@@ -156,13 +125,8 @@ public class CoachService {
         }
     }
 
-    // Validité du Coach (nom, prénom, email)
-    private boolean isValidCoach(Coach coach) {
-        return coach != null && !coach.getNom().isEmpty() && !coach.getPrenom().isEmpty() && !coach.getEmail().isEmpty();
-    }
-
     // Vérification de la validité d'une séance
     private boolean isSeanceValid(Coach coach, Seance seance) {
-        return !coach.getListeSeances().contains(seance);
+        return !coach.getSeances().contains(seance);
     }
 }

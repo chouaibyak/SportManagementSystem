@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Launch JavaFX App",
+      "request": "launch",
+      "mainClass": "com.sport.App",  // Remplacez par le nom de votre classe contenant la méthode main
+      "vmArgs": "--module-path ${workspaceFolder}/lib--add-modules javafx.controls,javafx.fxml",
+      "projectName": "SportManagementSystem"
+    }
+  ]
+}

@@ -9,14 +9,15 @@ public class SeanceCollective extends Seance {
     private int placesDisponibles;
     private List<Membre> listeMembers;
 
-    // Constructeur
+    // Constructeur corrigé pour accepter les bons paramètres
     public SeanceCollective(int id, String nom, int capaciteMax, Salle salle, LocalDateTime dateHeure,
                             Coach entraineur, TypeCours type, int duree, int placesDisponibles) {
-        super(id, nom, capaciteMax, salle, dateHeure, entraineur, type, duree);
+        super(id, nom, capaciteMax, salle, dateHeure, entraineur, type, duree);  // Appel du constructeur de la classe parente Seance
         this.placesDisponibles = placesDisponibles;
         this.listeMembers = new ArrayList<>();
     }
 
+  
     // Getters et setters
     public int getPlacesDisponibles() {
         return placesDisponibles;
@@ -33,7 +34,9 @@ public class SeanceCollective extends Seance {
     public void setListeMembers(List<Membre> listeMembers) {
         this.listeMembers = listeMembers;
     }
+
     @Override
     public void notifierParticipants() {
+        // Logique de notification pour les participants
     }
 }
