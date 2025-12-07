@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 com\sport\model\Member.class
 com\sport\model\Course.class
 com\sport\utils\DBConnection.class
@@ -10,3 +11,12 @@ com\sport\service\SubscriptionService.class
 com\sport\controller\MemberController.class
 com\sport\service\CourseService.class
 com\sport\controller\CourseController.class
+=======
+com\sport\utils\DBConnection.class
+com\sport\model\PreferenceActivite.class
+com\sport\model\Seance.class
+com\sport\model\Salle.class
+com\sport\model\Membre.class
+com\sport\model\SeanceIndividuelle.class
+com\sport\model\Utilisateur.class
+>>>>>>> origin/main

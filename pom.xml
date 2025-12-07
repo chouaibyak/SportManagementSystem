@@ -40,6 +40,12 @@
             <artifactId>javafx-fxml</artifactId>
             <version>20.0.2</version>
         </dependency>
+        <!-- bdd mysql  -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.30</version> 
+        </dependency>
     </dependencies>
 
     <build>
@@ -93,5 +99,7 @@
             </plugin>
         </plugins>
     </build>
+
+    
 
 </project>
