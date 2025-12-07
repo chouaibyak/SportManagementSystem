@@ -59,4 +59,13 @@ public class Reservation {
     public void marquerPresence() {
         this.statut = StatutReservation.PRESENT;
     }
+
+    // AJOUTER DANS Reservation.java
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
