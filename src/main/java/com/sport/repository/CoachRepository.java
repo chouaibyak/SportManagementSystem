@@ -1,18 +1,20 @@
 package com.sport.repository;
 
 import com.sport.model.Coach;
+import com.sport.model.Seance;
+import com.sport.model.Membre;
+import com.sport.model.Salle;
+import com.sport.model.Performance;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.mindrot.jbcrypt.BCrypt;
 
 public class CoachRepository {
 
     private static final Logger logger = Logger.getLogger(CoachRepository.class.getName());
     private static final String URL = "jdbc:mysql://127.0.0.1:3306/sport_club?useSSL=false&serverTimezone=UTC";
-
     private static final String USER = "root";
     private static final String PASSWORD = "";
 
@@ -21,112 +23,149 @@ public class CoachRepository {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
-    // Sauvegarder un Coach
-    public void save(Coach coach) {
-        if (coach == null || coach.getNom().isEmpty() || coach.getPrenom().isEmpty() || coach.getEmail().isEmpty()) {
-            logger.warning("Erreur : Le coach doit avoir un nom, un prénom et un email.");
+    // Ajouter une séance
+    public void creerSeance(Coach coach, Seance seance) {
+        if (coach == null || seance == null) {
+            logger.warning("Erreur : Le coach ou la séance est null.");
+            return;
+        }
+        
+        String query = "INSERT INTO seance (nom, capaciteMax, salle_id, dateHeure, entraineur_id, type, duree, typeSeance) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection connection = getConnection();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            
+            stmt.setString(1, seance.getNom());
+            stmt.setInt(2, seance.getCapaciteMax());
+            stmt.setInt(3, seance.getSalleId());  // ID de la salle
+            stmt.setTimestamp(4, Timestamp.valueOf(seance.getDateHeure()));  // Date et heure de la séance
+            stmt.setInt(5, coach.getId());  // ID du coach
+            stmt.setString(6, seance.getType());  // Type de séance
+            stmt.setInt(7, seance.getDuree());  // Durée de la séance
+            stmt.setString(8, seance.getTypeSeance());  // Type de séance (collective ou individuelle)
+
+            stmt.executeUpdate();
+            logger.info("Séance ajoutée avec succès : " + seance.getNom());
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Erreur lors de l'ajout de la séance", e);
+        }
+    }
+
+    // Modifier une séance
+    public void modifierSeance(Coach coach, Seance seance) {
+        if (coach == null || seance == null) {
+            logger.warning("Erreur : Le coach ou la séance est null.");
             return;
         }
 
-        String query = "INSERT INTO coaches (id, nom, prenom, email, mot_de_passe) VALUES (?, ?, ?, ?, ?)";
+        String query = "UPDATE seance SET nom = ?, capaciteMax = ?, salle_id = ?, dateHeure = ?, type = ?, duree = ?, typeSeance = ? WHERE id = ? AND entraineur_id = ?";
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
+            
+            stmt.setString(1, seance.getNom());
+            stmt.setInt(2, seance.getCapaciteMax());
+            stmt.setInt(3, seance.getSalleId());  // ID de la salle
+            stmt.setTimestamp(4, Timestamp.valueOf(seance.getDateHeure()));  // Date et heure de la séance
+            stmt.setString(5, seance.getType());  // Type de séance
+            stmt.setInt(6, seance.getDuree());  // Durée de la séance
+            stmt.setString(7, seance.getTypeSeance());  // Type de séance (collective ou individuelle)
+            stmt.setInt(8, seance.getId());  // ID de la séance à modifier
+            stmt.setInt(9, coach.getId());  // ID du coach qui modifie la séance
 
-            // Hachage du mot de passe avant de le sauvegarder
-            String hashedPassword = BCrypt.hashpw(coach.getMotDePasse(), BCrypt.gensalt());
-
-            stmt.setString(1, coach.getId());
-            stmt.setString(2, coach.getNom());
-            stmt.setString(3, coach.getPrenom());
-            stmt.setString(4, coach.getEmail());
-            stmt.setString(5, hashedPassword); // Mot de passe haché
             stmt.executeUpdate();
+            logger.info("Séance modifiée avec succès : " + seance.getNom());
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erreur lors de l'ajout du coach", e);
+            logger.log(Level.SEVERE, "Erreur lors de la modification de la séance", e);
         }
     }
 
-    // Récupérer un Coach par son ID
-    public Coach findById(String id) {
-        String query = "SELECT * FROM coaches WHERE id = ?";
+    // Supprimer une séance
+    public void supprimerSeance(Coach coach, Seance seance) {
+        if (coach == null || seance == null) {
+            logger.warning("Erreur : Le coach ou la séance est null.");
+            return;
+        }
+
+        String query = "DELETE FROM seance WHERE id = ? AND entraineur_id = ?";
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, id);
+            
+            stmt.setInt(1, seance.getId());
+            stmt.setInt(2, coach.getId());
+
+            stmt.executeUpdate();
+            logger.info("Séance supprimée avec succès : " + seance.getNom());
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Erreur lors de la suppression de la séance", e);
+        }
+    }
+
+    // Vérifier la disponibilité d'une salle pour une séance
+    public boolean verifierDisponibiliteSalle(Salle salle, Date date) {
+        String query = "SELECT * FROM seance WHERE salle_id = ? AND dateHeure = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            
+            stmt.setInt(1, salle.getId());
+            stmt.setDate(2, date);
+
             ResultSet resultSet = stmt.executeQuery();
             if (resultSet.next()) {
-                return new Coach(
-                        resultSet.getString("id"),
-                        resultSet.getString("nom"),
-                        resultSet.getString("prenom"),
-                        null,  // Vous pouvez remplacer `null` par une vraie date d'inscription si nécessaire
-                        resultSet.getString("email"),
-                        resultSet.getString("mot_de_passe")
-                );
+                return false;  // La salle est déjà occupée à cette date
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erreur lors de la récupération du coach", e);
+            logger.log(Level.SEVERE, "Erreur lors de la vérification de la disponibilité de la salle", e);
         }
-        return null;
+        return true;  // La salle est disponible
     }
 
-    // Récupérer tous les Coachs
-    public List<Coach> findAll() {
-        List<Coach> coaches = new ArrayList<>();
-        String query = "SELECT * FROM coaches";
+    // Récupérer toutes les séances d'un coach
+    public List<Seance> getSeancesByCoach(Coach coach) {
+        List<Seance> seances = new ArrayList<>();
+        String query = "SELECT * FROM seance WHERE entraineur_id = ?";
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, coach.getId());
             ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()) {
-                coaches.add(new Coach(
-                        resultSet.getString("id"),
-                        resultSet.getString("nom"),
-                        resultSet.getString("prenom"),
-                        null,  // Vous pouvez remplacer `null` par une vraie date d'inscription si nécessaire
-                        resultSet.getString("email"),
-                        resultSet.getString("mot_de_passe")
+                seances.add(new Seance(
+                    resultSet.getInt("id"),
+                    resultSet.getString("nom"),
+                    resultSet.getInt("capaciteMax"),
+                    resultSet.getInt("salle_id"),
+                    resultSet.getTimestamp("dateHeure").toLocalDateTime(),
+                    resultSet.getInt("entraineur_id"),
+                    resultSet.getString("type"),
+                    resultSet.getInt("duree"),
+                    resultSet.getString("typeSeance")
                 ));
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erreur lors de la récupération des coachs", e);
+            logger.log(Level.SEVERE, "Erreur lors de la récupération des séances", e);
         }
-        return coaches;
+        return seances;
     }
 
-    // Supprimer un Coach par son ID
-    public void delete(String id) {
-        String query = "DELETE FROM coaches WHERE id = ?";
-        try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, id);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erreur lors de la suppression du coach", e);
-        }
-    }
-
-    // Mettre à jour un Coach
-    public void update(Coach coach) {
-        if (coach == null || coach.getNom().isEmpty() || coach.getPrenom().isEmpty() || coach.getEmail().isEmpty()) {
-            logger.warning("Erreur : Le coach doit avoir un nom, un prénom et un email.");
+    // Consulter la progression d'un membre
+    public void consulterProgression(Membre membre) {
+        if (membre == null) {
+            logger.warning("Erreur : Le membre est null.");
             return;
         }
 
-        String query = "UPDATE coaches SET nom = ?, prenom = ?, email = ?, mot_de_passe = ? WHERE id = ?";
+        String query = "SELECT * FROM performance WHERE membre_id = ?";
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
+            
+            stmt.setInt(1, membre.getId());
+            ResultSet resultSet = stmt.executeQuery();
 
-            // Hachage du mot de passe avant de le sauvegarder
-            String hashedPassword = BCrypt.hashpw(coach.getMotDePasse(), BCrypt.gensalt());
-
-            stmt.setString(1, coach.getNom());
-            stmt.setString(2, coach.getPrenom());
-            stmt.setString(3, coach.getEmail());
-            stmt.setString(4, hashedPassword); // Mot de passe haché
-            stmt.setString(5, coach.getId());
-            stmt.executeUpdate();
-            logger.info("Coach mis à jour avec succès : " + coach.getNom());
+            while (resultSet.next()) {
+                logger.info("Performance de " + membre.getNom() + ": " + resultSet.getString("mesures"));
+            }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erreur lors de la mise à jour du coach", e);
+            logger.log(Level.SEVERE, "Erreur lors de la consultation de la progression", e);
         }
     }
+
+
 }
