@@ -36,7 +36,7 @@ public class CoachRepository {
             
             stmt.setString(1, seance.getNom());
             stmt.setInt(2, seance.getCapaciteMax());
-            stmt.setInt(3, seance.getSalleId());  // ID de la salle
+            stmt.setInt(3, seance.getId());  // ID de la salle
             stmt.setTimestamp(4, Timestamp.valueOf(seance.getDateHeure()));  // Date et heure de la séance
             stmt.setInt(5, coach.getId());  // ID du coach
             stmt.setString(6, seance.getType());  // Type de séance
@@ -63,7 +63,7 @@ public class CoachRepository {
             
             stmt.setString(1, seance.getNom());
             stmt.setInt(2, seance.getCapaciteMax());
-            stmt.setInt(3, seance.getSalleId());  // ID de la salle
+            stmt.setInt(3, seance.getId());  // ID de la salle
             stmt.setTimestamp(4, Timestamp.valueOf(seance.getDateHeure()));  // Date et heure de la séance
             stmt.setString(5, seance.getType());  // Type de séance
             stmt.setInt(6, seance.getDuree());  // Durée de la séance
