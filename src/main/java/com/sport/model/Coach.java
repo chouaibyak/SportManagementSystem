@@ -10,16 +10,16 @@ public class Coach extends Utilisateur {
     private Set<String> specialites = new HashSet<>();  // Utilisation d'un Set pour éviter les doublons
     private Set<Seance> seances = new HashSet<>();     // Utilisation d'un Set pour éviter les doublons
     private List<Performance> performancesSuivies = new ArrayList<>();
-    private String motDePasse; 
+   
 
     // Constructeur
-    public Coach(int id, String nom, String prenom, String dateNaissance, String email, String telephone, String adresse, String motDePasse) {
-        super(id, nom, prenom, dateNaissance, email, telephone, adresse); 
-        this.motDePasse = motDePasse; 
+    public Coach(int id, String nom, String prenom, String dateNaissance, String email, String telephone, String adresse) {
+        super(id, nom, prenom, dateNaissance, email, telephone, adresse);  // Appel du constructeur de la classe parente (Utilisateur)
+    
     }
 
-    // --- Méthodes Métier ---
-
+     public Coach() {
+    }
     // Méthode pour ajouter une spécialité
     public boolean ajouterSpecialite(String specialite) {
         return specialites.add(specialite);  // Retourne true si ajout réussi
@@ -69,14 +69,6 @@ public class Coach extends Utilisateur {
         this.specialites = specialites;
     }
 
-    public String getMotDePasse() {
-        return motDePasse;
-    }
-
-    public void setMotDePasse(String motDePasse) {
-        this.motDePasse = motDePasse;
-    }
-    
     public List<Performance> getPerformancesSuivies() {
         return performancesSuivies;
     }

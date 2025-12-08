@@ -4,7 +4,7 @@ import com.sport.model.Coach;
 import com.sport.model.Seance;
 import com.sport.model.Membre;
 import com.sport.model.Salle;
-import com.sport.model.Performance;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,30 +18,28 @@ public class CoachRepository {
     private static final String USER = "root";
     private static final String PASSWORD = "";
 
-    // Méthode pour obtenir une connexion à la base de données
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
-    // Ajouter une séance
+    // Créer une séance
     public void creerSeance(Coach coach, Seance seance) {
         if (coach == null || seance == null) {
             logger.warning("Erreur : Le coach ou la séance est null.");
             return;
         }
-        
-        String query = "INSERT INTO seance (nom, capaciteMax, salle_id, dateHeure, entraineur_id, type, duree, typeSeance) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        String query = "INSERT INTO seance (nom, capaciteMax, salle_id, dateHeure, entraineur_id, type, duree) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
-            
+
             stmt.setString(1, seance.getNom());
             stmt.setInt(2, seance.getCapaciteMax());
-            stmt.setInt(3, seance.getId());  // ID de la salle
-            stmt.setTimestamp(4, Timestamp.valueOf(seance.getDateHeure()));  // Date et heure de la séance
-            stmt.setInt(5, coach.getId());  // ID du coach
-            stmt.setString(6, seance.getType());  // Type de séance
-            stmt.setInt(7, seance.getDuree());  // Durée de la séance
-            stmt.setString(8, seance.getTypeSeance());  // Type de séance (collective ou individuelle)
+            stmt.setInt(3, seance.getSalle().getId());
+            stmt.setTimestamp(4, Timestamp.valueOf(seance.getDateHeure()));
+            stmt.setInt(5, coach.getId());
+            stmt.setString(6, seance.getTypeCours().toString());
+            stmt.setInt(7, seance.getDuree());
 
             stmt.executeUpdate();
             logger.info("Séance ajoutée avec succès : " + seance.getNom());
@@ -57,19 +55,18 @@ public class CoachRepository {
             return;
         }
 
-        String query = "UPDATE seance SET nom = ?, capaciteMax = ?, salle_id = ?, dateHeure = ?, type = ?, duree = ?, typeSeance = ? WHERE id = ? AND entraineur_id = ?";
+        String query = "UPDATE seance SET nom = ?, capaciteMax = ?, salle_id = ?, dateHeure = ?, type = ?, duree = ? WHERE id = ? AND entraineur_id = ?";
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
-            
+
             stmt.setString(1, seance.getNom());
             stmt.setInt(2, seance.getCapaciteMax());
-            stmt.setInt(3, seance.getId());  // ID de la salle
-            stmt.setTimestamp(4, Timestamp.valueOf(seance.getDateHeure()));  // Date et heure de la séance
-            stmt.setString(5, seance.getType());  // Type de séance
-            stmt.setInt(6, seance.getDuree());  // Durée de la séance
-            stmt.setString(7, seance.getTypeSeance());  // Type de séance (collective ou individuelle)
-            stmt.setInt(8, seance.getId());  // ID de la séance à modifier
-            stmt.setInt(9, coach.getId());  // ID du coach qui modifie la séance
+            stmt.setInt(3, seance.getSalle().getId());
+            stmt.setTimestamp(4, Timestamp.valueOf(seance.getDateHeure()));
+            stmt.setString(5, seance.getTypeCours().toString());
+            stmt.setInt(6, seance.getDuree());
+            stmt.setInt(7, seance.getId());
+            stmt.setInt(8, coach.getId());
 
             stmt.executeUpdate();
             logger.info("Séance modifiée avec succès : " + seance.getNom());
@@ -88,7 +85,7 @@ public class CoachRepository {
         String query = "DELETE FROM seance WHERE id = ? AND entraineur_id = ?";
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
-            
+
             stmt.setInt(1, seance.getId());
             stmt.setInt(2, coach.getId());
 
@@ -99,23 +96,21 @@ public class CoachRepository {
         }
     }
 
-    // Vérifier la disponibilité d'une salle pour une séance
-    public boolean verifierDisponibiliteSalle(Salle salle, Date date) {
+    // Vérifier la disponibilité d'une salle
+    public boolean verifierDisponibiliteSalle(Salle salle, Timestamp dateHeure) {
         String query = "SELECT * FROM seance WHERE salle_id = ? AND dateHeure = ?";
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
-            
+
             stmt.setInt(1, salle.getId());
-            stmt.setDate(2, date);
+            stmt.setTimestamp(2, dateHeure);
 
             ResultSet resultSet = stmt.executeQuery();
-            if (resultSet.next()) {
-                return false;  // La salle est déjà occupée à cette date
-            }
+            return !resultSet.next();
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Erreur lors de la vérification de la disponibilité de la salle", e);
         }
-        return true;  // La salle est disponible
+        return false;
     }
 
     // Récupérer toutes les séances d'un coach
@@ -125,19 +120,11 @@ public class CoachRepository {
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, coach.getId());
-            ResultSet resultSet = stmt.executeQuery();
-            while (resultSet.next()) {
-                seances.add(new Seance(
-                    resultSet.getInt("id"),
-                    resultSet.getString("nom"),
-                    resultSet.getInt("capaciteMax"),
-                    resultSet.getInt("salle_id"),
-                    resultSet.getTimestamp("dateHeure").toLocalDateTime(),
-                    resultSet.getInt("entraineur_id"),
-                    resultSet.getString("type"),
-                    resultSet.getInt("duree"),
-                    resultSet.getString("typeSeance")
-                ));
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                // Ici, tu devras créer des instances concrètes de Seance selon ton type (ex: CollectiveSeance, IndividuelleSeance)
+                // Pour l'instant, on peut juste logger les données
+                logger.info("Séance trouvée: " + rs.getString("nom"));
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Erreur lors de la récupération des séances", e);
@@ -155,17 +142,67 @@ public class CoachRepository {
         String query = "SELECT * FROM performance WHERE membre_id = ?";
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
-            
-            stmt.setInt(1, membre.getId());
-            ResultSet resultSet = stmt.executeQuery();
 
-            while (resultSet.next()) {
-                logger.info("Performance de " + membre.getNom() + ": " + resultSet.getString("mesures"));
+            stmt.setInt(1, membre.getId());
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                logger.info("Performance de " + membre.getNom() + ": " + rs.getString("mesures"));
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Erreur lors de la consultation de la progression", e);
         }
     }
+
+
+    // Méthode pour récupérer un coach par son ID
+public Coach findById(int id) {
+    String query = "SELECT * FROM coach WHERE id = ?";
+    try (Connection connection = getConnection();
+         PreparedStatement stmt = connection.prepareStatement(query)) {
+
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            Coach coach = new Coach();
+            coach.setId(rs.getInt("id"));
+            coach.setNom(rs.getString("nom"));
+            coach.setEmail(rs.getString("email"));
+            coach.setTelephone(rs.getString("tel"));
+            // ajouter d'autres champs si nécessaire
+            return coach;
+        }
+    } catch (SQLException e) {
+        logger.log(Level.SEVERE, "Erreur lors de la récupération du coach", e);
+    }
+    return null; // si aucun coach trouvé
+}
+public List<Coach> findAll() {
+    List<Coach> coaches = new ArrayList<>();
+    String query = "SELECT * FROM coach";
+
+    try (Connection connection = getConnection();
+         PreparedStatement stmt = connection.prepareStatement(query)) {
+
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            String nom = rs.getString("nom");
+            String prenom = rs.getString("prenom");
+            String dateNaissance = rs.getString("date_naissance");
+            String email = rs.getString("email");
+            String telephone = rs.getString("telephone");
+            String adresse = rs.getString("adresse");
+
+            // Attention : ton constructeur Coach complet attend 8 paramètres
+            Coach coach = new Coach(id, nom, prenom, dateNaissance, email, telephone, adresse); 
+            coaches.add(coach);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return coaches;
+}
 
 
 }
