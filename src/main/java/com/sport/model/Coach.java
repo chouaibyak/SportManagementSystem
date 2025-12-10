@@ -22,25 +22,18 @@ public class Coach extends Utilisateur {
     }
     // Méthode pour ajouter une spécialité
     public boolean ajouterSpecialite(String specialite) {
-        return specialites.add(specialite);  // Le Set retourne true si l'ajout a réussi (évite les doublons)
-    }
-
-    // Accesseurs pour les séances
-    public Set<Seance> getSeances() {
-        return seances;
-    }
-
-    // Accesseurs pour les spécialités
-    public Set<String> getSpecialites() {
-        return specialites;
+        return specialites.add(specialite);  // Retourne true si ajout réussi
     }
 
     // Ajout de la vérification de doublon pour affecter une séance
     public boolean affecterSeance(Seance seance) {
         if (seance == null) return false;
+        
+        // Vérifier si le coach a déjà une séance à cette heure-là
         for (Seance s : seances) {
-            if (s.getDateHeure().equals(seance.getDateHeure())) {
-                System.out.println("La séance est déjà planifiée pour ce coach.");
+            // Note : Assurez-vous que Seance a bien une méthode getDateHeure()
+            if (s.getDateHeure() != null && s.getDateHeure().equals(seance.getDateHeure())) {
+                System.out.println("La séance est déjà planifiée pour ce coach à cette heure.");
                 return false;
             }
         }
@@ -58,11 +51,25 @@ public class Coach extends Utilisateur {
         }
     }
 
-  
+    // --- Getters et Setters ---
 
+    public Set<Seance> getSeances() {
+        return seances;
+    }
+
+    public void setSeances(Set<Seance> seances) {
+        this.seances = seances;
+    }
+
+    public Set<String> getSpecialites() {
+        return specialites;
+    }
+
+    public void setSpecialites(Set<String> specialites) {
+        this.specialites = specialites;
+    }
+
+    public List<Performance> getPerformancesSuivies() {
+        return performancesSuivies;
+    }
 }
-
-   
-    
-
-   
