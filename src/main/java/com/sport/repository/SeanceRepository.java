@@ -1,6 +1,7 @@
 package com.sport.repository;
 
 import com.sport.model.*;
+import com.sport.utils.DBConnection;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -9,47 +10,40 @@ import java.util.List;
 
 public class SeanceRepository {
 
-    private Connection connection;
-
     public SeanceRepository() {
-        try {
-            this.connection = DriverManager.getConnection(
-                    "jdbc:mysql://127.0.0.1:3306/sport_club?useSSL=false&serverTimezone=UTC", 
-                    "root", 
-                    "password"
-            );
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        // plus besoin de créer la connexion ici — on utilisera DBConnection.getConnection() dans chaque méthode
     }
 
     // Sauvegarder une séance (collective ou individuelle)
     public void save(Seance seance) {
         String query = "INSERT INTO seance (nom, capaciteMax, salle_id, dateHeure, entraineur_id, typeCours, duree, places_disponibles, membre_id, tarif, notes_coach, typeSeance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, seance.getNom());
-            stmt.setInt(2, seance.getCapaciteMax());
-            stmt.setInt(3, seance.getSalle().getId());
-            stmt.setTimestamp(4, Timestamp.valueOf(seance.getDateHeure()));
-            stmt.setInt(5, seance.getEntraineur().getId());
-            stmt.setString(6, seance.getTypeCours().toString());
-            stmt.setInt(7, seance.getDuree());
+        try {
+            Connection connection = DBConnection.getConnection();
+            try (PreparedStatement stmt = connection.prepareStatement(query)) {
+                stmt.setString(1, seance.getNom());
+                stmt.setInt(2, seance.getCapaciteMax());
+                stmt.setInt(3, seance.getSalle().getId());
+                stmt.setTimestamp(4, Timestamp.valueOf(seance.getDateHeure()));
+                stmt.setInt(5, seance.getEntraineur().getId());
+                stmt.setString(6, seance.getTypeCours().toString());
+                stmt.setInt(7, seance.getDuree());
 
-            if (seance instanceof SeanceCollective sc) {
-                stmt.setInt(8, sc.getPlacesDisponibles());
-                stmt.setNull(9, Types.INTEGER); // membre_id
-                stmt.setNull(10, Types.DOUBLE); // tarif
-                stmt.setNull(11, Types.VARCHAR); // notesCoach
-                stmt.setString(12, "collective");
-            } else if (seance instanceof SeanceIndividuelle si) {
-                stmt.setNull(8, Typecs.INTEGER); // placesDisponibles
-                stmt.setInt(9, si.getMembre().getId());
-                stmt.setDouble(10, si.getTarif());
-                stmt.setString(11, si.getNotesCoach());
-                stmt.setString(12, "individuelle");
+                if (seance instanceof SeanceCollective sc) {
+                    stmt.setInt(8, sc.getPlacesDisponibles());
+                    stmt.setNull(9, Types.INTEGER); // membre_id
+                    stmt.setNull(10, Types.DOUBLE); // tarif
+                    stmt.setNull(11, Types.VARCHAR); // notesCoach
+                    stmt.setString(12, "collective");
+                } else if (seance instanceof SeanceIndividuelle si) {
+                    stmt.setNull(8, Types.INTEGER); // placesDisponibles
+                    stmt.setInt(9, si.getMembre().getId());
+                    stmt.setDouble(10, si.getTarif());
+                    stmt.setString(11, si.getNotesCoach());
+                    stmt.setString(12, "individuelle");
+                }
+
+                stmt.executeUpdate();
             }
-
-            stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -58,11 +52,15 @@ public class SeanceRepository {
     // Récupérer une séance par ID
     public Seance findById(int id) {
         String query = "SELECT * FROM seance WHERE id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return mapResultSetToSeance(rs);
+        try {
+            Connection connection = DBConnection.getConnection();
+            try (PreparedStatement stmt = connection.prepareStatement(query)) {
+                stmt.setInt(1, id);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        return mapResultSetToSeance(rs);
+                    }
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -74,11 +72,15 @@ public class SeanceRepository {
     public List<Seance> findAll() {
         List<Seance> seances = new ArrayList<>();
         String query = "SELECT * FROM seance";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Seance s = mapResultSetToSeance(rs);
-                if (s != null) seances.add(s);
+        try {
+            Connection connection = DBConnection.getConnection();
+            try (PreparedStatement stmt = connection.prepareStatement(query);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    Seance s = mapResultSetToSeance(rs);
+                    if (s != null) seances.add(s);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -89,20 +91,24 @@ public class SeanceRepository {
     // Supprimer une séance
     public void delete(int id) {
         String query = "DELETE FROM seance WHERE id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setInt(1, id);
-            stmt.executeUpdate();
+        try {
+            Connection connection = DBConnection.getConnection();
+            try (PreparedStatement stmt = connection.prepareStatement(query)) {
+                stmt.setInt(1, id);
+                stmt.executeUpdate();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-     // Crée une instance Seance (collective ou individuelle) à partir du ResultSet
+    // Crée une instance Seance (collective ou individuelle) à partir du ResultSet
     private Seance mapResultSetToSeance(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         String nom = rs.getString("nom");
         int capaciteMax = rs.getInt("capaciteMax");
-        LocalDateTime dateHeure = rs.getTimestamp("dateHeure").toLocalDateTime();
+        Timestamp ts = rs.getTimestamp("dateHeure");
+        LocalDateTime dateHeure = ts != null ? ts.toLocalDateTime() : null;
         TypeCours typeCours = TypeCours.valueOf(rs.getString("typeCours"));
         int duree = rs.getInt("duree");
         String typeSeance = rs.getString("typeSeance");
@@ -110,7 +116,11 @@ public class SeanceRepository {
         // --- Salle ---
         String nomSalle = rs.getString("nom_salle");
         int capaciteSalle = rs.getInt("capacite_salle");
-        TypeSalle typeSalle = TypeSalle.valueOf(rs.getString("type_salle"));
+        TypeSalle typeSalle = null;
+        String typeSalleStr = rs.getString("type_salle");
+        if (typeSalleStr != null && !typeSalleStr.isEmpty()) {
+            typeSalle = TypeSalle.valueOf(typeSalleStr);
+        }
         Salle salle = new Salle(nomSalle, capaciteSalle, typeSalle);
         salle.setId(rs.getInt("salle_id"));
 
@@ -130,8 +140,19 @@ public class SeanceRepository {
             String email = rs.getString("email_membre");
             String tel = rs.getString("telephone_membre");
             String adresse = rs.getString("adresse_membre");
-            TypeObjectif objectif = TypeObjectif.valueOf(rs.getString("objectif_sportif"));
-            TypePreference pref = TypePreference.valueOf(rs.getString("preference_sportif"));
+
+            // safeguard for nullable enum columns
+            TypeObjectif objectif = null;
+            String objectifStr = rs.getString("objectif_sportif");
+            if (objectifStr != null && !objectifStr.isEmpty()) {
+                objectif = TypeObjectif.valueOf(objectifStr);
+            }
+
+            TypePreference pref = null;
+            String prefStr = rs.getString("preference_sportif");
+            if (prefStr != null && !prefStr.isEmpty()) {
+                pref = TypePreference.valueOf(prefStr);
+            }
 
             Membre membre = new Membre(membreId, nomMembre, prenomMembre, dateNaissance, email, tel, adresse, objectif, pref);
 

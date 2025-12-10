@@ -105,7 +105,7 @@ public class CoachService {
         }
     }
 
-    // Donner un feedback à un membre
+    // Donner feedback a un membre 
     public void donnerFeedback(Membre membre, String commentaire) {
         if (membre != null && commentaire != null) {
             logger.info("Feedback pour " + membre.getNom() + ": " + commentaire);
