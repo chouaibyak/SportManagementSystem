@@ -5,6 +5,9 @@ import com.sport.model.Membre;
 import com.sport.model.Performance;
 import com.sport.model.Seance;
 import com.sport.repository.CoachRepository;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -84,21 +87,20 @@ public class CoachService {
         }
     }
 
-    // Vérifier la disponibilité d'une salle
-    public boolean verifierDisponibiliteSalle(Coach coach, Seance seance) {
-        if (coach != null && seance != null) {
-            // Vérifier la disponibilité de la salle en base de données
-            return coachRepository.verifierDisponibiliteSalle(seance.getSalle(), seance.getDateHeure());
-        }
-        return true;  // La salle est disponible par défaut
+  public boolean verifierDisponibiliteSalle(Coach coach, Seance seance) {
+    if (coach != null && seance != null) {
+        LocalDateTime dateHeure = seance.getDateHeure();
+        Timestamp ts = Timestamp.valueOf(dateHeure);  // conversion LocalDateTime -> Timestamp
+        return coachRepository.verifierDisponibiliteSalle(seance.getSalle(), ts);
     }
-
+    return true;  // La salle est disponible par défaut
+}
     // Consulter la progression d'un membre
     public void consulterProgression(Membre membre) {
         if (membre != null) {
             logger.info("Progression de " + membre.getNom() + ": ");
             for (Performance p : membre.getPerformances()) {
-                logger.info("Date: " + p.getDate() + ", Note: " + p.getNote() + ", Valeur: " + p.getValeur());
+                logger.info("Date: " + p.getDateMesure() + ", poids: " + p.getPoids() );
             }
         }
     }
@@ -120,8 +122,7 @@ public class CoachService {
     // Noter la performance d'un membre
     public void noterPerformance(Membre membre, Performance performance) {
         if (membre != null && performance != null) {
-            membre.ajouterPerformance(performance);
-            logger.info("Performance notée pour " + membre.getNom() + ": " + performance.getNote());
+         
         }
     }
 

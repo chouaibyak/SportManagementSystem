@@ -9,7 +9,7 @@ public class Membre extends Utilisateur {
 
     // --- Attributs ---
     private TypeObjectif objectifSportif;
-    private TypePreference preferences; // J'ai gardé TypePreference (conforme UML)
+    private TypePreference preferences;
 
     // Relations (Listes)
     private List<HistoriqueActivite> historiqueActivite;
@@ -45,7 +45,7 @@ public class Membre extends Utilisateur {
         this.performances = new ArrayList<>();
     }
 
-    // --- Méthodes Métier (selon UML) ---
+    // --- Méthodes Métier ---
 
     public List<Seance> consulterSeances() {
         return this.listeSeances;
@@ -84,4 +84,8 @@ public class Membre extends Utilisateur {
 
     public List<Performance> getPerformances() { return performances; }
     public void setPerformances(List<Performance> performances) { this.performances = performances; }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/main

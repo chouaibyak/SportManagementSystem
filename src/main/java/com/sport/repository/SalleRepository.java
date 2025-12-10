@@ -13,7 +13,7 @@ import com.sport.model.TypeSalle;
 
 public class SalleRepository {
 
-    private final Connection connection;
+    private  Connection connection;
 
     public SalleRepository(Connection connection) {
         this.connection = connection;

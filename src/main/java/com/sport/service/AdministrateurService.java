@@ -5,38 +5,43 @@ import java.sql.Time;
 import java.util.List;
 
 import com.sport.model.*;
-import com.sport.repository.AdministrateurRepository;
+import com.sport.repository.MembreRepository;
+import com.sport.repository.CoachRepository;
+import com.sport.repository.SalleRepository;
+import com.sport.repository.EquipementRepository;
+
+
+
 
 public class AdministrateurService {
 
-    private AdministrateurRepository repo;
-
-    public AdministrateurService() {
-        this.repo = new AdministrateurRepository();
-    }
+    private  MembreRepository membreRepo= new MembreRepository();
+    private  CoachRepository coachRepo = new CoachRepository();
+    private  SalleRepository salleRepo = new SalleRepository();
+    private  EquipementRepository equipRepo = new EquipementRepository();
 
     // =========================
     // MEMBRES
     // =========================
     public void ajouterMembre(Membre membre) {
         // ici tu peux ajouter une validation avant d'ajouter
-        repo.ajouterMembre(membre);
+        membreRepo.ajouter(membre);
     }
 
     public void modifierMembre(Membre membre) {
-        repo.modifierMembre(membre);
+        membreRepo.modifierMembre(membre);
     }
 
     public void supprimerMembre(int membreId) {
-        repo.supprimerMembre(membreId);
+        membreRepo.supprimerMembre(membreId);
     }
 
     public Membre getMembre(int membreId) {
-        return repo.getMembre(membreId);
+        return membreRepo.getMembre(membreId);
     }
 
     public List<Membre> listerMembres() {
-        return repo.listerMembres();
+        return membreRepo.listerMembres();
     }
 
     // =========================

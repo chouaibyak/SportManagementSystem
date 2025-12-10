@@ -172,7 +172,7 @@ public class AdministrateurRepository {
             stmt.executeUpdate();
 
         } catch (SQLException ex) {
-            System.out.println("Erreur ajout équipement : " + ex.getMessage());
+            // System.out.println("Erreur ajout équipement : " + ex.getMe;ssage());
         }
     }
 
@@ -371,4 +371,7 @@ public String genererRapport(TypeRapport type) {
             return "Type de rapport non reconnu.";
     }
 }
+<<<<<<< HEAD:src/main/java/com/sport/Repository/AdministrateurRepository.java
 }
+=======
+>>>>>>> origin/main:src/main/java/com/sport/repository/AdministrateurRepository.java
