@@ -1,9 +1,6 @@
 package com.sport.model;
 
-<<<<<<< HEAD
-public class Coach {
-    
-=======
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +14,7 @@ public class Coach extends Utilisateur {
     private String motDePasse;  // Ajout du mot de passe
 
     // Constructeur
-    public Coach(int id, String nom, String prenom, String dateNaissance, String email, String telephone, String adresse, String motDePasse) {
+    public Coach() {
         super(id, nom, prenom, dateNaissance, email, telephone, adresse);  // Appel du constructeur de la classe parente (Utilisateur)
         this.motDePasse = motDePasse;  // Initialisation du mot de passe
     }
@@ -60,9 +57,6 @@ public class Coach extends Utilisateur {
         }
     }
 
-<<<<<<< HEAD
->>>>>>> origin/main
-=======
     // Getter pour le mot de passe
     public String getMotDePasse() {
         return motDePasse;
@@ -72,7 +66,6 @@ public class Coach extends Utilisateur {
     public void setMotDePasse(String motDePasse) {
         this.motDePasse = motDePasse;
     }
->>>>>>> origin/main
 }
 
    

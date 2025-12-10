@@ -1,14 +1,11 @@
 package com.sport.model;
 
-<<<<<<< HEAD
-public class Membre {
-    
-}
-=======
 import java.util.ArrayList;
 import java.util.List;
 
 public class Membre extends Utilisateur {
+
+    public static Object Objectif;
 
     // --- Attributs ---
     private TypeObjectif objectifSportif;
@@ -20,9 +17,7 @@ public class Membre extends Utilisateur {
     private List<Performance> performances; 
 
     // --- Constructeur 1 : CRÉATION (Sans ID) ---
-    public Membre(String nom, String prenom, String dateNaissance, String email, 
-                  String telephone, String adresse, 
-                  TypeObjectif objectifSportif, TypePreference preferences) {
+    public Membre() {
         
         super(nom, prenom, dateNaissance, email, telephone, adresse);
         
@@ -86,12 +81,7 @@ public class Membre extends Utilisateur {
 
     public List<Seance> getListeSeances() { return listeSeances; }
     public void setListeSeances(List<Seance> listeSeances) { this.listeSeances = listeSeances; }
-<<<<<<< HEAD
-}
->>>>>>> origin/main
-=======
 
     public List<Performance> getPerformances() { return performances; }
     public void setPerformances(List<Performance> performances) { this.performances = performances; }
 }
->>>>>>> origin/main

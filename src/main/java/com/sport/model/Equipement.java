@@ -12,7 +12,7 @@ public class Equipement {
     private Date dateAchat;
 
     // --- Constructeur ---
-    public Equipement(String nom, TypeEquipement type, EtatEquipement etat, Date dateAchat) {
+    public Equipement() {
         this.id = 0;
         this.nom = nom;
         this.type = type;

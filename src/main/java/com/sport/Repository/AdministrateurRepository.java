@@ -371,3 +371,4 @@ public String genererRapport(TypeRapport type) {
             return "Type de rapport non reconnu.";
     }
 }
+}
