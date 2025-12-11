@@ -3,9 +3,51 @@
   "configurations": [
     {
       "type": "java",
+      "name": "TestReservation",
+      "request": "launch",
+      "mainClass": "com.sport.TestReservation",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
+      "name": "TestAbonnement",
+      "request": "launch",
+      "mainClass": "com.sport.TestAbonnement",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
+      "name": "TestPerformance",
+      "request": "launch",
+      "mainClass": "com.sport.TestPerformance",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
+      "name": "TestHistoriqueActivite",
+      "request": "launch",
+      "mainClass": "com.sport.TestHistoriqueActivite",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
+      "name": "TestMembreApp",
+      "request": "launch",
+      "mainClass": "com.sport.TestMembreApp",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
+      "name": "App",
+      "request": "launch",
+      "mainClass": "com.sport.App",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
       "name": "Launch JavaFX App",
       "request": "launch",
-      "mainClass": "com.sport.App",  // Remplacez par le nom de votre classe contenant la méthode main
+      "mainClass": "com.sport.App",
       "vmArgs": "--module-path ${workspaceFolder}/lib--add-modules javafx.controls,javafx.fxml",
       "projectName": "SportManagementSystem"
     }

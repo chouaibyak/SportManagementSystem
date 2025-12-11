@@ -1,11 +1,6 @@
 package com.sport.service;
 
-<<<<<<< HEAD
 import java.time.LocalDate;
-=======
-import com.sport.model.HistoriqueActivite;
-import com.sport.repository.HistoriqueActiviteRepository;
->>>>>>> origin/main
 import java.util.List;
 
 import com.sport.model.HistoriqueActivite;
@@ -16,13 +11,8 @@ import com.sport.repository.HistoriqueActiviteRepository;
 
 public class HistoriqueActiviteService {
 
-    private HistoriqueActiviteRepository historiqueRepository;
+    private HistoriqueActiviteRepository historiqueRepository = new HistoriqueActiviteRepository();
 
-    
-    public HistoriqueActiviteService() {
-        this.historiqueRepository = new HistoriqueActiviteRepository();
-    }
-    
     // Enregistrer une nouvelle activité
     public HistoriqueActivite enregistrerActivite(Membre membre, TypeSeance typeSeance, int duree, LocalDate date, String notes) {
         // Validation

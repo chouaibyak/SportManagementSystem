@@ -19,6 +19,9 @@ public class Salle {
         this.type = type;
         this.listeEquipements = new ArrayList<>();
     }
+     public Salle() {
+        this.listeEquipements = new ArrayList<>(); // Important pour éviter les NullPointerException
+    }
 
     // --- Méthodes Métier (du Diagramme UML) ---
 
