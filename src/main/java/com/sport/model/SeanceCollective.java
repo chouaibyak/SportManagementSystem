@@ -34,9 +34,4 @@ public class SeanceCollective extends Seance {
     public void setListeMembers(List<Membre> listeMembers) {
         this.listeMembers = listeMembers;
     }
-
-    @Override
-    public void notifierParticipants() {
-        // Logique de notification pour les participants
-    }
 }

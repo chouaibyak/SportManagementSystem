@@ -8,40 +8,36 @@ import com.sport.repository.SalleRepository;
 
 public class SalleService {
 
-    private final SalleRepository repository;
-
-    public SalleService(SalleRepository repository) {
-        this.repository = repository;
-    }
+    private SalleRepository salleRepository = new SalleRepository();
 
     // ➤ Ajouter une salle
     public void ajouterSalle(Salle salle) {
-        repository.ajouter(salle);
+        salleRepository.ajouterSalle(salle);
     }
 
     // ➤ Modifier une salle
     public boolean modifierSalle(Salle salle) {
-        return repository.update(salle);
+        return salleRepository.modifierSalle(salle);
     }
 
     // ➤ Supprimer une salle
     public boolean supprimerSalle(int id) {
-        return repository.delete(id);
+        return salleRepository.supprimerSalle(id);
     }
 
     // ➤ Lister toutes les salles
     public List<Salle> getToutesLesSalles() {
-        return repository.getAll();
+        return salleRepository.listerSalles();
     }
 
     // ➤ Obtenir une salle par son ID
     public Salle getSalleById(int id) {
-        return repository.getById(id);
+        return salleRepository.getSalleById(id);
     }
 
     // ➤ Vérifier disponibilité d’une salle
     public boolean salleDisponible(int idSalle, Date date) {
-        Salle salle = repository.getById(idSalle);
+        Salle salle = salleRepository.getSalleById(idSalle);
 
         if (salle == null) {
             System.out.println("Salle introuvable ID=" + idSalle);

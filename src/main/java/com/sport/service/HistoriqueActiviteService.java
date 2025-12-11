@@ -1,6 +1,11 @@
 package com.sport.service;
 
+<<<<<<< HEAD
 import java.time.LocalDate;
+=======
+import com.sport.model.HistoriqueActivite;
+import com.sport.repository.HistoriqueActiviteRepository;
+>>>>>>> origin/main
 import java.util.List;
 
 import com.sport.model.HistoriqueActivite;
