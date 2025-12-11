@@ -2,7 +2,6 @@ package com.sport.service;
 
 import com.sport.model.HistoriqueActivite;
 import com.sport.repository.HistoriqueActiviteRepository;
-import java.time.LocalDate;
 import java.util.List;
 
 public class HistoriqueActiviteService {

@@ -13,6 +13,13 @@ public class Membre extends Utilisateur {
     private List<HistoriqueActivite> historiqueActivite;
     private List<Seance> listeSeances;
     private List<Performance> performances; 
+    
+    public Membre() {
+        super(); // Cela nécessite que la classe Utilisateur ait aussi un constructeur vide !
+        this.historiqueActivite = new ArrayList<>();
+        this.listeSeances = new ArrayList<>();
+        this.performances = new ArrayList<>();
+    }
 
     // --- Constructeur 1 : CRÉATION (Sans ID) ---
     public Membre(String nom, String prenom, String dateNaissance, String email, 

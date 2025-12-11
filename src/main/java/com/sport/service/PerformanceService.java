@@ -33,22 +33,18 @@ public class PerformanceService {
             throw new IllegalArgumentException("La performance doit être associée à un membre.");
         }
 
-        performanceRepository.ajouter(perf);
+        performanceRepository.ajouterPerformance(perf);
         System.out.println("Performance enregistrée pour " + perf.getMembre().getNom());
     }
 
-    /**
-     * Récupère l'historique complet d'un membre.
-     */
+    //Récupère l'historique complet d'un membre.
     public List<Performance> recupererHistoriqueMembre(int membreId) {
-        return performanceRepository.trouverParMembreId(membreId);
+        return performanceRepository.trouverPerformanceParMembreId(membreId);
     }
 
-    /**
-     * Récupère la toute dernière performance enregistrée pour un membre (pour voir l'état actuel).
-     */
+    //Récupère la toute dernière performance enregistrée pour un membre (pour voir l'état actuel).
     public Performance recupererDernierePerformance(int membreId) {
-        List<Performance> historique = performanceRepository.trouverParMembreId(membreId);
+        List<Performance> historique = performanceRepository.trouverPerformanceParMembreId(membreId);
         if (historique.isEmpty()) {
             return null;
         }
@@ -60,6 +56,6 @@ public class PerformanceService {
      * Supprime une performance (erreur de saisie).
      */
     public void supprimerPerformance(int id) {
-        performanceRepository.supprimer(id);
+        performanceRepository.supprimerPerformance(id);
     }
 }
