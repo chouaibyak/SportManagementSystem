@@ -9,12 +9,7 @@ import java.util.List;
 
 public class AbonnementService {
 
-    private AbonnementRepository abonnementRepository;
-
-    public AbonnementService() {
-        this.abonnementRepository = new AbonnementRepository();
-    }
-
+    private AbonnementRepository abonnementRepository = new AbonnementRepository();
     /**
      * Crée un nouvel abonnement, le met en statut ACTIF par défaut et le sauvegarde.
      */
@@ -29,7 +24,7 @@ public class AbonnementService {
         abonnement.activerAbonnement(); 
         
         // Sauvegarde
-        abonnementRepository.ajouter(abonnement);
+        abonnementRepository.ajouterAbonnement(abonnement);
         
         System.out.println("Abonnement " + abonnement.getTypeAbonnement() + " créé avec succès.");
         System.out.println("Date de fin prévue : " + abonnement.calculerProchaineDateFin());

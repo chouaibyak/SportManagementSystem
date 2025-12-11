@@ -1,14 +1,12 @@
 package com.sport.model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class Coach extends Utilisateur {
 
-    private Set<String> specialites = new HashSet<>();  // Utilisation d'un Set pour éviter les doublons
-    private Set<Seance> seances = new HashSet<>();     // Utilisation d'un Set pour éviter les doublons
+    private List<String> specialites = new ArrayList<>();  // Utilisation d'un Set pour éviter les doublons
+    private List<Seance> seances = new ArrayList<>();     // Utilisation d'un Set pour éviter les doublons
     private List<Performance> performancesSuivies = new ArrayList<>();
    
 
@@ -53,19 +51,19 @@ public class Coach extends Utilisateur {
 
     // --- Getters et Setters ---
 
-    public Set<Seance> getSeances() {
+    public List<Seance> getSeances() {
         return seances;
     }
 
-    public void setSeances(Set<Seance> seances) {
+    public void setSeances(List<Seance> seances) {
         this.seances = seances;
     }
 
-    public Set<String> getSpecialites() {
+    public List<String> getSpecialites() {
         return specialites;
     }
 
-    public void setSpecialites(Set<String> specialites) {
+    public void setSpecialites(List<String> specialites) {
         this.specialites = specialites;
     }
 

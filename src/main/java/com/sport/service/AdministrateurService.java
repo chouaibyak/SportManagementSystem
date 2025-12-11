@@ -1,134 +1,124 @@
 package com.sport.service;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.util.List;
 
 import com.sport.model.*;
-import com.sport.repository.AdministrateurRepository;
-
+import com.sport.repository.CoachRepository;
+import com.sport.repository.EquipementRepository;
+import com.sport.repository.MembreRepository;
+import com.sport.repository.SalleRepository;
 public class AdministrateurService {
 
-    private AdministrateurRepository repo;
-
-    public AdministrateurService() {
-        this.repo = new AdministrateurRepository();
-    }
-
+    private MembreRepository membreRepository = new MembreRepository();
+    private CoachRepository coachRepository = new CoachRepository();
+    private EquipementRepository equipementRepository = new EquipementRepository();
+    private SalleRepository salleRepository = new SalleRepository();
     // =========================
     // MEMBRES
     // =========================
     public void ajouterMembre(Membre membre) {
         // ici tu peux ajouter une validation avant d'ajouter
-        repo.ajouterMembre(membre);
+        membreRepository.ajouterMembre(membre);
     }
 
     public void modifierMembre(Membre membre) {
-        repo.modifierMembre(membre);
+        membreRepository.modifierMembre(membre);
     }
 
     public void supprimerMembre(int membreId) {
-        repo.supprimerMembre(membreId);
+        membreRepository.supprimerMembre(membreId);
     }
 
     public Membre getMembre(int membreId) {
-        return repo.getMembre(membreId);
+        return membreRepository.trouverParId(membreId);
     }
 
     public List<Membre> listerMembres() {
-        return repo.listerMembres();
+        return membreRepository.listerMembres();
     }
 
     // =========================
     // COACHS
     // =========================
     public void ajouterCoach(Coach coach) {
-        repo.ajouterCoach(coach);
+        coachRepository.ajouterCoach(coach);
     }
 
     public void modifierCoach(Coach coach) {
-        repo.modifierCoach(coach);
+        coachRepository.modifierCoach(coach);
     }
 
     public void supprimerCoach(int coachId) {
-        repo.supprimerCoach(coachId);
+        coachRepository.supprimerCoach(coachId);
     }
 
     public Coach getCoach(int coachId) {
-        return repo.getCoach(coachId);
+        return coachRepository.getCoachById(coachId);
     }
 
     public List<Coach> listerCoachs() {
-        return repo.listerCoachs();
-    }
-
-    public List<Coach> listerCoachsParDomaine(String domaine) {
-        return repo.listerCoachsParDomaine(domaine);
+        return coachRepository.listerCoachs();
     }
 
     // =========================
     // EQUIPEMENTS
     // =========================
     public void ajouterEquipement(Equipement equipement) {
-        repo.ajouterEquipement(equipement);
+        equipementRepository.ajouterEquipement(equipement);
     }
 
     public void modifierEquipement(Equipement equipement) {
-        repo.modifierEquipement(equipement);
+        equipementRepository.modifierEquipement(equipement);
     }
 
     public void supprimerEquipement(int equipementId) {
-        repo.supprimerEquipement(equipementId);
+        equipementRepository.supprimerEquipement(equipementId);
     }
 
     public Equipement getEquipement(int equipementId) {
-        return repo.getEquipement(equipementId);
+        return equipementRepository.getEquipementById(equipementId);
     }
 
     public List<Equipement> listerEquipements() {
-        return repo.listerEquipements();
+        return equipementRepository.listerEquipements();
     }
 
-    public List<Equipement> listerEquipementsParEtat(Equipement.EtatEquipement etat) {
-        return repo.listerEquipementsParEtat(etat);
+    public List<Equipement> listerEquipementsParEtat(EtatEquipement etat) {
+        return equipementRepository.listerEquipementsParEtat(etat);
     }
 
     // =========================
     // SALLES
     // =========================
     public void ajouterSalle(Salle salle) {
-        repo.ajouterSalle(salle);
+        salleRepository.ajouterSalle(salle);
     }
 
     public void modifierSalle(Salle salle) {
-        repo.modifierSalle(salle);
+        salleRepository.modifierSalle(salle);
     }
 
     public void supprimerSalle(int salleId) {
-        repo.supprimerSalle(salleId);
+        salleRepository.supprimerSalle(salleId);
     }
 
     public Salle getSalle(int salleId) {
-        return repo.getSalle(salleId);
+        return salleRepository.getSalleById(salleId);
     }
 
     public List<Salle> listerSalles() {
-        return repo.listerSalles();
+        return salleRepository.listerSalles();
     }
 
-    public List<Salle> listerSallesParType(Salle.TypeSalle type) {
-        return repo.listerSallesParType(type);
+    public List<Salle> listerSallesParType(TypeSalle type) {
+        return salleRepository.listerSallesParType(type);
     }
 
-    public boolean verifierDisponibiliteSalle(int salleId, Date date, Time heureDebut, Time heureFin) {
-        return repo.verifierDisponibiliteSalle(salleId, date, heureDebut, heureFin);
+    public boolean verifierDisponibiliteSalle(int salleId, String dateHeure) {
+        return salleRepository.verifierDisponibiliteSalle(salleId, dateHeure);
     }
 
     // =========================
     // RAPPORTS
     // =========================
-    public void genererRapport(Rapport.TypeRapport type, Date dateDebut, Date dateFin) {
-        // Ici, on délègue la génération au repository
-        repo.genererRapport(type, dateDebut, dateFin);
-    }
 }

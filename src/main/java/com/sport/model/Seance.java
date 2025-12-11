@@ -1,7 +1,7 @@
 package com.sport.model;
 import java.time.LocalDateTime;
 
-public abstract class Seance {
+public class Seance {
 
     protected int id;
     protected String nom;
@@ -92,7 +92,4 @@ public abstract class Seance {
     public void setDuree(int duree) {
         this.duree = duree;
     }
-
-    // Méthode abstraite
-    public abstract void notifierParticipants();
 }

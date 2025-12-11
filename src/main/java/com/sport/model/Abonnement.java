@@ -45,6 +45,14 @@ public class Abonnement {
         this.autorenouvellement = autorenouvellement;
     }
 
+    public void setId(int id){
+        this.id=id;
+    }
+
+    public int getId(){
+        return id;
+    }
+
     // Méthode : Calcul de la prochaine date de fin
     public Date calculerProchaineDateFin() {
         Calendar cal = Calendar.getInstance();

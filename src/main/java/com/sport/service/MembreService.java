@@ -6,24 +6,21 @@ import java.util.List;
 
 public class MembreService {
 
-    private MembreRepository membreRepository;
+    // On initialise directement ici
+    private MembreRepository membreRepository = new MembreRepository();
 
-    public MembreService() {
-        this.membreRepository = new MembreRepository();
-    }
 
     // Créer un membre avec validation
     public void creerMembre(Membre membre) {
         if (membre.getNom() == null || membre.getNom().isEmpty()) {
-            throw new IllegalArgumentException("Le nom ne peut pas être vide.");
+            System.out.println("Erreur : Le nom ne peut pas être vide.");
+            return;
         }
-        // Ici, on pourrait vérifier si l'email existe déjà, etc.
-        membreRepository.ajouter(membre);
-        System.out.println("Service : Membre " + membre.getNom() + " ajouté avec succès.");
+        membreRepository.ajouterMembre(membre);
     }
 
     public List<Membre> recupererTousLesMembres() {
-        return membreRepository.listerTout();
+        return membreRepository.listerMembres();
     }
 
     public Membre recupererMembreParId(int id) {
@@ -35,20 +32,11 @@ public class MembreService {
     }
 
     public void mettreAJourMembre(Membre membre) {
-        Membre existant = membreRepository.modifier(membre);
-        if (existant != null) {
-            System.out.println("Service : Membre mis à jour.");
-        } else {
-            System.out.println("Service : Échec de la mise à jour, membre introuvable.");
-        }
+        // Le repository mettra maintenant à jour les infos perso et les objectifs
+        membreRepository.modifierMembre(membre);
     }
 
     public void supprimerMembre(int id) {
-        boolean supprime = membreRepository.supprimer(id);
-        if (supprime) {
-            System.out.println("Service : Membre supprimé.");
-        } else {
-            System.out.println("Service : Impossible de supprimer, ID introuvable.");
-        }
+        membreRepository.supprimerMembre(id);
     }
 }

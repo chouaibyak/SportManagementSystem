@@ -9,12 +9,7 @@ import java.util.List;
 
 public class ReservationService {
 
-    private final ReservationRepository reservationRepository;
-
-    // Injection du repository via le constructeur
-    public ReservationService(ReservationRepository reservationRepository) {
-        this.reservationRepository = reservationRepository;
-    }
+    private ReservationRepository reservationRepository = new ReservationRepository();
 
     // --- Méthodes Métier ---
 
@@ -29,27 +24,27 @@ public class ReservationService {
         }
 
         // Appel au repository pour sauvegarder
-        reservationRepository.save(reservation);
+        reservationRepository.ajouterReservation(reservation);
         System.out.println("Réservation créée avec l'ID : " + reservation.getId());
     }
 
     public List<Reservation> listerToutesLesReservations() {
-        return reservationRepository.findAll();
+        return reservationRepository.listerReservations();
     }
 
     public Reservation trouverReservation(int id) {
-        return reservationRepository.findById(id);
+        return reservationRepository.trouverReservationParId(id);
     }
 
     /**
      * Change le statut à PRESENT (Logique du diagramme)
      */
     public void marquerPresence(int id) {
-        Reservation reservation = reservationRepository.findById(id);
+        Reservation reservation = reservationRepository.trouverReservationParId(id);
 
         if (reservation != null) {
             reservation.marquerPresence(); // Utilise la méthode de votre Model
-            reservationRepository.update(reservation); // Sauvegarde le changement
+            reservationRepository.modifierReservation(reservation); // Sauvegarde le changement
             System.out.println("Présence validée pour la réservation " + id);
         } else {
             System.out.println("Erreur : Réservation introuvable.");
@@ -60,11 +55,11 @@ public class ReservationService {
      * Annule une réservation
      */
     public void annulerReservation(int id) {
-        Reservation reservation = reservationRepository.findById(id);
+        Reservation reservation = reservationRepository.trouverReservationParId(id);
 
         if (reservation != null) {
             reservation.setStatut(StatutReservation.ANNULEE);
-            reservationRepository.update(reservation);
+            reservationRepository.modifierReservation(reservation);
             System.out.println("Réservation " + id + " annulée.");
         } else {
             System.out.println("Erreur : Réservation introuvable.");

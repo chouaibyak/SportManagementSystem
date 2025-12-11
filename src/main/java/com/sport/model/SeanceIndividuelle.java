@@ -42,10 +42,6 @@ public class SeanceIndividuelle extends Seance {
     public void setNotesCoach(String notesCoach) {
         this.notesCoach = notesCoach;
     }
-    @Override
-    public void notifierParticipants() {
-        // Logique réelle dans SeanceCollectiveService
-    }
 
 }
 
