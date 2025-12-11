@@ -11,7 +11,7 @@ public class Coach extends Utilisateur {
    
 
     // Constructeur
-    public Coach(int id, String nom, String prenom, String dateNaissance, String email, String telephone, String adresse) {
+    public Coach(int id, String nom, String prenom, String dateNaissance, String email, String telephone, String adresse, String motDePasse) {
         super(id, nom, prenom, dateNaissance, email, telephone, adresse);  // Appel du constructeur de la classe parente (Utilisateur)
     
     }
@@ -49,6 +49,10 @@ public class Coach extends Utilisateur {
         }
     }
 
+
+    // Getter pour le mot de passe
+    public String getMotDePasse() {
+        return motDePasse;
     // --- Getters et Setters ---
 
     public List<Seance> getSeances() {
@@ -65,9 +69,10 @@ public class Coach extends Utilisateur {
 
     public void setSpecialites(List<String> specialites) {
         this.specialites = specialites;
-    }
+    }}
 
-    public List<Performance> getPerformancesSuivies() {
-        return performancesSuivies;
-    }
-}
+
+   
+    
+
+   
