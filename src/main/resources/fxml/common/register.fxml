@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- IMPORTATIONS (C'est ici qu'il manquait HBox) -->
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.HBox?>  <!-- INDISPENSABLE -->
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" spacing="15.0" 
+      xmlns="http://javafx.com/javafx/21" 
+      xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.sport.controller.common.RegisterController">
+
+    <Label text="INSCRIPTION">
+        <font><Font name="System Bold" size="24.0"/></font>
+    </Label>
+
+    <!-- Champs de saisie -->
+    <TextField fx:id="txtNom" promptText="Nom" maxWidth="300.0"/>
+    <TextField fx:id="txtPrenom" promptText="Prénom" maxWidth="300.0"/>
+    <TextField fx:id="txtEmail" promptText="Email" maxWidth="300.0"/>
+    <PasswordField fx:id="txtPassword" promptText="Mot de passe" maxWidth="300.0"/>
+
+    <!-- Choix du Rôle -->
+    <Label text="Je suis un :" />
+    
+    <!-- C'est ici que tu utilisais HBox sans l'importer -->
+    <HBox alignment="CENTER" spacing="20.0">
+        <!-- Définition du groupe pour qu'on ne puisse cocher qu'un seul -->
+        <fx:define>
+            <ToggleGroup fx:id="roleGroup"/>
+        </fx:define>
+
+        <RadioButton fx:id="radioMembre" text="Membre" toggleGroup="$roleGroup" selected="true"/>
+        <RadioButton fx:id="radioCoach" text="Coach" toggleGroup="$roleGroup"/>
+    </HBox>
+
+    <Button text="S'inscrire" onAction="#handleInscription" 
+            style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+            
+    <Button text="Retour Connexion" onAction="#allerVersLogin" 
+            style="-fx-background-color: transparent; -fx-text-fill: blue; -fx-cursor: hand;"/>
+    
+    <Label fx:id="lblMessage" textFill="RED"/>
+
+</VBox>
