@@ -2,7 +2,6 @@ package com.sport.repository;
 
 import com.sport.model.Abonnement;
 import com.sport.model.StatutAbonnement;
-import com.sport.model.TypeAbonnement;
 import com.sport.utils.DBConnection;
 
 import java.sql.*;
@@ -11,25 +10,25 @@ import java.util.List;
 
 public class AbonnementRepository {
 
-    // ➤ CREATE
+    // ➤ CREATE (Correction : Ajout de membre_id)
     public void ajouterAbonnement(Abonnement abonnement) {
-        String sql = "INSERT INTO abonnement (type, statut, autorenouvellement) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO abonnement (membre_id, type, statut, autorenouvellement) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setString(1, abonnement.getTypeAbonnement().name());
-            stmt.setString(2, abonnement.getStatutAbonnement().name());
-            stmt.setBoolean(3, abonnement.isAutorenouvellement());
+            // IMPORTANT : On lie l'abonnement au membre
+            stmt.setInt(1, abonnement.getMembre().getId());
+            stmt.setString(2, abonnement.getTypeAbonnement().name());
+            stmt.setString(3, abonnement.getStatutAbonnement().name());
+            stmt.setBoolean(4, abonnement.isAutorenouvellement());
 
             stmt.executeUpdate();
 
-            // ID généré
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
                 abonnement.setId(rs.getInt(1));
             }
-
             System.out.println("Abonnement ajouté avec succès !");
 
         } catch (SQLException e) {
@@ -136,20 +135,19 @@ public class AbonnementRepository {
         }
     }
 
-    // ➤ Mapping SQL -> Objet
+    // ➤ MAPPING (Correction : Récupération de l'ID membre)
     private Abonnement mapResultSetToAbonnement(ResultSet rs) throws SQLException {
-
         Abonnement ab = new Abonnement();
         ab.setId(rs.getInt("id"));
 
-        try {
-            ab.setTypeAbonnement(TypeAbonnement.valueOf(rs.getString("type")));
-        } catch (Exception ignored) {}
+        // On crée un membre "vide" avec juste l'ID pour faire le lien
+        com.sport.model.Membre m = new com.sport.model.Membre();
+        m.setId(rs.getInt("membre_id"));
+        ab.setMembre(m);
 
-        try {
-            ab.setStatutAbonnement(StatutAbonnement.valueOf(rs.getString("statut")));
-        } catch (Exception ignored) {}
-
+        try { ab.setTypeAbonnement(com.sport.model.TypeAbonnement.valueOf(rs.getString("type"))); } catch (Exception e) {}
+        try { ab.setStatutAbonnement(com.sport.model.StatutAbonnement.valueOf(rs.getString("statut"))); } catch (Exception e) {}
+        
         ab.setAutorenouvellement(rs.getBoolean("autorenouvellement"));
 
         return ab;

@@ -24,7 +24,8 @@ public class Membre extends Utilisateur {
     }
 
     // --- Constructeur 1 : CRÉATION (Sans ID) ---
-    public Membre() {
+    public Membre(String nom, String prenom, String dateNaissance,
+                       String email, String telephone, String adresse, TypePreference preferences, TypeObjectif objectifSportif) {
         
         super(nom, prenom, dateNaissance, email, telephone, adresse);
         
@@ -91,8 +92,4 @@ public class Membre extends Utilisateur {
 
     public List<Performance> getPerformances() { return performances; }
     public void setPerformances(List<Performance> performances) { this.performances = performances; }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/main

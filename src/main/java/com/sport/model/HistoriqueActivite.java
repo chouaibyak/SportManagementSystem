@@ -1,7 +1,6 @@
 package com.sport.model;
 
 import java.time.LocalDate;
-import com.sport.model.Membre;
 public class HistoriqueActivite {
 
     // --- Attributs ---

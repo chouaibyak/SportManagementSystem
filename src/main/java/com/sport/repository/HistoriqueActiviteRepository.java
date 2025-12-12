@@ -20,7 +20,7 @@ public class HistoriqueActiviteRepository {
 
 // CREATE
     public void ajouterHistoriqueActivite(HistoriqueActivite historique) {
-        String sql = "INSERT INTO HISTORIQUE_ACTIVITE (id_membre, typeSeance, duree, date, notes) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO historiqueactivite (membre_id, typeSeance, duree, date, notes) VALUES (?, ?, ?, ?, ?)";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -42,7 +42,7 @@ public class HistoriqueActiviteRepository {
    // READ (Tout)
     public List<HistoriqueActivite> listerHistoriquesActivite() {
         List<HistoriqueActivite> historiques = new ArrayList<>();
-        String sql = "SELECT * FROM HISTORIQUE_ACTIVITE ORDER BY date DESC";
+        String sql = "SELECT * FROM historiqueactivite ORDER BY date DESC";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -61,7 +61,7 @@ public class HistoriqueActiviteRepository {
     
     // READ (Par ID)
     public HistoriqueActivite trouverParId(int id) {
-        String sql = "SELECT * FROM HISTORIQUE_ACTIVITE WHERE id = ?";
+        String sql = "SELECT * FROM historiqueactivite WHERE id = ?";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -84,7 +84,7 @@ public class HistoriqueActiviteRepository {
     // READ (Par Membre)
     public List<HistoriqueActivite> trouverParMembre(int membreId) {
         List<HistoriqueActivite> historiques = new ArrayList<>();
-        String sql = "SELECT * FROM HISTORIQUE_ACTIVITE WHERE id_membre = ? ORDER BY date DESC";
+        String sql = "SELECT * FROM historiqueactivite WHERE membre_id = ? ORDER BY date DESC";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -106,7 +106,7 @@ public class HistoriqueActiviteRepository {
 
     // UPDATE
     public void modifierHistoriqueActivite(HistoriqueActivite historique) {
-        String sql = "UPDATE HISTORIQUE_ACTIVITE SET id_membre = ?, typeSeance = ?, duree = ?, date = ?, notes = ? WHERE id = ?";
+        String sql = "UPDATE historiqueactivite SET membre_id = ?, typeSeance = ?, duree = ?, date = ?, notes = ? WHERE id = ?";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -133,7 +133,7 @@ public class HistoriqueActiviteRepository {
     
     // DELETE
     public void supprimerHistoriqueActivite(int historiqueId) {
-        String sql = "DELETE FROM HISTORIQUE_ACTIVITE WHERE id = ?";
+        String sql = "DELETE FROM historiqueactivite WHERE id = ?";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -149,7 +149,7 @@ public class HistoriqueActiviteRepository {
     
     // DELETE (Tous les historiques d'un membre)
     public void supprimerHistoriquesParMembre(int membreId) {
-        String sql = "DELETE FROM HISTORIQUE_ACTIVITE WHERE id_membre = ?";
+        String sql = "DELETE FROM historiqueactivite WHERE membre_id = ?";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -167,7 +167,7 @@ public class HistoriqueActiviteRepository {
     private HistoriqueActivite mapResultSetToHistoriqueActivite(ResultSet rs) throws SQLException {
         // Récupérer le membre (simplifié - vous devriez utiliser MembreRepository)
         Membre membre = new Membre();
-        membre.setId(rs.getInt("id_membre"));
+        membre.setId(rs.getInt("membre_id"));
         // TODO: Charger les détails complets du membre si nécessaire
         
         // Récupérer et convertir le type de séance
