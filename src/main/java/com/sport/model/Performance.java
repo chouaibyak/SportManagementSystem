@@ -15,11 +15,14 @@ public class Performance {
     private double tourTaille; 
     private double force; 
     private double endurance; 
-    
     private LocalDate dateMesure; 
 
     // Pour les mesures supplémentaires (ex: "Biceps", 35.0)
     private Map<String, Double> mesuresSupplementaires;
+
+    public Performance() {
+        this.mesuresSupplementaires = new HashMap<>(); // Important pour éviter les erreurs null
+    }
 
     // --- Constructeur 1 : CRÉATION (Sans ID) ---
     public Performance(Membre membre, double poids, double tourTaille, double force, double endurance, LocalDate dateMesure) {

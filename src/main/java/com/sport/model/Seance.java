@@ -1,7 +1,7 @@
 package com.sport.model;
 import java.time.LocalDateTime;
 
-public abstract class Seance {
+public class Seance {
 
     protected int id;
     protected String nom;
@@ -9,6 +9,7 @@ public abstract class Seance {
     protected LocalDateTime dateHeure;
     protected int duree; // En minutes
     protected TypeCours typeCours;
+    protected TypeSeance typeSeance;
     protected Salle salle;
     protected Coach entraineur;
 
@@ -93,6 +94,11 @@ public abstract class Seance {
         this.duree = duree;
     }
 
-    // Méthode abstraite
-    public abstract void notifierParticipants();
+    public void setTypeSeance(TypeSeance typeSeance){
+        this.typeSeance = typeSeance;
+    }
+
+    public TypeSeance gTypeSeance(){
+        return typeSeance;
+    }
 }

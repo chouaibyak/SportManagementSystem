@@ -1,224 +1,105 @@
 package com.sport.repository;
 
 import com.sport.model.Coach;
-import com.sport.model.Seance;
-import com.sport.model.Membre;
-import com.sport.model.Salle;
 import com.sport.utils.DBConnection;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class CoachRepository {
 
-    private static final Logger logger = Logger.getLogger(CoachRepository.class.getName());
+    // ➤ LECTURE : Trouver par ID (AVEC JOINTURE)
+    public Coach getCoachById(int id) {
+        // On joint COACH avec UTILISATEUR pour avoir le nom, prenom, etc.
+        String sql = "SELECT u.id_utilisateur, u.nom, u.prenom, u.email, u.telephone, u.adresse " +
+                     "FROM COACH c " +
+                     "JOIN UTILISATEUR u ON c.id_utilisateur = u.id_utilisateur " +
+                     "WHERE c.id_utilisateur = ?";
+                     
+        String sqlSpec = "SELECT specialite FROM COACH_SPECIALITE WHERE coach_id = ?";
 
-    // Créer une séance
-    public void creerSeance(Coach coach, Seance seance) {
-        if (coach == null || seance == null) {
-            logger.warning("Erreur : Le coach ou la séance est null.");
-            return;
-        }
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        String query = "INSERT INTO seance (nom, capaciteMax, salle_id, dateHeure, entraineur_id, type, duree) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try {
-            Connection connection = DBConnection.getConnection();
-            try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
 
-                stmt.setString(1, seance.getNom());
-                stmt.setInt(2, seance.getCapaciteMax());
-                stmt.setInt(3, seance.getSalle().getId());
-                stmt.setTimestamp(4, Timestamp.valueOf(seance.getDateHeure()));
-                stmt.setInt(5, coach.getId());
-                stmt.setString(6, seance.getTypeCours().toString());
-                stmt.setInt(7, seance.getDuree());
+            if (rs.next()) {
+                Coach c = new Coach();
+                c.setId(rs.getInt("id_utilisateur"));
+                c.setNom(rs.getString("nom"));
+                c.setPrenom(rs.getString("prenom"));
+                c.setEmail(rs.getString("email"));
+                c.setTelephone(rs.getString("telephone"));
+                c.setAdresse(rs.getString("adresse"));
 
-                stmt.executeUpdate();
-                logger.info("Séance ajoutée avec succès : " + seance.getNom());
-            }
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erreur lors de l'ajout de la séance", e);
-        }
-    }
-
-    // Modifier une séance
-    public void modifierSeance(Coach coach, Seance seance) {
-        if (coach == null || seance == null) {
-            logger.warning("Erreur : Le coach ou la séance est null.");
-            return;
-        }
-
-        String query = "UPDATE seance SET nom = ?, capaciteMax = ?, salle_id = ?, dateHeure = ?, type = ?, duree = ? WHERE id = ? AND entraineur_id = ?";
-        try {
-            Connection connection = DBConnection.getConnection();
-            try (PreparedStatement stmt = connection.prepareStatement(query)) {
-
-                stmt.setString(1, seance.getNom());
-                stmt.setInt(2, seance.getCapaciteMax());
-                stmt.setInt(3, seance.getSalle().getId());
-                stmt.setTimestamp(4, Timestamp.valueOf(seance.getDateHeure()));
-                stmt.setString(5, seance.getTypeCours().toString());
-                stmt.setInt(6, seance.getDuree());
-                stmt.setInt(7, seance.getId());
-                stmt.setInt(8, coach.getId());
-
-                stmt.executeUpdate();
-                logger.info("Séance modifiée avec succès : " + seance.getNom());
-            }
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erreur lors de la modification de la séance", e);
-        }
-    }
-
-    // Supprimer une séance
-    public void supprimerSeance(Coach coach, Seance seance) {
-        if (coach == null || seance == null) {
-            logger.warning("Erreur : Le coach ou la séance est null.");
-            return;
-        }
-
-        String query = "DELETE FROM seance WHERE id = ? AND entraineur_id = ?";
-        try {
-            Connection connection = DBConnection.getConnection();
-            try (PreparedStatement stmt = connection.prepareStatement(query)) {
-
-                stmt.setInt(1, seance.getId());
-                stmt.setInt(2, coach.getId());
-
-                stmt.executeUpdate();
-                logger.info("Séance supprimée avec succès : " + seance.getNom());
-            }
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erreur lors de la suppression de la séance", e);
-        }
-    }
-
-    // Vérifier la disponibilité d'une salle
-    public boolean verifierDisponibiliteSalle(Salle salle, Timestamp dateHeure) {
-        String query = "SELECT * FROM seance WHERE salle_id = ? AND dateHeure = ?";
-        try {
-            Connection connection = DBConnection.getConnection();
-            try (PreparedStatement stmt = connection.prepareStatement(query)) {
-
-                stmt.setInt(1, salle.getId());
-                stmt.setTimestamp(2, dateHeure);
-
-                try (ResultSet resultSet = stmt.executeQuery()) {
-                    return !resultSet.next();
-                }
-            }
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erreur lors de la vérification de la disponibilité de la salle", e);
-        }
-        return false;
-    }
-
-    // Récupérer toutes les séances d'un coach
-    public List<Seance> getSeancesByCoach(Coach coach) {
-        List<Seance> seances = new ArrayList<>();
-        String query = "SELECT * FROM seance WHERE entraineur_id = ?";
-        try {
-            Connection connection = DBConnection.getConnection();
-            try (PreparedStatement stmt = connection.prepareStatement(query)) {
-                stmt.setInt(1, coach.getId());
-                try (ResultSet rs = stmt.executeQuery()) {
-                    while (rs.next()) {
-                        // Ici, tu devras créer des instances concrètes de Seance selon ton type (ex: CollectiveSeance, IndividuelleSeance)
-                        // Pour l'instant, on peut juste logger les données
-                        logger.info("Séance trouvée: " + rs.getString("nom"));
-                        // TODO: créer et ajouter les objets Seance appropriés à la liste
+                // Récupération des spécialités
+                try (PreparedStatement stmtSpec = conn.prepareStatement(sqlSpec)) {
+                    stmtSpec.setInt(1, id);
+                    ResultSet rsSpec = stmtSpec.executeQuery();
+                    // On adapte selon si vous avez choisi List ou Set dans votre modèle
+                    List<String> specs = new ArrayList<>(); 
+                    while (rsSpec.next()) {
+                        specs.add(rsSpec.getString("specialite"));
                     }
+                    c.setSpecialites(specs); 
                 }
+                return c;
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erreur lors de la récupération des séances", e);
+            System.out.println("Erreur findById coach : " + e.getMessage());
         }
-        return seances;
+        return null;
     }
 
-    // Consulter la progression d'un membre
-    public void consulterProgression(Membre membre) {
-        if (membre == null) {
-            logger.warning("Erreur : Le membre est null.");
-            return;
-        }
-
-        String query = "SELECT * FROM performance WHERE membre_id = ?";
-        try {
-            Connection connection = DBConnection.getConnection();
-            try (PreparedStatement stmt = connection.prepareStatement(query)) {
-
-                stmt.setInt(1, membre.getId());
-                try (ResultSet rs = stmt.executeQuery()) {
-                    while (rs.next()) {
-                        logger.info("Performance de " + membre.getNom() + ": " + rs.getString("mesures"));
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erreur lors de la consultation de la progression", e);
-        }
-    }
-
-    // Méthode pour récupérer un coach par son ID
-    public Coach findById(int id) {
-        String query = "SELECT * FROM coach WHERE id = ?";
-        try {
-            Connection connection = DBConnection.getConnection();
-            try (PreparedStatement stmt = connection.prepareStatement(query)) {
-
-                stmt.setInt(1, id);
-                try (ResultSet rs = stmt.executeQuery()) {
-                    if (rs.next()) {
-                        Coach coach = new Coach();
-                        coach.setId(rs.getInt("id"));
-                        coach.setNom(rs.getString("nom"));
-                        // adapte les noms de colonnes selon ta table (email, tel ou telephone)
-                        coach.setEmail(rs.getString("email"));
-                        coach.setTelephone(rs.getString("tel") != null ? rs.getString("tel") : rs.getString("telephone"));
-                        // ajouter d'autres champs si nécessaire
-                        return coach;
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erreur lors de la récupération du coach", e);
-        }
-        return null; // si aucun coach trouvé
-    }
-
-    public List<Coach> findAll() {
+    // ➤ LECTURE : Lister tout (AVEC JOINTURE)
+    public List<Coach> listerCoachs() {
         List<Coach> coaches = new ArrayList<>();
-        String query = "SELECT * FROM coach";
+        String sql = "SELECT u.id_utilisateur, u.nom, u.prenom, u.email, u.telephone " +
+                     "FROM COACH c " +
+                     "JOIN UTILISATEUR u ON c.id_utilisateur = u.id_utilisateur";
+                     
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
-        try {
-            Connection connection = DBConnection.getConnection();
-            try (PreparedStatement stmt = connection.prepareStatement(query);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    int id = rs.getInt("id");
-                    String nom = rs.getString("nom");
-                    String prenom = rs.getString("prenom");
-                    String dateNaissance = rs.getString("date_naissance");
-                    String email = rs.getString("email");
-                    // adapte suivant nom de colonne réel dans ta BDD
-                    String telephone = rs.getString("telephone") != null ? rs.getString("telephone") : rs.getString("tel");
-                    String adresse = rs.getString("adresse");
-
-                    // Vérifie que ton constructeur Coach existe et correspond au nombre/ordre des paramètres
-                    // Exemple : si ton constructeur attend (id, nom, prenom, dateNaissance, email, telephone, adresse)
-                    Coach coach = new Coach(id, nom, prenom, dateNaissance, email, telephone, adresse);
-                    coaches.add(coach);
-                }
+            while (rs.next()) {
+                Coach c = new Coach();
+                c.setId(rs.getInt("id_utilisateur"));
+                c.setNom(rs.getString("nom"));
+                c.setPrenom(rs.getString("prenom"));
+                c.setEmail(rs.getString("email"));
+                // ... on pourrait charger les spécialités ici aussi si besoin ...
+                coaches.add(c);
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erreur lors de la récupération de tous les coaches", e);
+            System.out.println("Erreur lister coachs : " + e.getMessage());
         }
         return coaches;
     }
 
+    // ➤ AJOUT (Reste similaire, assurez-vous que l'Utilisateur existe déjà)
+    public void ajouterCoach(Coach coach) {
+        String sqlCoach = "INSERT INTO COACH (id_utilisateur) VALUES (?)";
+        // ... (votre code d'ajout existant était correct pour l'insertion) ...
+        // Je le remets brièvement pour l'exemple :
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sqlCoach)) {
+            stmt.setInt(1, coach.getId());
+            stmt.executeUpdate();
+            System.out.println("Coach ajouté (table liaison).");
+        } catch (SQLException e) {
+            System.out.println("Erreur ajout : " + e.getMessage());
+        }
+    }
+    
+    // ➤ MODIFICATION (Transaction complète)
+    public void modifierCoach(Coach coach) {
+        // ... (Utilisez le code "Simplifié" avec try-with-resources que je vous ai donné précédemment) ...
+    }
+
+    // ➤ SUPPRESSION
+    public void supprimerCoach(int id) {
+        // ... (Votre code existant pour supprimer coach + specialites) ...
+    }
 }

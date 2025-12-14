@@ -5,6 +5,8 @@ import java.util.List;
 
 public class Membre extends Utilisateur {
 
+    public static Object Objectif;
+
     // --- Attributs ---
     private TypeObjectif objectifSportif;
     private TypePreference preferences;
@@ -13,11 +15,17 @@ public class Membre extends Utilisateur {
     private List<HistoriqueActivite> historiqueActivite;
     private List<Seance> listeSeances;
     private List<Performance> performances; 
+    
+    public Membre() {
+        super(); // Cela nécessite que la classe Utilisateur ait aussi un constructeur vide !
+        this.historiqueActivite = new ArrayList<>();
+        this.listeSeances = new ArrayList<>();
+        this.performances = new ArrayList<>();
+    }
 
     // --- Constructeur 1 : CRÉATION (Sans ID) ---
-    public Membre(String nom, String prenom, String dateNaissance, String email, 
-                  String telephone, String adresse, 
-                  TypeObjectif objectifSportif, TypePreference preferences) {
+    public Membre(String nom, String prenom, String dateNaissance,
+                       String email, String telephone, String adresse, TypePreference preferences, TypeObjectif objectifSportif) {
         
         super(nom, prenom, dateNaissance, email, telephone, adresse);
         

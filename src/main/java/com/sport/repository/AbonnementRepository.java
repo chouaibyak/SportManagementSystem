@@ -2,55 +2,154 @@ package com.sport.repository;
 
 import com.sport.model.Abonnement;
 import com.sport.model.StatutAbonnement;
+import com.sport.utils.DBConnection;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class AbonnementRepository {
 
-    // Simulation BDD
-    private static List<Abonnement> abonnementsBDD = new ArrayList<>();
-    private static int compteurId = 1;
+    // ➤ CREATE (Correction : Ajout de membre_id)
+    public void ajouterAbonnement(Abonnement abonnement) {
+        String sql = "INSERT INTO abonnement (membre_id, type, statut, autorenouvellement) VALUES (?, ?, ?, ?)";
 
-    // CREATE
-    public void ajouter(Abonnement abonnement) {
-        // On suppose que vous ajouterez un setId() dans votre modèle Abonnement
-        // abonnement.setId(compteurId++); 
-        abonnementsBDD.add(abonnement);
-    }
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-    // READ (Tout)
-    public List<Abonnement> listerTout() {
-        return new ArrayList<>(abonnementsBDD);
-    }
+            // IMPORTANT : On lie l'abonnement au membre
+            stmt.setInt(1, abonnement.getMembre().getId());
+            stmt.setString(2, abonnement.getTypeAbonnement().name());
+            stmt.setString(3, abonnement.getStatutAbonnement().name());
+            stmt.setBoolean(4, abonnement.isAutorenouvellement());
 
-    // READ (Par ID)
-    public Abonnement trouverParId(int id) {
-        // Note : Il faut ajouter un getter getId() dans votre classe Abonnement
-        // Ici je simule la recherche :
-        /*
-        return abonnementsBDD.stream()
-                .filter(a -> a.getId() == id)
-                .findFirst()
-                .orElse(null);
-        */
-        // Pour l'instant, sans getter ID accessible dans votre code fourni :
-        if (id < abonnementsBDD.size() && id >= 0) {
-            return abonnementsBDD.get(id); // Simple simulation par index
+            stmt.executeUpdate();
+
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                abonnement.setId(rs.getInt(1));
+            }
+            System.out.println("Abonnement ajouté avec succès !");
+
+        } catch (SQLException e) {
+            System.out.println("Erreur ajout abonnement : " + e.getMessage());
         }
+    }
+
+    // ➤ READ (Tout)
+    public List<Abonnement> listerTout() {
+        List<Abonnement> list = new ArrayList<>();
+        String sql = "SELECT * FROM abonnement";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                list.add(mapResultSetToAbonnement(rs));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erreur liste abonnements : " + e.getMessage());
+        }
+
+        return list;
+    }
+
+    // ➤ READ (Par ID)
+    public Abonnement trouverParId(int id) {
+        String sql = "SELECT * FROM abonnement WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return mapResultSetToAbonnement(rs);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erreur recherche abonnement : " + e.getMessage());
+        }
+
         return null;
     }
 
-    // READ (Par Statut - ex: trouver tous les ACTIFS)
+    // ➤ READ (Par Statut)
     public List<Abonnement> trouverParStatut(StatutAbonnement statut) {
-        return abonnementsBDD.stream()
-                .filter(a -> a.getStatutAbonnement() == statut)
-                .collect(Collectors.toList());
+        List<Abonnement> list = new ArrayList<>();
+        String sql = "SELECT * FROM abonnement WHERE statut = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, statut.name());
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                list.add(mapResultSetToAbonnement(rs));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erreur recherche par statut : " + e.getMessage());
+        }
+
+        return list;
     }
 
-    // DELETE
-    public void supprimer(Abonnement abonnement) {
-        abonnementsBDD.remove(abonnement);
+    // ➤ UPDATE
+    public void modifierAbonnement(Abonnement ab) {
+        String sql = "UPDATE abonnement SET type = ?, statut = ?, autorenouvellement = ? WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, ab.getTypeAbonnement().name());
+            stmt.setString(2, ab.getStatutAbonnement().name());
+            stmt.setBoolean(3, ab.isAutorenouvellement());
+            stmt.setInt(4, ab.getId());
+
+            stmt.executeUpdate();
+            System.out.println("Abonnement modifié !");
+
+        } catch (SQLException e) {
+            System.out.println("Erreur modification abonnement : " + e.getMessage());
+        }
+    }
+
+    // ➤ DELETE
+    public void supprimerAbonnement(int id) {
+        String sql = "DELETE FROM abonnement WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+            System.out.println("Abonnement supprimé !");
+
+        } catch (SQLException e) {
+            System.out.println("Erreur suppression abonnement : " + e.getMessage());
+        }
+    }
+
+    // ➤ MAPPING (Correction : Récupération de l'ID membre)
+    private Abonnement mapResultSetToAbonnement(ResultSet rs) throws SQLException {
+        Abonnement ab = new Abonnement();
+        ab.setId(rs.getInt("id"));
+
+        // On crée un membre "vide" avec juste l'ID pour faire le lien
+        com.sport.model.Membre m = new com.sport.model.Membre();
+        m.setId(rs.getInt("membre_id"));
+        ab.setMembre(m);
+
+        try { ab.setTypeAbonnement(com.sport.model.TypeAbonnement.valueOf(rs.getString("type"))); } catch (Exception e) {}
+        try { ab.setStatutAbonnement(com.sport.model.StatutAbonnement.valueOf(rs.getString("statut"))); } catch (Exception e) {}
+        
+        ab.setAutorenouvellement(rs.getBoolean("autorenouvellement"));
+
+        return ab;
     }
 }

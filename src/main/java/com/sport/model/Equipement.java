@@ -20,6 +20,10 @@ public class Equipement {
         this.dateAchat = dateAchat;
     }
 
+    public Equipement(){
+        
+    }
+
     // --- Getters et Setters ---
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }

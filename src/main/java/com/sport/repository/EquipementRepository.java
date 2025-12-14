@@ -1,7 +1,6 @@
 package com.sport.repository;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,29 +11,17 @@ import java.util.List;
 import com.sport.model.Equipement;
 import com.sport.model.EtatEquipement;
 import com.sport.model.TypeEquipement;
+import com.sport.utils.DBConnection;
 
 public class EquipementRepository {
 
-    private Connection connection;
-
-    // --- Constructeur (Connexion JDBC MySQL) ---
-    public EquipementRepository() {
-        try {
-            this.connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/sportdb",
-                    "root",
-                    "password"
-            );
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     // --- Ajouter un équipement ---
-    public void ajouter(Equipement equipement) {
+    public void ajouterEquipement(Equipement equipement) {
         String query = "INSERT INTO equipements (nom, type, etat, date_achat) VALUES (?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query)) {
+        
             stmt.setString(1, equipement.getNom());
             stmt.setString(2, equipement.getType().name());
             stmt.setString(3, equipement.getEtat().name());
@@ -46,10 +33,11 @@ public class EquipementRepository {
     }
 
     // --- Trouver par ID ---
-    public Equipement getById(int id) {
+    public Equipement getEquipementById(int id) {
         String query = "SELECT * FROM equipements WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, id);
 
             ResultSet rs = stmt.executeQuery();
@@ -60,7 +48,7 @@ public class EquipementRepository {
                 EtatEquipement etat = EtatEquipement.valueOf(rs.getString("etat"));
                 Date dateAchat = new Date(rs.getDate("date_achat").getTime());
 
-                Equipement eq = new Equipement(nom, type, etat, dateAchat);
+                Equipement eq = new Equipement();
                 eq.setId(id);
 
                 return eq;
@@ -72,12 +60,13 @@ public class EquipementRepository {
     }
 
     // --- Lister tous les équipements ---
-    public List<Equipement> getAll() {
+    public List<Equipement> listerEquipements() {
         List<Equipement> list = new ArrayList<>();
 
         String query = "SELECT * FROM equipements";
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query)) {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -87,7 +76,7 @@ public class EquipementRepository {
                 EtatEquipement etat = EtatEquipement.valueOf(rs.getString("etat"));
                 Date dateAchat = new Date(rs.getDate("date_achat").getTime());
 
-                Equipement eq = new Equipement(nom, type, etat, dateAchat);
+                Equipement eq = new Equipement();
                 eq.setId(id);
 
                 list.add(eq);
@@ -100,10 +89,11 @@ public class EquipementRepository {
     }
 
     // --- Supprimer un équipement ---
-    public boolean delete(int id) {
+    public boolean supprimerEquipement(int id) {
         String query = "DELETE FROM equipements WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, id);
 
             return stmt.executeUpdate() > 0;
@@ -115,10 +105,11 @@ public class EquipementRepository {
     }
 
     // --- Mettre à jour un équipement ---
-    public boolean update(Equipement equipement) {
+    public boolean modifierEquipement(Equipement equipement) {
         String query = "UPDATE equipements SET nom = ?, type = ?, etat = ?, date_achat = ? WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, equipement.getNom());
             stmt.setString(2, equipement.getType().name());
             stmt.setString(3, equipement.getEtat().name());
@@ -131,5 +122,39 @@ public class EquipementRepository {
             e.printStackTrace();
             return false;
         }
+    }
+    // --- Lister les équipements par état (ex: EN_MAINTENANCE) ---
+    public List<Equipement> listerEquipementsParEtat(EtatEquipement etatRecherche) {
+        List<Equipement> list = new ArrayList<>();
+        String query = "SELECT * FROM equipements WHERE etat = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            // Conversion de l'Enum en String pour la requête SQL
+            stmt.setString(1, etatRecherche.name());
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String nom = rs.getString("nom");
+                
+                // Conversion String BDD -> Enum Java
+                TypeEquipement type = TypeEquipement.valueOf(rs.getString("type"));
+                EtatEquipement etat = EtatEquipement.valueOf(rs.getString("etat"));
+                
+                Date dateAchat = new Date(rs.getDate("date_achat").getTime());
+
+                Equipement eq = new Equipement(nom, type, etat, dateAchat);
+                eq.setId(id);
+
+                list.add(eq);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Ou logger l'erreur
+        }
+
+        return list;
     }
 }
