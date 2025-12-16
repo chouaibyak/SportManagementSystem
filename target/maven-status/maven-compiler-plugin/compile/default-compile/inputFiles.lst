@@ -1,61 +1,61 @@
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\TypePreference.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\repository\HistoriqueActiviteRepository.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\service\AuthService.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\service\RapportService.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\service\SeanceIndividuelleService.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\Abonnement.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\service\EquipementService.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\repository\CoachRepository.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\service\CoachService.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\controller\common\RegisterController.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\TypeSeance.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\repository\EquipementRepository.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\Reservation.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\repository\SeanceCollectiveRepository.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\SeanceIndividuelle.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\TypeCours.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\Utilisateur.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\Administrateur.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\Coach.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\repository\SeanceIndividuelleRepository.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\service\CourseService.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\utils\UserSession.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\controller\membre\MainController.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\service\PerformanceService.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\service\SalleService.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\controller\common\LoginController.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\controller\membre\MembreController.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\TypeEquipement.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\TypeRapport.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\service\SeanceCollectiveService.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\SeanceCollective.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\service\MembreService.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\StatutReservation.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\TypeObjectif.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\repository\SeanceRepository.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\Rapport.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\utils\DBConnection.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\Salle.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\TypeAbonnement.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\App.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\service\HistoriqueActiviteService.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\StatutAbonnement.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\service\AdministrateurService.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\EtatEquipement.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\Seance.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\repository\PerformanceRepository.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\TypeSalle.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\repository\SalleRepository.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\Performance.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\repository\AbonnementRepository.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\repository\ReservationRepository.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\service\AbonnementService.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\HistoriqueActivite.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\Equipement.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\model\Membre.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\service\ReservationService.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\repository\RapportRepository.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\repository\MembreRepository.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\service\SubscriptionService.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\repository\AdministrateurRepository.java
-C:\Users\yakin\Documents\RSI\M1\POO java\Projet\demo\src\main\java\com\sport\controller\membre\AccueilController.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\service\AdministrateurService.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\repository\PerformanceRepository.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\service\SalleService.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\Membre.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\service\SeanceIndividuelleService.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\repository\MembreRepository.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\repository\RapportRepository.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\controller\common\RegisterController.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\utils\DBConnection.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\TypeEquipement.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\Utilisateur.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\service\ReservationService.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\repository\SeanceCollectiveRepository.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\service\SubscriptionService.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\Rapport.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\repository\AdministrateurRepository.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\service\AbonnementService.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\TypePreference.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\service\CoachService.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\TypeSeance.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\repository\ReservationRepository.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\Salle.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\service\AuthService.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\Seance.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\repository\SeanceRepository.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\Reservation.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\service\EquipementService.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\service\PerformanceService.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\controller\common\LoginController.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\controller\membre\MembreController.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\TypeRapport.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\Administrateur.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\Coach.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\HistoriqueActivite.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\Abonnement.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\service\CourseService.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\repository\SeanceIndividuelleRepository.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\repository\AbonnementRepository.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\Performance.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\App.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\utils\UserSession.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\SeanceIndividuelle.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\controller\membre\AccueilController.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\StatutReservation.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\TypeCours.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\TypeSalle.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\repository\SalleRepository.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\TypeAbonnement.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\service\HistoriqueActiviteService.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\SeanceCollective.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\controller\membre\MainController.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\service\MembreService.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\repository\CoachRepository.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\service\RapportService.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\Equipement.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\service\SeanceCollectiveService.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\EtatEquipement.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\StatutAbonnement.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\model\TypeObjectif.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\repository\EquipementRepository.java
+C:\Users\A D M I N\Desktop\Gym_manag\SportManagementSystem\src\main\java\com\sport\repository\HistoriqueActiviteRepository.java

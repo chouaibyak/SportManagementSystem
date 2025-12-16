@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Coach extends Utilisateur {
 
-    private String motDePasse; // Password specific to Coach (or move to Utilisateur)
+    //private String motDePasse; // Password specific to Coach (or move to Utilisateur)
     
     // Lists
     private List<String> specialites;
@@ -23,10 +23,10 @@ public class Coach extends Utilisateur {
     }
 
     // --- Constructor 2: From DB (With ID) ---
-    public Coach(int id, String nom, String prenom, String dateNaissance, String email, 
-                 String telephone, String adresse, String motDePasse) {
-        super(id, nom, prenom, dateNaissance, email, telephone, adresse);
-        this.motDePasse = motDePasse;
+    public Coach(String nom, String prenom, String dateNaissance, String email, 
+                 String telephone, String adresse) {
+        super( nom, prenom, dateNaissance, email, telephone, adresse);
+       
         this.specialites = new ArrayList<>();
         this.seances = new ArrayList<>();
         this.performancesSuivies = new ArrayList<>();
@@ -73,8 +73,8 @@ public class Coach extends Utilisateur {
 
     // --- Getters and Setters ---
 
-    public String getMotDePasse() { return motDePasse; }
-    public void setMotDePasse(String motDePasse) { this.motDePasse = motDePasse; }
+    /*  public String getMotDePasse() { return motDePasse; }
+    public void setMotDePasse(String motDePasse) { this.motDePasse = motDePasse; }*/
 
     public List<String> getSpecialites() { return specialites; }
     public void setSpecialites(List<String> specialites) { this.specialites = specialites; }

@@ -33,7 +33,7 @@ public class TestMembreApp {
             "1990-05-15", 
             emailUnique,  // <--- On utilise l'email unique ici
             "0601020304", 
-            "10 Rue de la Paix, Paris", 
+            "10 Rue de la Paix, Paris",
             TypePreference.CARDIO,    
             TypeObjectif.PERTE_POIDS  
         );

@@ -133,6 +133,7 @@ public boolean verifierDisponibiliteSalle(Coach coach, Seance seance) {
         }
     }
 
+    // Donner feedback a un membre 
     public void donnerFeedback(Membre membre, String commentaire) {
         if (membre != null && commentaire != null) {
             // Idéalement, il faudrait sauvegarder ce feedback en BDD
