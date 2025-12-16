@@ -82,7 +82,7 @@ public class Seance {
         return typeCours;
     }
 
-    public void setTypecours(TypeCours typeCours) {
+    public void setTypeCours(TypeCours typeCours) {
         this.typeCours = typeCours;
     }
 
@@ -98,7 +98,7 @@ public class Seance {
         this.typeSeance = typeSeance;
     }
 
-    public TypeSeance gTypeSeance(){
+    public TypeSeance getTypeSeance(){
         return typeSeance;
     }
 }

@@ -22,10 +22,16 @@ public class TestCoachApp {
         long timestamp = System.currentTimeMillis();
         String emailUnique = "coach.test" + timestamp + "@test.com";
 
-        Coach nouveauCoach = new Coach();
-        nouveauCoach.setNom("Dupont");
-        nouveauCoach.setPrenom("Jean");
-        nouveauCoach.setEmail(emailUnique);
+        Coach nouveauCoach = new Coach(
+            "kasimi", 
+            "basma", 
+            "1990-05-15", 
+            emailUnique,  // <--- On utilise l'email unique ici
+            "0601020304", 
+            "10 Rue de la Paix, Paris"
+        );
+       
+        
 
         service.ajouterCoach(nouveauCoach);
 

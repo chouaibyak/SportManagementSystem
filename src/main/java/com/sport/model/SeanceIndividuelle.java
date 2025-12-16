@@ -18,6 +18,11 @@ public class SeanceIndividuelle extends Seance {
         this.notesCoach = notesCoach;
     }
 
+        public SeanceIndividuelle() {
+        super(); // constructeur par défaut
+    }
+
+
     // Getters et setters
     public Membre getMembre() {
         return membre;

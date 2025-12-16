@@ -17,6 +17,10 @@ public class SeanceCollective extends Seance {
         this.listeMembers = new ArrayList<>();
     }
 
+    public SeanceCollective() {
+        super(); // constructeur par défaut
+    }
+
   
     // Getters et setters
     public int getPlacesDisponibles() {
