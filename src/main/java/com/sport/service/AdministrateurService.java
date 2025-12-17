@@ -2,13 +2,19 @@ package com.sport.service;
 
 import java.util.List;
 
-import com.sport.model.*;
+import com.sport.model.Coach;
+import com.sport.model.Equipement;
+import com.sport.model.EtatEquipement;
+import com.sport.model.Membre;
+import com.sport.model.Salle;
+import com.sport.model.TypeSalle;
 import com.sport.repository.CoachRepository;
 import com.sport.repository.EquipementRepository;
 import com.sport.repository.MembreRepository;
 import com.sport.repository.SalleRepository;
 public class AdministrateurService {
 
+    @SuppressWarnings("FieldMayBeFinal")
     private MembreRepository membreRepository = new MembreRepository();
     private CoachRepository coachRepository = new CoachRepository();
     private EquipementRepository equipementRepository = new EquipementRepository();
