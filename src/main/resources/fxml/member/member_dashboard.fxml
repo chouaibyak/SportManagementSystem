@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="30.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.sport.controller.member.MemberDashboardController">
+
+    <!-- En-tête -->
+    <VBox>
+        <Label fx:id="lblBienvenue" text="Bonjour !" textFill="#2c3e50">
+            <font><Font name="System Bold" size="28.0" /></font>
+        </Label>
+        <Label text="Voici le résumé de vos activités." textFill="#7f8c8d"/>
+    </VBox>
+
+    <!-- Cartes Statistiques -->
+    <HBox spacing="20.0">
+        <VBox styleClass="dashboard-card" HBox.hgrow="ALWAYS">
+            <Label text="SÉANCES CE MOIS" styleClass="card-title"/>
+            <Label text="12" styleClass="card-value" textFill="#27ae60"/>
+        </VBox>
+
+        <VBox styleClass="dashboard-card" HBox.hgrow="ALWAYS">
+            <Label text="OBJECTIF" styleClass="card-title"/>
+            <Label text="Forme" styleClass="card-value" textFill="#e67e22"/>
+        </VBox>
+
+        <VBox styleClass="dashboard-card" HBox.hgrow="ALWAYS">
+            <Label text="PROCHAINE SÉANCE" styleClass="card-title"/>
+            <Label text="Demain" styleClass="card-value" textFill="#2980b9"/>
+        </VBox>
+    </HBox>
+
+    <!-- Historique -->
+    <VBox styleClass="card-pane" VBox.vgrow="ALWAYS">
+        <Label text="Historique récent" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+        <Label text="Aucune activité récente." textFill="GRAY"/>
+    </VBox>
+
+</VBox>

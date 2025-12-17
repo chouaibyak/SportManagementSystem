@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<!-- Lien vers le CSS style.css -->
+<BorderPane fx:id="mainPane" stylesheets="@../../css/style.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.sport.controller.member.MemberLayoutController">
+    
+    <!-- SIDEBAR (Gauche) -->
+    <left>
+        <VBox spacing="10.0" styleClass="sidebar" prefWidth="250.0">
+            <padding><Insets top="30" bottom="30"/></padding>
+            
+            <!-- Logo -->
+            <VBox alignment="CENTER" spacing="5">
+                <Label text="SPORT CLUB" textFill="WHITE">
+                    <font><Font name="System Bold" size="22.0" /></font>
+                </Label>
+                <Label text="Espace Membre" textFill="#bdc3c7">
+                    <font><Font size="12.0" /></font>
+                </Label>
+            </VBox>
+            
+            <Separator opacity="0.1"><VBox.margin><Insets top="20" bottom="20"/></VBox.margin></Separator>
+            
+            <!-- MENU -->
+            <VBox spacing="5">
+                <Button text="Tableau de Bord" onAction="#afficherDashboard" 
+                        maxWidth="Infinity" styleClass="nav-button"/>
+                
+                <Button text="Mes Séances" styleClass="nav-button" maxWidth="Infinity"/>
+                
+                <Button text="Mon Profil" styleClass="nav-button" maxWidth="Infinity"/>
+            </VBox>
+
+            <VBox VBox.vgrow="ALWAYS" /> <!-- Espace vide -->
+
+            <!-- DECONNEXION -->
+            <Button text="Se déconnecter" onAction="#handleLogout" 
+                    maxWidth="Infinity" styleClass="nav-button-logout"/>
+        </VBox>
+    </left>
+
+    <!-- CENTRE DYNAMIQUE -->
+    <center>
+        <StackPane fx:id="contentArea" style="-fx-background-color: #f4f6f7; -fx-padding: 20;" />
+    </center>
+
+</BorderPane>

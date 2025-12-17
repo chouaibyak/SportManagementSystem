@@ -4,13 +4,16 @@ import com.sport.model.Utilisateur;
 import com.sport.model.Membre;
 import com.sport.model.Coach;
 import com.sport.service.AuthService;
-import com.sport.utils.UserSession; 
+import com.sport.utils.UserSession;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 
 public class LoginController {
@@ -24,31 +27,28 @@ public class LoginController {
     @FXML
     private void handleLogin() {
         String email = emailField.getText();
-        String pwd = passwordField.getText();
+        String password = passwordField.getText();
 
-        if (email.isEmpty() || pwd.isEmpty()) {
-            errorLabel.setText("Veuillez remplir tous les champs.");
-            return;
-        }
-
-        // Appel au service
-        Utilisateur user = authService.login(email, pwd);
+        // 1. Appel au service d'authentification
+        Utilisateur user = authService.login(email, password);
 
         if (user != null) {
-            // Mise en session
-            // Si tu n'as pas encore créé la classe UserSession, commente la ligne ci-dessous
-            // UserSession.getInstance().setUtilisateur(user);
-            
-            System.out.println("✅ Connexion réussie : " + user.getNom());
+            // 2. STOCKER L'UTILISATEUR DANS LA SESSION (Très important !)
+            UserSession.getInstance().setUtilisateur(user);
+            System.out.println("Connexion réussie : " + user.getNom());
 
-            // Redirection
+            // 3. Redirection selon le rôle
             if (user instanceof Membre) {
-                rediriger("/fxml/member/main_layout.fxml", "Espace Membre");
+                // ATTENTION : On charge le LAYOUT (avec le menu), pas juste le dashboard
+                redirigerVers("/fxml/member/member_dashboard.fxml", "Espace Membre");
             } else if (user instanceof Coach) {
-                errorLabel.setText("Espace Coach en construction...");
+                // redirigerVers("/fxml/coach/coach_layout.fxml", "Espace Coach");
+                errorLabel.setText("Interface Coach en construction...");
             } else {
-                errorLabel.setText("Bienvenue Admin.");
+                // Admin...
+                errorLabel.setText("Interface Admin en construction...");
             }
+
         } else {
             errorLabel.setText("Email ou mot de passe incorrect.");
         }
@@ -56,25 +56,45 @@ public class LoginController {
 
     @FXML
     private void allerVersInscription() {
-        rediriger("/fxml/common/register.fxml", "Inscription");
+        redirigerVers("/fxml/common/register.fxml", "Inscription");
     }
 
-    private void rediriger(String fxmlPath, String titre) {
+    // Méthode générique pour changer de page
+    private void redirigerVers(String fxmlPath, String titre) {
         try {
+            // 1. Vérifier si le fichier existe (Source fréquente d'erreurs)
+            if (getClass().getResource(fxmlPath) == null) {
+                System.err.println("ERREUR FATALE : Impossible de trouver " + fxmlPath);
+                errorLabel.setText("Erreur interne : fichier vue introuvable.");
+                return;
+            }
+
+            // 2. Chargement
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
+
+            // 3. Changement de scène
             Stage stage = (Stage) emailField.getScene().getWindow();
+            Scene scene = new Scene(root);
             
-            if (fxmlPath.contains("main_layout")) {
-                stage.setScene(new Scene(root, 900, 600));
+            stage.setScene(scene);
+            stage.setTitle("Sport App - " + titre);
+            
+            // Si c'est l'espace membre, on met en plein écran
+            if (titre.equals("Espace Membre")) {
+                stage.setResizable(true);
+                stage.setMaximized(true); 
             } else {
-                stage.setScene(new Scene(root));
+                // Pour login/register, on garde une petite taille
+                stage.setResizable(false);
+                stage.setWidth(600);
+                stage.setHeight(450);
+                stage.centerOnScreen();
             }
-            stage.setTitle(titre);
-            stage.centerOnScreen();
+
         } catch (IOException e) {
-            e.printStackTrace();
-            errorLabel.setText("Erreur : Fichier introuvable " + fxmlPath);
+            e.printStackTrace(); // Regarde ta console pour voir l'erreur exacte
+            errorLabel.setText("Erreur lors du chargement de la page.");
         }
     }
 }

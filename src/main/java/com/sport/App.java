@@ -38,7 +38,7 @@ public class App extends Application {
         Parent root = loader.load();
         
         // On définit une taille plus petite pour le login (ex: 600x450) c'est plus élégant
-        scene = new Scene(root, 600, 450);
+        scene = new Scene(root, 400, 550);
         
         stage.setScene(scene);
         stage.setTitle("Sport Club - Authentification");
