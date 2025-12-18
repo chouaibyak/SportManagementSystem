@@ -60,8 +60,7 @@ public class RegisterMemberController {
         membreEnCours.setObjectifSportif(comboObjectif.getValue());
         membreEnCours.setPreferences(comboPreference.getValue());
 
-        // 3. Sauvegarde via le SERVICE (qui appelle le Repository existant)
-        // Pas besoin de AuthService ici car MembreService gère tout
+        // 3. Sauvegarde via le SERVICE
         membreService.creerMembre(membreEnCours);
 
         // 4. Succès et redirection vers Login
@@ -72,15 +71,37 @@ public class RegisterMemberController {
 
     @FXML
     private void handleRetour() {
-        // Logique pour revenir en arrière si besoin (ou fermer)
+        try {
+            // --- CORRECTION : On recharge la page précédente ---
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/common/register.fxml"));
+            Parent root = loader.load();
+            
+            // Récupérer la fenêtre actuelle
+            Stage stage = (Stage) txtTelephone.getScene().getWindow();
+            stage.setScene(new Scene(root));
+
+            // --- IMPORTANT : On redimensionne pour éviter le bug de forme ---
+            stage.sizeToScene();
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            lblMessage.setText("Erreur lors du retour.");
+        }
     }
 
     private void retourAuLogin() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/common/login.fxml"));
             Parent root = loader.load();
+            
             Stage stage = (Stage) txtTelephone.getScene().getWindow();
             stage.setScene(new Scene(root));
+            
+            // --- IMPORTANT : On applique aussi le correctif ici ---
+            stage.sizeToScene();
+            stage.centerOnScreen();
+            
         } catch (IOException e) {
             e.printStackTrace();
         }

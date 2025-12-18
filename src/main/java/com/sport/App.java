@@ -12,41 +12,48 @@ import java.net.URL;
 public class App extends Application {
 
     private static Scene scene;
+    private static Stage stage; // On garde une référence au stage
 
     @Override
     public void start(Stage stage) throws IOException {
-        // --- ETAPE 1 : DEFINIR LE POINT D'ENTRÉE ---
-        // On démarre obligatoirement sur le LOGIN
-        // Vérifie bien que tu as créé le fichier dans : src/main/resources/fxml/common/login.fxml
+        App.stage = stage; // On sauvegarde le stage
+        
+        // On démarre sur le Register pour tester, ou Login selon ton choix
         String fxmlPath = "/fxml/common/register.fxml"; 
         
-        System.out.println("Démarrage de l'application...");
-        
-        // --- ETAPE 2 : VERIFICATION DU CHEMIN (Sécurité) ---
         URL fxmlUrl = getClass().getResource(fxmlPath);
         if (fxmlUrl == null) {
-            System.err.println("ERREUR FATALE : Impossible de trouver le fichier FXML !");
-            System.err.println("Chemin cherché : " + fxmlPath);
-            System.err.println("Vérifie que le dossier 'resources' est bien marqué comme 'Resources Root' et que le fichier existe.");
-            return; // On stoppe tout pour éviter le crash violent
+            System.err.println("ERREUR : Fichier FXML introuvable : " + fxmlPath);
+            return;
         }
 
-        System.out.println("Chargement de la vue : " + fxmlUrl);
-
-        // --- ETAPE 3 : CHARGEMENT ET AFFICHAGE ---
         FXMLLoader loader = new FXMLLoader(fxmlUrl);
         Parent root = loader.load();
         
-        // On définit une taille plus petite pour le login (ex: 600x450) c'est plus élégant
-        scene = new Scene(root, 400, 550);
+        // CORRECTION ICI :
+        // 1. On ne met PAS de taille fixe (400, 550). On laisse le root décider.
+        scene = new Scene(root);
         
         stage.setScene(scene);
         stage.setTitle("Sport Club - Authentification");
         
-        // Optionnel : Empêcher l'utilisateur d'agrandir la fenêtre de login (souvent plus propre)
-        stage.setResizable(false);
+        // 2. On autorise le redimensionnement pour éviter les bugs d'affichage
+        stage.setResizable(true);
         
         stage.show();
+    }
+    
+    // --- METHODE UTILITAIRE POUR CHANGER DE PAGE PROPREMENT ---
+    public static void setRoot(String fxml) throws IOException {
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("/fxml/common/" + fxml + ".fxml"));
+        Parent root = loader.load();
+        
+        // On remplace le contenu de la scène
+        scene.setRoot(root);
+        
+        // IMPERATIF : On demande à la fenêtre de s'adapter à la nouvelle taille du contenu
+        stage.sizeToScene(); 
+        stage.centerOnScreen(); // Optionnel : recentre la fenêtre
     }
 
     public static void main(String[] args) {

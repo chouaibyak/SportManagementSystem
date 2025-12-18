@@ -23,7 +23,6 @@ com\sport\model\TypeSeance.class
 com\sport\model\Salle.class
 com\sport\model\TypeRapport.class
 com\sport\service\SalleService.class
-com\sport\App.class
 com\sport\model\Abonnement.class
 com\sport\service\SubscriptionService.class
 com\sport\controller\member\MemberLayoutController.class

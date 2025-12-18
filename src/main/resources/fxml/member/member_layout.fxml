@@ -3,55 +3,67 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Line?>
 
-<!-- Lien vers le CSS style.css -->
-<BorderPane fx:id="mainPane" stylesheets="@../../css/style.css"
+<BorderPane fx:id="mainPane" prefHeight="700.0" prefWidth="1000.0" stylesheets="@../../css/style.css"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
             fx:controller="com.sport.controller.member.MemberLayoutController">
     
-    <!-- SIDEBAR (Gauche) -->
+    <!-- SIDEBAR (Menu Gauche) -->
     <left>
-        <VBox spacing="10.0" styleClass="sidebar" prefWidth="250.0">
-            <padding><Insets top="30" bottom="30"/></padding>
+        <VBox spacing="5.0" styleClass="sidebar" prefWidth="240.0">
             
-            <!-- Logo -->
+            <!-- 1. En-tête avec Logo et Avatar -->
             <VBox alignment="CENTER" spacing="5">
-                <Label text="SPORT CLUB" textFill="WHITE">
-                    <font><Font name="System Bold" size="22.0" /></font>
-                </Label>
-                <Label text="Espace Membre" textFill="#bdc3c7">
-                    <font><Font size="12.0" /></font>
-                </Label>
+                <padding><Insets top="30" bottom="20"/></padding>
+                
+                <!-- Cercle simulant un avatar utilisateur -->
+                <Circle radius="30.0" fill="#ecf0f1" stroke="#27ae60" strokeWidth="2"/>
+                
+                <Label text="SPORT CLUB" styleClass="sidebar-logo"/>
+                <Label text="Espace Membre" styleClass="sidebar-subtitle"/>
             </VBox>
             
-            <Separator opacity="0.1"><VBox.margin><Insets top="20" bottom="20"/></VBox.margin></Separator>
+            <!-- Ligne de séparation discrète -->
+            <Line endX="200.0" stroke="#34495e" strokeWidth="1">
+                <VBox.margin><Insets bottom="10" left="20" right="20"/></VBox.margin>
+            </Line>
             
-            <!-- MENU -->
-            <VBox spacing="5">
-                <Button text="Tableau de Bord" onAction="#afficherDashboard" 
-                        maxWidth="Infinity" styleClass="nav-button"/>
-                
-                <Button text="Mes Séances" styleClass="nav-button" maxWidth="Infinity"/>
-                
-                <Button text="Mon Profil" styleClass="nav-button" maxWidth="Infinity"/>
-            </VBox>
+            <!-- 2. MENU DE NAVIGATION -->
+            <!-- Le fx:id permet de manipuler le bouton dans le contrôleur (ex: changer la couleur si actif) -->
+            
+            <Button fx:id="btnDashboard" text="Tableau de Bord" onAction="#afficherDashboard" 
+                    maxWidth="Infinity" styleClass="nav-button"/>
+            
+            <Button fx:id="btnSeances" text="Mes Séances" onAction="#afficherSeances" 
+                    maxWidth="Infinity" styleClass="nav-button"/>
+            
+            <Button fx:id="btnPerformance" text="Ma Progression" onAction="#afficherPerformances" 
+                    maxWidth="Infinity" styleClass="nav-button"/>
+            
+            <Button fx:id="btnProfil" text="Mon Profil" onAction="#afficherProfil" 
+                    maxWidth="Infinity" styleClass="nav-button"/>
 
-            <VBox VBox.vgrow="ALWAYS" /> <!-- Espace vide -->
+            <!-- Espace flexible pour pousser la déconnexion en bas -->
+            <VBox VBox.vgrow="ALWAYS" /> 
 
-            <!-- DECONNEXION -->
+            <!-- 3. PIED DE PAGE (Déconnexion) -->
             <Button text="Se déconnecter" onAction="#handleLogout" 
-                    maxWidth="Infinity" styleClass="nav-button-logout"/>
+                    maxWidth="Infinity" styleClass="nav-button-logout">
+                 <VBox.margin><Insets bottom="20"/></VBox.margin>
+            </Button>
+            
         </VBox>
     </left>
 
     <!-- CENTRE DYNAMIQUE -->
     <center>
-        <StackPane fx:id="contentArea" style="-fx-background-color: #f4f6f7; -fx-padding: 20;" />
+        <!-- Padding pour que le contenu ne colle pas aux bords -->
+        <StackPane fx:id="contentArea" style="-fx-background-color: #f4f6f7; -fx-padding: 25;" />
     </center>
 
 </BorderPane>

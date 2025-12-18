@@ -40,10 +40,9 @@ public class LoginController {
             // 3. Redirection selon le rôle
             if (user instanceof Membre) {
                 // ATTENTION : On charge le LAYOUT (avec le menu), pas juste le dashboard
-                redirigerVers("/fxml/member/member_dashboard.fxml", "Espace Membre");
+                redirigerVers("/fxml/member/member_layout.fxml", "Espace Membre");
             } else if (user instanceof Coach) {
-                // redirigerVers("/fxml/coach/coach_layout.fxml", "Espace Coach");
-                errorLabel.setText("Interface Coach en construction...");
+                redirigerVers("/fxml/coach/coach_dashboard.fxml", "Espace Coach");
             } else {
                 // Admin...
                 errorLabel.setText("Interface Admin en construction...");
@@ -86,10 +85,12 @@ public class LoginController {
                 stage.setMaximized(true); 
             } else {
                 // Pour login/register, on garde une petite taille
-                stage.setResizable(false);
-                stage.setWidth(600);
-                stage.setHeight(450);
+                // On dit à la fenêtre : "Prends la taille exacte définie dans le FXML" (400x550)
+                stage.sizeToScene();
+                // On centre la fenêtre
                 stage.centerOnScreen();
+                 // On peut bloquer le redimensionnement APRES avoir ajusté la taille
+                stage.setResizable(false);
             }
 
         } catch (IOException e) {

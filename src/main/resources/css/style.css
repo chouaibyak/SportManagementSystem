@@ -103,41 +103,71 @@
 /*           page de memeber         */
 /*************************************/
 
-/* --- SIDEBAR (Barre latérale) --- */
+/* --- AMÉLIORATION SIDEBAR --- */
+
 .sidebar {
-    -fx-background-color: #2c3e50; /* Gris foncé */
+    -fx-background-color: #2c3e50; /* Couleur sombre élégante */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0); /* Ombre vers le contenu */
 }
 
-/* Boutons du menu */
+/* Logo / Titre dans la sidebar */
+.sidebar-logo {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+    -fx-padding: 20 0 5 0;
+}
+
+.sidebar-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #95a5a6;
+    -fx-alignment: CENTER;
+    -fx-padding: 0 0 20 0;
+}
+
+/* Boutons de navigation */
 .nav-button {
     -fx-background-color: transparent;
     -fx-text-fill: #ecf0f1;
     -fx-alignment: CENTER_LEFT;
-    -fx-padding: 12 20;
+    -fx-padding: 15 25; /* Plus d'espace */
     -fx-font-size: 14px;
     -fx-cursor: hand;
+    -fx-border-width: 0 0 0 4; /* Bordure gauche invisible par défaut */
+    -fx-border-color: transparent;
 }
 
 .nav-button:hover {
-    -fx-background-color: #34495e; /* Un peu plus clair au survol */
+    -fx-background-color: #34495e;
     -fx-text-fill: white;
 }
 
-/* Bouton Déconnexion (Rouge) */
+/* Bouton actif (Page en cours) */
+.nav-button-active {
+    -fx-background-color: #34495e;
+    -fx-text-fill: white;
+    -fx-border-color: #27ae60; /* La bordure verte apparaît */
+    -fx-font-weight: bold;
+}
+
+/* Bouton Déconnexion */
 .nav-button-logout {
     -fx-background-color: transparent;
     -fx-text-fill: #e74c3c;
     -fx-alignment: CENTER_LEFT;
-    -fx-padding: 12 20;
-    -fx-cursor: hand;
+    -fx-padding: 15 25;
     -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-border-top-color: #34495e;
+    -fx-border-top-width: 1;
+    -fx-border-top-style: solid;
 }
 
 .nav-button-logout:hover {
     -fx-background-color: #c0392b;
     -fx-text-fill: white;
 }
-
 /* --- CARTES DASHBOARD --- */
 .dashboard-card {
     -fx-background-color: white;
