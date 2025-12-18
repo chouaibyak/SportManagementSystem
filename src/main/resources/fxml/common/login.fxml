@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" spacing="20.0" 
+      xmlns="http://javafx.com/javafx/21" 
+      xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.sport.controller.common.LoginController">
+
+    <padding><Insets bottom="20" left="20" right="20" top="20"/></padding>
+
+    <Label text="CONNEXION">
+        <font><Font name="System Bold" size="24.0"/></font>
+    </Label>
+
+    <VBox spacing="10" alignment="CENTER">
+        <TextField fx:id="emailField" promptText="Email" maxWidth="300"/>
+        <PasswordField fx:id="passwordField" promptText="Mot de passe" maxWidth="300"/>
+    </VBox>
+
+    <Button text="Se connecter" onAction="#handleLogin" 
+            style="-fx-background-color: #2C3E50; -fx-text-fill: white; -fx-font-weight: bold;"/>
+
+    <Label text="Pas encore de compte ?" textFill="GRAY"/>
+    
+    <Button text="Créer un compte" onAction="#allerVersInscription" 
+            style="-fx-background-color: transparent; -fx-text-fill: #2980b9; -fx-cursor: hand;"/>
+
+    <Label fx:id="errorLabel" textFill="RED"/>
+
+</VBox>

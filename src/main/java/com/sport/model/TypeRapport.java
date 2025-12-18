@@ -3,7 +3,7 @@ package com.sport.model;
 // Enum pour les préférences d'activités
 public enum TypeRapport {
     OCCUPATION_COURS ,
-    HISTORIQUE_RESERVATIONS ,
+    FREQUENTATION_SALLE ,
     SATISFACTION_MEMBRES ,
-    STATISTIQUES_GLOBALES 
+     REVENUS_ABONNEMENTS
 }

@@ -9,6 +9,7 @@ public class Seance {
     protected LocalDateTime dateHeure;
     protected int duree; // En minutes
     protected TypeCours typeCours;
+    protected TypeSeance typeSeance;
     protected Salle salle;
     protected Coach entraineur;
 
@@ -81,7 +82,7 @@ public class Seance {
         return typeCours;
     }
 
-    public void setTypecours(TypeCours typeCours) {
+    public void setTypeCours(TypeCours typeCours) {
         this.typeCours = typeCours;
     }
 
@@ -91,5 +92,13 @@ public class Seance {
 
     public void setDuree(int duree) {
         this.duree = duree;
+    }
+
+    public void setTypeSeance(TypeSeance typeSeance){
+        this.typeSeance = typeSeance;
+    }
+
+    public TypeSeance getTypeSeance(){
+        return typeSeance;
     }
 }

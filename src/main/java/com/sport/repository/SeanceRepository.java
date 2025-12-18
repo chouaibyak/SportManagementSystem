@@ -10,25 +10,32 @@ import java.sql.*;
 public class SeanceRepository {
 
     // Créer une séance
+    // Dans SeanceRepository.java
+
     public void creerSeance(Coach coach, Seance seance) {
+        // 1. Ajouter RETURN_GENERATED_KEYS
         String query = "INSERT INTO seance (nom, capaciteMax, salle_id, dateHeure, entraineur_id, type, duree) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+            PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) { // <--- ICI
 
             stmt.setString(1, seance.getNom());
             stmt.setInt(2, seance.getCapaciteMax());
             stmt.setInt(3, seance.getSalle().getId());
-
-            // --- CORRECTION : LocalDateTime -> Timestamp ---
             stmt.setTimestamp(4, Timestamp.valueOf(seance.getDateHeure()));
-            // -----------------------------------------------
-
             stmt.setInt(5, coach.getId());
             stmt.setString(6, seance.getTypeCours().toString());
             stmt.setInt(7, seance.getDuree());
 
             stmt.executeUpdate();
-            System.out.println("Séance créée en BDD !");
+
+            // 2. RECUPERER L'ID GÉNÉRÉ (C'est la partie manquante)
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                seance.setId(rs.getInt(1)); // Met à jour l'objet Java
+            }
+            System.out.println("Séance créée en BDD avec ID: " + seance.getId());
+
         } catch (SQLException e) {
             System.out.println("Erreur creation seance : " + e.getMessage());
         }

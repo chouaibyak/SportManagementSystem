@@ -36,12 +36,22 @@ public class AbonnementService {
     public void resilierAbonnement(int id) {
         Abonnement ab = abonnementRepository.trouverParId(id);
         if (ab != null) {
-            ab.resilierAbonnement(); // Méthode du modèle
-            // En BDD réelle, on ferait un repository.update(ab), ici la référence suffit en mémoire
-            System.out.println("L'abonnement a été résilié.");
+            ab.resilierAbonnement(); 
+            // CORRECTION : Sauvegarder la modif en BDD !
+            abonnementRepository.modifierAbonnement(ab);
+            System.out.println("L'abonnement a été résilié et mis à jour en BDD.");
         } else {
             System.out.println("Abonnement introuvable.");
         }
+    }
+
+    // Ajout utile pour le test
+    public Abonnement recupererParId(int id) {
+        return abonnementRepository.trouverParId(id);
+    }
+    
+    public void supprimerAbonnement(int id) {
+        abonnementRepository.supprimerAbonnement(id);
     }
 
     /**

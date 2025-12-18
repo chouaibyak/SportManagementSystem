@@ -12,12 +12,16 @@ public class Equipement {
     private Date dateAchat;
 
     // --- Constructeur ---
-    public Equipement() {
+    public Equipement(String nom, TypeEquipement type, EtatEquipement etat, Date dateAchat) {
         this.id = 0;
         this.nom = nom;
         this.type = type;
         this.etat = etat;
         this.dateAchat = dateAchat;
+    }
+
+    public Equipement(){
+        
     }
 
     // --- Getters et Setters ---

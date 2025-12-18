@@ -15,7 +15,6 @@ public class Performance {
     private double tourTaille; 
     private double force; 
     private double endurance; 
-    
     private LocalDate dateMesure; 
 
     // Pour les mesures supplémentaires (ex: "Biceps", 35.0)

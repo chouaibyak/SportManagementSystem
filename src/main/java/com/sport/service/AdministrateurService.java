@@ -14,16 +14,16 @@ import com.sport.repository.MembreRepository;
 import com.sport.repository.SalleRepository;
 public class AdministrateurService {
 
-    @SuppressWarnings("FieldMayBeFinal")
+    
     private MembreRepository membreRepository = new MembreRepository();
     private CoachRepository coachRepository = new CoachRepository();
     private EquipementRepository equipementRepository = new EquipementRepository();
     private SalleRepository salleRepository = new SalleRepository();
+    
     // =========================
     // MEMBRES
     // =========================
     public void ajouterMembre(Membre membre) {
-        // ici tu peux ajouter une validation avant d'ajouter
         membreRepository.ajouterMembre(membre);
     }
 
@@ -127,4 +127,11 @@ public class AdministrateurService {
     // =========================
     // RAPPORTS
     // =========================
+    public void genererRapport(String typeRapport, String dateDebut, String dateFin) {
+        // Implémentation de la génération de rapport selon le type
+        // Ceci est un exemple simplifié
+        System.out.println("Génération du rapport de type: " + typeRapport +
+                           " pour la période: " + dateDebut + " à " + dateFin);
+    }
 }
+

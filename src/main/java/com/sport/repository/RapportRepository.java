@@ -1,9 +1,6 @@
 package com.sport.repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,18 +88,16 @@ public class RapportRepository {
         }
     }
 
-   // Mapping adapté à vos types
+   // Mapping adapté 
     private Rapport mapResultSetToRapport(ResultSet rs) throws SQLException {
-        // C'est ici que le constructeur vide Rapport() est appelé !
         Rapport rapport = new Rapport();
         
         rapport.setId(rs.getInt("id"));
         
         String type = rs.getString("type");
         if (type != null) {
-            // Conversion String -> Enum TypeRapport (si nécessaire)
+            
             try {
-                // Vérifier si le type existe dans l'enum
                 TypeRapport.valueOf(type);
                 rapport.setType(type);
             } catch (IllegalArgumentException e) {

@@ -8,6 +8,7 @@ public abstract class Utilisateur {
     protected String prenom;
     protected String dateNaissance;
     protected String email;
+    protected String motDePasse;
     protected String telephone;
     protected String adresse;
 
@@ -38,6 +39,10 @@ public abstract class Utilisateur {
     }
 
     // ----- Getters & Setters -----
+
+    public String getMotDePasse() { return motDePasse; }
+    public void setMotDePasse(String motDePasse) { this.motDePasse = motDePasse; }
+
 
     public int getId() {
         return id;

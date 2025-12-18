@@ -1,4 +1,4 @@
-package com.sport;
+/*package com.sport;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -53,3 +53,4 @@ public class App extends Application {
         launch();
     }
 }
+    */

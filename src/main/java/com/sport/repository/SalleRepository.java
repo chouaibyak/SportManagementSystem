@@ -19,7 +19,7 @@ public class SalleRepository {
 
         try (Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, salle.getId());
+           
             stmt.setString(1, salle.getNom());
             stmt.setInt(2, salle.getCapacite());
             stmt.setString(3, salle.getType().name());

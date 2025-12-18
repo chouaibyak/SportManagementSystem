@@ -27,6 +27,7 @@ public class Membre extends Utilisateur {
     public Membre(String nom, String prenom, String dateNaissance, String email, 
                   String telephone, String adresse, 
                   TypeObjectif objectifSportif, TypePreference preferences) {
+
         
         super(nom, prenom, dateNaissance, email, telephone, adresse);
         

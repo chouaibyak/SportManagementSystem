@@ -20,7 +20,7 @@ public class ReservationService {
         }
         // Règle métier : Statut par défaut si vide
         if (reservation.getStatut() == null) {
-            reservation.setStatut(StatutReservation.EN_ATTENT);
+            reservation.setStatut(StatutReservation.EN_ATTENTE);
         }
 
         // Appel au repository pour sauvegarder
