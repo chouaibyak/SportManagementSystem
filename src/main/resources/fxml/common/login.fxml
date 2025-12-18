@@ -1,37 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" spacing="20.0" 
-      xmlns="http://javafx.com/javafx/21" 
-      xmlns:fx="http://javafx.com/fxml/1" 
-      fx:controller="com.sport.controller.common.LoginController">
+<!-- ROOT : Taille fixe de 400x550 pour uniformiser -->
+<StackPane prefHeight="550.0" prefWidth="400.0" stylesheets="@../../css/style.css" 
+           xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+           fx:controller="com.sport.controller.common.LoginController">
 
-    <padding><Insets bottom="20" left="20" right="20" top="20"/></padding>
+    <!-- CARTE BLANCHE CENTRÉE -->
+    <VBox alignment="CENTER" maxWidth="350.0" maxHeight="450.0" spacing="20.0" styleClass="card-pane">
+        
+        <!-- En-tête -->
+        <VBox alignment="CENTER" spacing="5">
+            <Label text="SPORT CLUB" styleClass="title-label"/>
+            <Label text="Bienvenue, connectez-vous" styleClass="subtitle-label"/>
+        </VBox>
 
-    <Label text="CONNEXION">
-        <font><Font name="System Bold" size="24.0"/></font>
-    </Label>
+        <!-- Formulaire -->
+        <VBox alignment="CENTER" spacing="15">
+            <TextField fx:id="emailField" promptText="Email" prefWidth="300.0"/>
+            <PasswordField fx:id="passwordField" promptText="Mot de passe" prefWidth="300.0"/>
+        </VBox>
 
-    <VBox spacing="10" alignment="CENTER">
-        <TextField fx:id="emailField" promptText="Email" maxWidth="300"/>
-        <PasswordField fx:id="passwordField" promptText="Mot de passe" maxWidth="300"/>
+        <!-- Actions -->
+        <Button text="SE CONNECTER" onAction="#handleLogin" 
+                maxWidth="Infinity" styleClass="button-primary"/>
+
+        <VBox alignment="CENTER" spacing="5">
+            <Label text="Pas encore membre ?" textFill="#95a5a6"/>
+            <Button text="Créer un compte" onAction="#allerVersInscription" styleClass="link-button"/>
+        </VBox>
+
+        <Label fx:id="errorLabel" textFill="#e74c3c" wrapText="true" textAlignment="CENTER"/>
     </VBox>
-
-    <Button text="Se connecter" onAction="#handleLogin" 
-            style="-fx-background-color: #2C3E50; -fx-text-fill: white; -fx-font-weight: bold;"/>
-
-    <Label text="Pas encore de compte ?" textFill="GRAY"/>
-    
-    <Button text="Créer un compte" onAction="#allerVersInscription" 
-            style="-fx-background-color: transparent; -fx-text-fill: #2980b9; -fx-cursor: hand;"/>
-
-    <Label fx:id="errorLabel" textFill="RED"/>
-
-</VBox>
+</StackPane>

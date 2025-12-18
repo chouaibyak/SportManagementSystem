@@ -3,7 +3,7 @@ package com.sport.service;
 import com.sport.utils.DBConnection;
 import com.sport.model.Membre;
 import com.sport.model.Coach;
-import com.sport.model.Administrateur; // Assure-toi d'avoir créé la classe Admin comme vu précédemment
+import com.sport.model.Administrateur;
 import com.sport.model.Utilisateur;
 
 import java.sql.*;
@@ -11,11 +11,9 @@ import java.sql.*;
 public class AuthService {
 
     /**
-     * Authentifie un utilisateur et renvoie l'OBJET complet (Membre, Coach, etc.).
-     * @return L'objet Utilisateur trouvé, ou null si échec.
+     * Authentifie un utilisateur et renvoie l'OBJET complet.
      */
     public Utilisateur login(String email, String password) {
-        // On récupère aussi le nom et prénom pour remplir l'objet
         String sql = "SELECT id, nom, prenom, mot_de_passe FROM utilisateur WHERE email = ?";
         
         try (Connection conn = DBConnection.getConnection();
@@ -30,55 +28,35 @@ public class AuthService {
                 String nom = rs.getString("nom");
                 String prenom = rs.getString("prenom");
 
-                // Vérification du mot de passe
                 if (password.equals(dbPass)) {
-                    // On appelle la méthode qui va créer le bon objet (Membre ou Coach)
                     return recupereUtilisateurSelonRole(conn, id, nom, prenom, email);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null; // Login échoué
+        return null; 
     }
 
-    // --- NOUVELLE MÉTHODE : Elle renvoie un OBJET et plus un String ---
     private Utilisateur recupereUtilisateurSelonRole(Connection conn, int id, String nom, String prenom, String email) throws SQLException {
-        
-        // 1. Est-ce un Membre ?
         if (checkTable(conn, "membre", id)) {
             Membre m = new Membre();
-            m.setId(id);
-            m.setNom(nom);
-            m.setPrenom(prenom);
-            m.setEmail(email);
-            return m; // Retourne l'objet Membre
+            m.setId(id); m.setNom(nom); m.setPrenom(prenom); m.setEmail(email);
+            return m;
         }
-
-        // 2. Est-ce un Coach ?
         if (checkTable(conn, "coach", id)) {
             Coach c = new Coach();
-            c.setId(id);
-            c.setNom(nom);
-            c.setPrenom(prenom);
-            c.setEmail(email);
-            return c; // Retourne l'objet Coach
+            c.setId(id); c.setNom(nom); c.setPrenom(prenom); c.setEmail(email);
+            return c;
         }
-
-        // 3. Est-ce un Admin ?
         if (checkTable(conn, "administrateur", id)) {
             Administrateur a = new Administrateur();
-            a.setId(id);
-            a.setNom(nom);
-            a.setPrenom(prenom);
-            a.setEmail(email);
-            return a; // Retourne l'objet Admin
+            a.setId(id); a.setNom(nom); a.setPrenom(prenom); a.setEmail(email);
+            return a;
         }
-
         return null;
     }
 
-    // Méthode utilitaire pour vérifier l'existence dans une table
     private boolean checkTable(Connection conn, String tableName, int userId) throws SQLException {
         String sql = "SELECT 1 FROM " + tableName + " WHERE id_utilisateur = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -87,44 +65,23 @@ public class AuthService {
         }
     }
 
-    // --- INSCRIPTION MEMBRE (Reste inchangé) ---
-    public boolean registerMembre(Membre m, String password) {
-        Connection conn = null;
-        try {
-            conn = DBConnection.getConnection();
-            conn.setAutoCommit(false);
+    // ---------------------------------------------------------
+    // SUPPRESSION DE registerMembre() 
+    // On l'a supprimé car l'inscription Membre se fait maintenant 
+    // via MembreService -> MembreRepository dans l'étape 2.
+    // ---------------------------------------------------------
 
-            int userId = insertUtilisateur(conn, m, password);
-
-            String sqlMembre = "INSERT INTO membre (id_utilisateur, objectifSportif, preferences) VALUES (?, ?, ?)";
-            try (PreparedStatement stmt = conn.prepareStatement(sqlMembre)) {
-                stmt.setInt(1, userId);
-                stmt.setString(2, "PERTE_POIDS");
-                stmt.setString(3, "MUSCULATION");
-                stmt.executeUpdate();
-            }
-
-            conn.commit();
-            return true;
-
-        } catch (SQLException e) {
-            if (conn != null) try { conn.rollback(); } catch (SQLException ex) {}
-            e.printStackTrace();
-            return false;
-        } finally {
-            if (conn != null) try { conn.setAutoCommit(true); conn.close(); } catch (SQLException e) {}
-        }
-    }
-
-    // --- INSCRIPTION COACH (Reste inchangé) ---
+    // --- INSCRIPTION COACH (On le garde car le coach s'inscrit en une seule fois) ---
     public boolean registerCoach(Coach c, String password) {
         Connection conn = null;
         try {
             conn = DBConnection.getConnection();
             conn.setAutoCommit(false);
 
+            // On insère l'utilisateur
             int userId = insertUtilisateur(conn, c, password);
 
+            // On insère le coach
             String sqlCoach = "INSERT INTO coach (id_utilisateur) VALUES (?)";
             try (PreparedStatement stmt = conn.prepareStatement(sqlCoach)) {
                 stmt.setInt(1, userId);
@@ -142,7 +99,7 @@ public class AuthService {
         }
     }
 
-    // Méthode commune pour insérer dans la table parent
+    // Méthode utilitaire privée (utilisée seulement par registerCoach ici)
     private int insertUtilisateur(Connection conn, Utilisateur u, String password) throws SQLException {
         String sql = "INSERT INTO utilisateur (nom, prenom, email, mot_de_passe, telephone, adresse, dateNaissance) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -150,9 +107,11 @@ public class AuthService {
             stmt.setString(2, u.getPrenom());
             stmt.setString(3, u.getEmail());
             stmt.setString(4, password);
-            stmt.setString(5, u.getTelephone());
+            // Pour le Coach à l'inscription rapide, tel et adresse peuvent être null
+            stmt.setString(5, u.getTelephone()); 
             stmt.setString(6, u.getAdresse());
-            stmt.setString(7, "2000-01-01");
+            // Valeur par défaut pour le coach si on ne demande pas sa date
+            stmt.setString(7, "1990-01-01"); 
             
             stmt.executeUpdate();
             

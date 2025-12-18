@@ -49,7 +49,7 @@ public class TestReservation {
         seance.setDuree(60);
         seance.setSalle(salle);
         seance.setEntraineur(coach);
-        seance.setTypecours(TypeCours.YOGA);          
+        seance.setTypeCours(TypeCours.YOGA);          
         seance.setTypeSeance(TypeSeance.COLLECTIVE); 
 
         seanceRepo.creerSeance(coach, seance);

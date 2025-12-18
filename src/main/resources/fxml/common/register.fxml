@@ -1,51 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- IMPORTATIONS (C'est ici qu'il manquait HBox) -->
+<!-- IMPORTATIONS -->
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
-<?import javafx.scene.layout.HBox?>  <!-- INDISPENSABLE -->
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" spacing="15.0" 
-      xmlns="http://javafx.com/javafx/21" 
-      xmlns:fx="http://javafx.com/fxml/1" 
-      fx:controller="com.sport.controller.common.RegisterController">
+<!-- 
+    1. ROOT : On utilise StackPane comme dans login.fxml pour centrer la carte.
+    2. CSS : On lie la feuille de style.
+-->
+<StackPane prefHeight="550.0" prefWidth="400.0" stylesheets="@../../css/style.css" 
+           xmlns="http://javafx.com/javafx/21" 
+           xmlns:fx="http://javafx.com/fxml/1" 
+           fx:controller="com.sport.controller.common.RegisterController">
 
-    <Label text="INSCRIPTION">
-        <font><Font name="System Bold" size="24.0"/></font>
-    </Label>
+    <!-- CARTE BLANCHE CENTRÉE (styleClass="card-pane") -->
+    <VBox alignment="CENTER" maxWidth="350.0" spacing="15.0" styleClass="card-pane">
 
-    <!-- Champs de saisie -->
-    <TextField fx:id="txtNom" promptText="Nom" maxWidth="300.0"/>
-    <TextField fx:id="txtPrenom" promptText="Prénom" maxWidth="300.0"/>
-    <TextField fx:id="txtEmail" promptText="Email" maxWidth="300.0"/>
-    <PasswordField fx:id="txtPassword" promptText="Mot de passe" maxWidth="300.0"/>
+        <!-- En-tête harmonisé -->
+        <VBox alignment="CENTER" spacing="5">
+            <Label text="INSCRIPTION" styleClass="title-label"/>
+            <Label text="Créez votre compte" styleClass="subtitle-label"/>
+        </VBox>
 
-    <!-- Choix du Rôle -->
-    <Label text="Je suis un :" />
-    
-    <!-- C'est ici que tu utilisais HBox sans l'importer -->
-    <HBox alignment="CENTER" spacing="20.0">
-        <!-- Définition du groupe pour qu'on ne puisse cocher qu'un seul -->
-        <fx:define>
-            <ToggleGroup fx:id="roleGroup"/>
-        </fx:define>
+        <!-- Champs de saisie -->
+        <VBox spacing="10">
+            <TextField fx:id="txtNom" promptText="Nom" maxWidth="Infinity"/>
+            <TextField fx:id="txtPrenom" promptText="Prénom" maxWidth="Infinity"/>
+            <TextField fx:id="txtEmail" promptText="Email" maxWidth="Infinity"/>
+            <PasswordField fx:id="txtPassword" promptText="Mot de passe" maxWidth="Infinity"/>
+        </VBox>
 
-        <RadioButton fx:id="radioMembre" text="Membre" toggleGroup="$roleGroup" selected="true"/>
-        <RadioButton fx:id="radioCoach" text="Coach" toggleGroup="$roleGroup"/>
-    </HBox>
+        <!-- Choix du Rôle -->
+        <VBox alignment="CENTER" spacing="5">
+            <Label text="Je suis un :" textFill="#7f8c8d"/>
+            <HBox alignment="CENTER" spacing="20.0">
+                <fx:define>
+                    <ToggleGroup fx:id="roleGroup"/>
+                </fx:define>
 
-    <Button text="S'inscrire" onAction="#handleInscription" 
-            style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+                <RadioButton fx:id="radioMembre" text="Membre" toggleGroup="$roleGroup" selected="true" styleClass="radio-button"/>
+                <RadioButton fx:id="radioCoach" text="Coach" toggleGroup="$roleGroup" styleClass="radio-button"/>
+            </HBox>
+        </VBox>
+
+        <!-- Bouton S'inscrire (styleClass="button-primary") -->
+        <Button text="S'INSCRIRE" onAction="#handleInscription" 
+                maxWidth="Infinity" styleClass="button-primary"/>
             
-    <Button text="Retour Connexion" onAction="#allerVersLogin" 
-            style="-fx-background-color: transparent; -fx-text-fill: blue; -fx-cursor: hand;"/>
+        <!-- Lien Retour (styleClass="link-button") -->
+        <VBox alignment="CENTER" spacing="5">
+            <Label text="Déjà un compte ?" textFill="#95a5a6"/>
+            <Button text="Retour Connexion" onAction="#allerVersLogin" styleClass="link-button"/>
+        </VBox>
     
-    <Label fx:id="lblMessage" textFill="RED"/>
+        <Label fx:id="lblMessage" textFill="#e74c3c"/>
 
-</VBox>
+    </VBox>
+</StackPane>

@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 
 public class RegisterController {
 
@@ -22,7 +23,7 @@ public class RegisterController {
     
     @FXML private RadioButton radioMembre;
     @FXML private RadioButton radioCoach;
-    @FXML private ToggleGroup roleGroup; // Assure-toi que fx:id="roleGroup" est défini dans le FXML
+    @FXML private ToggleGroup roleGroup; 
 
     @FXML private Label lblMessage;
 
@@ -42,99 +43,109 @@ public class RegisterController {
 
         // 2. Validation basique
         if (nom.isEmpty() || prenom.isEmpty() || email.isEmpty() || pwd.isEmpty()) {
-            lblMessage.setStyle("-fx-text-fill: red;");
-            lblMessage.setText("Veuillez remplir tous les champs.");
+            afficherErreur("Veuillez remplir tous les champs.");
             return;
         }
 
-        boolean succes = false;
-
-        // 3. Logique selon le rôle choisi
+        // 3. Aiguillage selon le rôle
         if (radioMembre.isSelected()) {
-            // --- Inscription MEMBRE ---
-            Membre nouveau = new Membre();
-            nouveau.setNom(nom);
-            nouveau.setPrenom(prenom);
-            nouveau.setEmail(email);
-            // On délègue l'insertion et la gestion du mot de passe au service
-            succes = authService.registerMembre(nouveau, pwd);
+            // --- CAS MEMBRE : ON PASSE A L'ETAPE 2 ---
+            allerVersEtape2Membre(nom, prenom, email, pwd);
 
         } else if (radioCoach.isSelected()) {
-            // --- Inscription COACH ---
+            // --- CAS COACH : INSCRIPTION DIRECTE ---
             Coach nouveau = new Coach();
             nouveau.setNom(nom);
             nouveau.setPrenom(prenom);
             nouveau.setEmail(email);
-            // On délègue l'insertion et la gestion du mot de passe au service
-            succes = authService.registerCoach(nouveau, pwd);
+            
+            boolean succes = authService.registerCoach(nouveau, pwd);
+            
+            if (succes) {
+                lblMessage.setStyle("-fx-text-fill: green;");
+                lblMessage.setText("Compte Coach créé avec succès !");
+                viderChamps(); 
+            } else {
+                afficherErreur("Erreur : Email déjà utilisé ou problème technique.");
+            }
         } else {
-            // Aucun bouton radio n'est coché (si pas de valeur par défaut)
-            lblMessage.setStyle("-fx-text-fill: red;");
-            lblMessage.setText("Veuillez choisir un rôle (Membre ou Coach).");
-            return;
-        }
-
-        // 4. Gestion du résultat
-        if (succes) {
-            lblMessage.setStyle("-fx-text-fill: green;");
-            lblMessage.setText("Compte créé avec succès ! Vous pouvez vous connecter.");
-            viderChamps();
-            // Optionnel : décommenter la ligne suivante pour rediriger immédiatement
-            // allerVersLogin(); 
-        } else {
-            lblMessage.setStyle("-fx-text-fill: red;");
-            lblMessage.setText("Erreur : Cet email est déjà utilisé ou problème technique.");
+            afficherErreur("Veuillez choisir un type de compte.");
         }
     }
 
-    /**
-     * Méthode appelée quand on clique sur "Retour Connexion".
-     */
+    private void allerVersEtape2Membre(String nom, String prenom, String email, String pwd) {
+        try {
+            // 1. Charger la vue suivante
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/common/register_member.fxml"));
+            Parent root = loader.load();
+
+            // 2. Créer l'objet temporaire
+            Membre membreTemp = new Membre();
+            membreTemp.setNom(nom);
+            membreTemp.setPrenom(prenom);
+            membreTemp.setEmail(email);
+            membreTemp.setMotDePasse(pwd);
+
+            // 3. Passer l'objet au contrôleur suivant
+            RegisterMemberController controller = loader.getController();
+            // Vérification de sécurité
+            if (controller != null) {
+                controller.initData(membreTemp);
+            } else {
+                System.err.println("Erreur : Le contrôleur RegisterMemberController est null.");
+            }
+
+            // 4. Afficher la nouvelle scène et REDIMENSIONNER LA FENETRE
+            Stage stage = (Stage) txtNom.getScene().getWindow();
+            
+            // On applique la nouvelle scène
+            stage.setScene(new Scene(root));
+            
+            // --- CORRECTION MAJEURE ICI ---
+            stage.sizeToScene();   // Force la fenêtre à prendre la taille du FXML (register_member.fxml)
+            stage.centerOnScreen(); // Recentre la fenêtre
+            // ------------------------------
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            afficherErreur("Erreur de chargement de l'étape 2.");
+        }
+    }
+
     @FXML
     private void allerVersLogin() {
         try {
-            // 1. Définir le chemin attendu
-            String fxmlPath = "/fxml/common/login.fxml";
-            
-            // 2. Vérifier si Java le trouve AVANT de charger
-            java.net.URL fxmlUrl = getClass().getResource(fxmlPath);
-            
+            URL fxmlUrl = getClass().getResource("/fxml/common/login.fxml");
             if (fxmlUrl == null) {
-                System.err.println("ERREUR CRITIQUE : Fichier introuvable !");
-                System.err.println("Je cherche ici : src/main/resources" + fxmlPath);
-                System.err.println("Vérifie que le dossier 'common' existe et que le fichier s'appelle bien 'login.fxml' (minuscules).");
-                lblMessage.setText("Erreur interne : Fichier login.fxml introuvable.");
+                System.err.println("Fichier login.fxml introuvable !");
                 return;
             }
 
-            System.out.println("Fichier trouvé : " + fxmlUrl);
-
-            // 3. Chargement
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent root = loader.load();
             
-            // 4. Changement de scène
             Stage stage = (Stage) txtNom.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Sport App - Connexion");
-            stage.centerOnScreen();
+            stage.setScene(new Scene(root));
+            
+            // --- CORRECTION MAJEURE ICI ---
+            stage.sizeToScene();    // Force la fenêtre à prendre la taille du login
+            stage.centerOnScreen(); // Recentre
+            // ------------------------------
             
         } catch (IOException e) {
             e.printStackTrace();
-            lblMessage.setText("Impossible de charger la page de connexion.");
         }
     }
 
-    /**
-     * Vide les champs après une inscription réussie.
-     */
     private void viderChamps() {
         txtNom.clear();
         txtPrenom.clear();
         txtEmail.clear();
         txtPassword.clear();
-        // On remet le focus sur le nom
-        txtNom.requestFocus();
+    }
+    
+    private void afficherErreur(String msg) {
+        lblMessage.setStyle("-fx-text-fill: #e74c3c;"); // Rouge définie dans le CSS généralement
+        lblMessage.setText(msg);
     }
 }
