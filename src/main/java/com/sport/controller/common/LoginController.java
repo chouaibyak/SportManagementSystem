@@ -41,9 +41,10 @@ public class LoginController {
             if (user instanceof Membre) {
                 // ATTENTION : On charge le LAYOUT (avec le menu), pas juste le dashboard
                 redirigerVers("/fxml/member/member_layout.fxml", "Espace Membre");
-            } else if (user instanceof Coach) {
-                redirigerVers("/fxml/coach/coach_dashboard.fxml", "Espace Coach");
-            } else {
+            }else if (user instanceof Coach) {
+                 redirigerVers("/fxml/coach/coach_layout.fxml", "Espace Coach");
+}
+ else {
                 // Admin...
                 errorLabel.setText("Interface Admin en construction...");
             }
