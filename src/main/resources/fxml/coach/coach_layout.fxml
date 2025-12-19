@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="600.0" prefWidth="900.0" stylesheets="@../../css/style.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.sport.controller.coach.CoachLayoutController">
+
+    <!-- BARRE LATÉRALE (Menu) -->
+    <left>
+        <VBox spacing="10" styleClass="sidebar" prefWidth="200">
+            <VBox alignment="CENTER" spacing="10" style="-fx-padding: 20;">
+                <Label text="ESPACE COACH" textFill="WHITE" style="-fx-font-weight: bold; -fx-font-size: 18;"/>
+                <Label fx:id="lblBienvenue" text="Bienvenue" textFill="#bdc3c7"/>
+            </VBox>
+            
+            <Button fx:id="btnDashboard" text="Dashboard" styleClass="nav-button" maxWidth="Infinity" onAction="#afficherDashboard"/>
+            <Button fx:id="btnSeances" text="Mes Séances" styleClass="nav-button" maxWidth="Infinity" onAction="#afficherSeances"/>
+            <Button fx:id="btnProfil" text="Profil" styleClass="nav-button" maxWidth="Infinity" onAction="#afficherProfil"/>
+            
+            <VBox VBox.vgrow="ALWAYS" /> <!-- Espace vide -->
+            
+            <Button text="Déconnexion" onAction="#handleLogout" styleClass="nav-button-logout" maxWidth="Infinity"/>
+        </VBox>
+    </left>
+
+    <!-- CONTENU CENTRAL -->
+    <center>
+        <StackPane fx:id="contentArea" style="-fx-background-color: #f4f6f7; -fx-padding: 20;">
+            <!-- Ici les vues chargées dynamiquement (Dashboard, Séances, Profil) -->
+        </StackPane>
+    </center>
+
+</BorderPane>
