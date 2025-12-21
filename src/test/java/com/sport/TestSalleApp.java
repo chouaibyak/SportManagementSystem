@@ -10,7 +10,7 @@ public class TestSalleApp {
 
     public static void main(String[] args) {
 
-        SalleService salleService = new SalleService();
+        SalleService salleService = new SalleService(salleRepository);
 
         // ➤ AJOUTER DES SALLES
         Salle salle1 = new Salle("Salle Cardio", 20, TypeSalle.CARDIO);
