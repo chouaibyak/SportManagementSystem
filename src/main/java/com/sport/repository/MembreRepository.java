@@ -13,7 +13,7 @@ public class MembreRepository {
 
     // CREATE (Reste inchangé car l'INSERT ne nomme pas l'ID utilisateur explicitement)
     public void ajouterMembre(Membre membre) {
-        String sqlUser = "INSERT INTO UTILISATEUR (nom, prenom, dateNaissance, email, telephone, adresse) VALUES (?, ?, ?, ?, ?, ?)";
+        String sqlUser = "INSERT INTO UTILISATEUR (nom, prenom, dateNaissance, email, telephone, adresse, mot_de_passe) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String sqlMembre = "INSERT INTO MEMBRE (id_utilisateur, objectifSportif, preferences) VALUES (?, ?, ?)";
 
         Connection conn = null;
@@ -25,10 +25,11 @@ public class MembreRepository {
             try (PreparedStatement stmtUser = conn.prepareStatement(sqlUser, Statement.RETURN_GENERATED_KEYS)) {
                 stmtUser.setString(1, membre.getNom());
                 stmtUser.setString(2, membre.getPrenom());
-                stmtUser.setString(3, membre.getDateNaissance()); 
+                stmtUser.setString(3, membre.getDateNaissance()!= null ? membre.getDateNaissance():"2000-01-01"); 
                 stmtUser.setString(4, membre.getEmail());
                 stmtUser.setString(5, membre.getTelephone());
                 stmtUser.setString(6, membre.getAdresse());
+                stmtUser.setString(7, membre.getMotDePasse());
                 stmtUser.executeUpdate();
 
                 ResultSet rs = stmtUser.getGeneratedKeys();
