@@ -3,6 +3,62 @@
   "configurations": [
     {
       "type": "java",
+      "name": "SeanceIndividuelleServiceTest",
+      "request": "launch",
+      "mainClass": "com.sport.service.SeanceIndividuelleServiceTest",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
+      "name": "SeanceCollectiveServiceTest",
+      "request": "launch",
+      "mainClass": "com.sport.service.SeanceCollectiveServiceTest",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
+      "name": "SalleServiceTest",
+      "request": "launch",
+      "mainClass": "com.sport.service.SalleServiceTest",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
+      "name": "EquipementServiceTest",
+      "request": "launch",
+      "mainClass": "com.sport.service.EquipementServiceTest",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
+      "name": "SeanceIndividuelleRepositoryTest",
+      "request": "launch",
+      "mainClass": "com.sport.repository.SeanceIndividuelleRepositoryTest",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
+      "name": "SeanceCollectiveRepositoryTest",
+      "request": "launch",
+      "mainClass": "com.sport.repository.SeanceCollectiveRepositoryTest",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
+      "name": "EquipementRepositoryTest",
+      "request": "launch",
+      "mainClass": "com.sport.repository.EquipementRepositoryTest",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
+      "name": "SalleRepositoryTest",
+      "request": "launch",
+      "mainClass": "com.sport.repository.SalleRepositoryTest",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
       "name": "TestUIMembre",
       "request": "launch",
       "mainClass": "com.sport.TestUIMembre",
