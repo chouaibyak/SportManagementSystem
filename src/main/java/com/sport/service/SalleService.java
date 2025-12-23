@@ -8,6 +8,9 @@ import com.sport.repository.SalleRepository;
 
 public class SalleService {
 
+    public SalleService(SalleRepository salleRepository1) {
+    }
+
     private SalleRepository salleRepository = new SalleRepository();
 
     // ➤ Ajouter une salle

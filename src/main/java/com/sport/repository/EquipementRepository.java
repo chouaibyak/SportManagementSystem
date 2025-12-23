@@ -17,7 +17,7 @@ public class EquipementRepository {
 
     // --- Ajouter un équipement ---
     public void ajouterEquipement(Equipement equipement) {
-        String query = "INSERT INTO equipements (nom, type, etat, date_achat) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO equipement (nom, type, etat, dateAchat) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -34,7 +34,7 @@ public class EquipementRepository {
 
     // --- Trouver par ID ---
     public Equipement getEquipementById(int id) {
-        String query = "SELECT * FROM equipements WHERE id = ?";
+        String query = "SELECT * FROM equipement WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -46,7 +46,7 @@ public class EquipementRepository {
                 String nom = rs.getString("nom");
                 TypeEquipement type = TypeEquipement.valueOf(rs.getString("type"));
                 EtatEquipement etat = EtatEquipement.valueOf(rs.getString("etat"));
-                Date dateAchat = new Date(rs.getDate("date_achat").getTime());
+                Date dateAchat = new Date(rs.getDate("dateAchat").getTime());
 
                 Equipement eq = new Equipement();
                 eq.setId(id);
@@ -63,7 +63,7 @@ public class EquipementRepository {
     public List<Equipement> listerEquipements() {
         List<Equipement> list = new ArrayList<>();
 
-        String query = "SELECT * FROM equipements";
+        String query = "SELECT * FROM equipement";
 
         try (Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -74,7 +74,7 @@ public class EquipementRepository {
                 String nom = rs.getString("nom");
                 TypeEquipement type = TypeEquipement.valueOf(rs.getString("type"));
                 EtatEquipement etat = EtatEquipement.valueOf(rs.getString("etat"));
-                Date dateAchat = new Date(rs.getDate("date_achat").getTime());
+                Date dateAchat = new Date(rs.getDate("dateAchat").getTime());
 
                 Equipement eq = new Equipement();
                 eq.setId(id);
@@ -90,7 +90,7 @@ public class EquipementRepository {
 
     // --- Supprimer un équipement ---
     public boolean supprimerEquipement(int id) {
-        String query = "DELETE FROM equipements WHERE id = ?";
+        String query = "DELETE FROM equipement WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -106,7 +106,7 @@ public class EquipementRepository {
 
     // --- Mettre à jour un équipement ---
     public boolean modifierEquipement(Equipement equipement) {
-        String query = "UPDATE equipements SET nom = ?, type = ?, etat = ?, date_achat = ? WHERE id = ?";
+        String query = "UPDATE equipement SET nom = ?, type = ?, etat = ?, dateAchat = ? WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -126,7 +126,7 @@ public class EquipementRepository {
     // --- Lister les équipements par état (ex: EN_MAINTENANCE) ---
     public List<Equipement> listerEquipementsParEtat(EtatEquipement etatRecherche) {
         List<Equipement> list = new ArrayList<>();
-        String query = "SELECT * FROM equipements WHERE etat = ?";
+        String query = "SELECT * FROM equipement WHERE etat = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -144,7 +144,7 @@ public class EquipementRepository {
                 TypeEquipement type = TypeEquipement.valueOf(rs.getString("type"));
                 EtatEquipement etat = EtatEquipement.valueOf(rs.getString("etat"));
                 
-                Date dateAchat = new Date(rs.getDate("date_achat").getTime());
+                Date dateAchat = new Date(rs.getDate("dateAchat").getTime());
 
                 Equipement eq = new Equipement(nom, type, etat, dateAchat);
                 eq.setId(id);
