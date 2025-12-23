@@ -12,6 +12,12 @@ import com.sport.repository.CoachRepository;
 import com.sport.repository.EquipementRepository;
 import com.sport.repository.MembreRepository;
 import com.sport.repository.SalleRepository;
+import com.sport.repository.RapportRepository;
+
+import com.sport.model.Rapport;
+import com.sport.model.TypeRapport;
+import com.sport.service.RapportService;
+
 public class AdministrateurService {
 
     
@@ -19,6 +25,8 @@ public class AdministrateurService {
     private CoachRepository coachRepository = new CoachRepository();
     private EquipementRepository equipementRepository = new EquipementRepository();
     private SalleRepository salleRepository = new SalleRepository();
+    private RapportService rapportService = new RapportService();
+    private RapportRepository rapportRepositoryRepository = new RapportRepositoryRepository();
     
     // =========================
     // MEMBRES
@@ -127,11 +135,17 @@ public class AdministrateurService {
     // =========================
     // RAPPORTS
     // =========================
-    public void genererRapport(String typeRapport, String dateDebut, String dateFin) {
-        // Implémentation de la génération de rapport selon le type
-        // Ceci est un exemple simplifié
-        System.out.println("Génération du rapport de type: " + typeRapport +
-                           " pour la période: " + dateDebut + " à " + dateFin);
+   public Rapport genererRapport(String type, String dateDebut, String dateFin) {
+        return rapportService.genererRapport(type, dateDebut, dateFin);
     }
-}
 
+    public List<Rapport> listerRapports() {
+        return rapportService.obtenirTousLesRapports();
+    }
+
+    public void supprimerRapport(int rapportId) {
+        rapportService.supprimerRapport(rapportId);
+    }
+
+   
+}

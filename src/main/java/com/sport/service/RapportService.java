@@ -6,29 +6,23 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import com.sport.model.Abonnement;
+import com.sport.model.Membre;
 import com.sport.model.Rapport;
 import com.sport.model.Reservation;
 import com.sport.model.Seance;
 import com.sport.repository.AbonnementRepository;
 import com.sport.repository.MembreRepository;
 import com.sport.repository.RapportRepository;
-import com.sport.repository.ReservationRepository;
+import com.sport.repository.ReservationRepository; 
 import com.sport.repository.SeanceRepository;
 
 public class RapportService {
-    private RapportRepository rapportRepository;
-    private SeanceRepository seanceRepository;
-    private ReservationRepository reservationRepository;
-    private MembreRepository membreRepository;
-    private AbonnementRepository abonnementRepository;
-    
-    public RapportService() {
-        this.rapportRepository = new RapportRepository();
-        this.seanceRepository = new SeanceRepository();
-        this.reservationRepository = new ReservationRepository();
-        this.membreRepository = new MembreRepository();
-        this.abonnementRepository = new AbonnementRepository();
-    }
+    RapportRepository rapportRepository = new RapportRepository();
+    SeanceRepository seanceRepository  = new SeanceRepository();
+    ReservationRepository reservationRepository = new ReservationRepository();
+    MembreRepository membreRepository = new MembreRepository();
+    AbonnementRepository abonnementRepository = new AbonnementRepository();
+   
 
  // Générer un rapport selon son type
     public Rapport genererRapport(String type, String dateDebut, String dateFin) {
@@ -152,7 +146,7 @@ public class RapportService {
 
     for (Abonnement abo : abonnements) {
         if (abo.getTypeAbonnement() != null) {
-            switch (abo.getTypeAbonnement()) {
+            switch (abo.getTypeAbonnement().toString()) {
                 case "MENSUEL" -> {
                     mensuel++;
                     revenuMensuel += abo.getMontant();
@@ -184,48 +178,55 @@ public class RapportService {
 
     
     private String genererRapportSatisfactionMembres(String dateDebut, String dateFin) {
-    LocalDate debut = LocalDate.parse(dateDebut);
-    LocalDate fin = LocalDate.parse(dateFin);
-
-    // Récupérer toutes les évaluations des membres pour la période
-    List<Evaluation> evaluations = membreRepository.getEvaluationsParPeriode(debut, fin);
-
-    if (evaluations.isEmpty()) {
-        return "Aucune évaluation disponible pour cette période";
+        LocalDate debut = LocalDate.parse(dateDebut);
+        LocalDate fin = LocalDate.parse(dateFin);
+        
+        // Récupérer tous les membres actifs de la période
+        List<Membre> membres = membreRepository.getMembresActifsParPeriode(debut, fin);
+        
+        if (membres.isEmpty()) {
+            return "Aucun membre actif pour cette période";
+        }
+        
+        // Calculer statistiques sur les membres évalués pendant la période
+        double sommeNotes = 0;
+        int nbEvalues = 0;
+        int tresSatisfaits = 0;  // note >= 4.5
+        int satisfaits = 0;       // note >= 3.5
+        int insatisfaits = 0;     // note < 3.5
+        
+        for (Membre membre : membres) {
+            // Vérifier si le membre a une évaluation dans la période
+            if (membre.getNoteSatisfaction() != null && 
+                membre.getDateEvaluation() != null &&
+                !membre.getDateEvaluation().isBefore(debut) &&
+                !membre.getDateEvaluation().isAfter(fin)) {
+                
+                double note = membre.getNoteSatisfaction();
+                sommeNotes += note;
+                nbEvalues++;
+                
+                if (note >= 4.5) tresSatisfaits++;
+                else if (note >= 3.5) satisfaits++;
+                else insatisfaits++;
+            }
+        }
+        
+        if (nbEvalues == 0) {
+            return "Aucune évaluation disponible pour cette période";
+        }
+        
+        double noteMoyenne = sommeNotes / nbEvalues;
+        double tauxSatisfaction = ((tresSatisfaits + satisfaits) * 100.0) / nbEvalues;
+        double pctTresSatisfaits = (tresSatisfaits * 100.0) / nbEvalues;
+        double tauxEvaluation = (nbEvalues * 100.0) / membres.size();
+        
+        return String.format("Membres actifs: %d | Évaluations: %d (%.0f%%) | " +
+                           "Note moyenne: %.1f/5 | Taux satisfaction: %.0f%% | " +
+                           "Très satisfaits: %.0f%% | Satisfaits: %d | Insatisfaits: %d",
+                           membres.size(), nbEvalues, tauxEvaluation, noteMoyenne, 
+                           tauxSatisfaction, pctTresSatisfaits, satisfaits, insatisfaits);
     }
-
-    double sommeNotes = 0;
-    int tresSatisfaits = 0; // note >= 4.5
-    int satisfaits = 0;     // note >= 3.5 et < 4.5
-    int insatisfaits = 0;   // note < 3.5
-
-    for (Evaluation eval : evaluations) {
-        double note = eval.getNote();
-        sommeNotes += note;
-
-        if (note >= 4.5) tresSatisfaits++;
-        else if (note >= 3.5) satisfaits++;
-        else insatisfaits++;
-    }
-
-    double noteMoyenne = sommeNotes / evaluations.size();
-    double tauxSatisfaction = ((tresSatisfaits + satisfaits) * 100.0) / evaluations.size();
-    double pctTresSatisfaits = (tresSatisfaits * 100.0) / evaluations.size();
-
-    return String.format(
-        "Évaluations: %d | Note moyenne: %.1f/5 | " +
-        "Taux de satisfaction: %.0f%% | Très satisfaits: %.0f%% | " +
-        "Satisfaits: %d | Insatisfaits: %d",
-        evaluations.size(),
-        noteMoyenne,
-        tauxSatisfaction,
-        pctTresSatisfaits,
-        satisfaits,
-        insatisfaits
-    );
-}
-
-    
     
     // Récupérer tous les rapports
     public List<Rapport> obtenirTousLesRapports() {
@@ -236,4 +237,3 @@ public class RapportService {
     public void supprimerRapport(int rapportId) {
         rapportRepository.supprimerRapport(rapportId);
     }
-} 
