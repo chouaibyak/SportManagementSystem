@@ -188,6 +188,39 @@
     -fx-font-weight: bold;
 }
 
+<<<<<<< HEAD
 /*  **********************************/
 /*           end memeber         */
 /*************************************/
+=======
+
+
+/*  **********************************/
+/*           page de Dashboard_Coach      */
+/*************************************/
+
+
+.dashboard-card {
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+
+.card-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+}
+
+.card-value {
+    -fx-font-size: 24px;
+    -fx-text-fill: #2a9d8f;
+    -fx-font-weight: bold;
+}
+/*  **********************************/
+/*          Fin de Coach_Dashboard        */
+/*************************************/
+>>>>>>> origin/main

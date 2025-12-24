@@ -1,6 +1,7 @@
 com\sport\service\CoachService.class
 com\sport\model\TypeEquipement.class
 com\sport\repository\CoachRepository.class
+com\sport\controller\coach\CoachSeancesController$1.class
 com\sport\repository\SeanceIndividuelleRepository.class
 com\sport\service\SeanceCollectiveService.class
 com\sport\controller\common\RegisterController.class
@@ -17,6 +18,7 @@ com\sport\repository\MembreRepository.class
 com\sport\repository\SalleRepository.class
 com\sport\controller\common\LoginController.class
 com\sport\model\Performance.class
+com\sport\controller\coach\CoachSeancesController.class
 com\sport\model\StatutAbonnement.class
 com\sport\model\TypeObjectif.class
 com\sport\service\AbonnementService.class
@@ -46,6 +48,7 @@ com\sport\model\SeanceIndividuelle.class
 com\sport\service\CourseService.class
 com\sport\repository\RapportRepository.class
 com\sport\repository\EquipementRepository.class
+com\sport\controller\coach\CoachSeancesController$2.class
 com\sport\repository\PerformanceRepository.class
 com\sport\service\RapportService$1.class
 com\sport\service\ReservationService.class
@@ -61,3 +64,4 @@ com\sport\service\SeanceIndividuelleService.class
 com\sport\model\TypePreference.class
 com\sport\repository\HistoriqueActiviteRepository.class
 com\sport\service\AdministrateurService.class
+com\sport\controller\coach\CoachSeanceFormController.class

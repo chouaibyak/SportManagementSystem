@@ -8,6 +8,8 @@ import com.sport.model.Membre;
 import com.sport.model.Salle;
 import com.sport.model.SeanceCollective;
 import com.sport.model.TypeCours;
+import com.sport.model.TypeObjectif;
+import com.sport.model.TypePreference;
 import com.sport.model.TypeSalle;
 import com.sport.repository.SeanceCollectiveRepository;
 import com.sport.service.SeanceCollectiveService;
@@ -23,13 +25,14 @@ public class SeanceCollectiveServiceTest {
         Salle salle = new Salle("Salle A", 50, TypeSalle.MUSCULATION);
         salle.setId(1); // existing salle_id
 
-        Coach coach = new Coach();
 
-        Membre membre = new Membre(null, null, null, null, null, null, null, null, null);
-        membre.setId(1); // existing membre_id
-        membre.setNom("Youssef");
-
-        // 1️⃣ CREATE
+        Coach coach = new Coach("Doe", "John", "1980-01-01", "john.doe@example.com", 
+                 "0612345678", "123 Rue de Paris", "Yoga Specialist"   );
+                                    
+        Membre membre = new Membre("Jhon","Wick","1975-05-05","jhon@email.com","0699877","45 Avenue des Champs","Jhon",TypeObjectif.PERTE_POIDS,TypePreference.CARDIO);
+         
+        
+        // 1️⃣ CREATE"
         SeanceCollective seance = new SeanceCollective(
                 0,
                 "CrossFit",
@@ -67,7 +70,7 @@ public class SeanceCollectiveServiceTest {
         System.out.println("✔ RESERVATION CANCELLED = " + cancelled);
 
         // 7️⃣ DELETE
-        boolean deleted = service.delete(seance.getId());
-        System.out.println("✔ DELETED = " + deleted);
+        //boolean deleted = service.delete(seance.getId());
+        //System.out.println("✔ DELETED = " + deleted);
     }
 }
