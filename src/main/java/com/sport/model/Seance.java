@@ -101,4 +101,6 @@ public class Seance {
     public TypeSeance getTypeSeance(){
         return typeSeance;
     }
+
+    
 }

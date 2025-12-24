@@ -1,13 +1,21 @@
 package com.sport.repository;
 
-import com.sport.model.Coach;
-import com.sport.model.Seance;
-import com.sport.model.Salle;
-import com.sport.utils.DBConnection;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.sport.model.Coach;
+import com.sport.model.Salle;
+import com.sport.model.Seance;
+import com.sport.model.TypeSeance;
+import com.sport.utils.DBConnection;
 
 public class SeanceRepository {
 
@@ -92,9 +100,48 @@ public class SeanceRepository {
         }
     }
 
-    // Vérifier disponibilité
-    // On change le paramètre String -> LocalDateTime
-    public boolean verifierDisponibiliteSalle(Salle salle, java.time.LocalDateTime dateHeure) {
+    public List<Seance> getSeancesParPeriode(LocalDate debut, LocalDate fin) {
+
+    List<Seance> seances = new ArrayList<>();
+
+    String sql = """
+        SELECT id, dateHeure, type, typeSeance, capaciteMax
+        FROM SEANCE
+        WHERE dateHeure >= ? AND dateHeure < ?
+    """;
+
+    LocalDateTime start = debut.atStartOfDay();
+    LocalDateTime endExclusive = fin.plusDays(1).atStartOfDay();
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setTimestamp(1, Timestamp.valueOf(start));
+        stmt.setTimestamp(2, Timestamp.valueOf(endExclusive));
+
+        try (ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Seance s = new Seance();
+
+                s.setId(rs.getInt("id"));
+                s.setDateHeure(rs.getTimestamp("dateHeure").toLocalDateTime());
+                s.setTypeSeance(TypeSeance.valueOf(rs.getString("typeSeance")));
+                s.setCapaciteMax(rs.getInt("capaciteMax"));
+
+                seances.add(s);
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Erreur getSeancesParPeriode : " + e.getMessage());
+    }
+
+    return seances;
+}
+
+
+// Vérifier disponibilité
+// On change le paramètre String -> LocalDateTime
+public boolean verifierDisponibiliteSalle(Salle salle, java.time.LocalDateTime dateHeure) {
         
         String query = "SELECT COUNT(*) FROM seance WHERE salle_id = ? AND dateHeure = ?";
         

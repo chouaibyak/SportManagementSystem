@@ -26,12 +26,16 @@ public class TestHistoriqueActivite {
         // ---------------------------------------------------------------
         System.out.println("\n--- 0. PRÉPARATION ---");
         // On crée un membre temporaire pour le test pour éviter les erreurs de clés étrangères
-        long timestamp = System.currentTimeMillis();
         Membre membreTest = new Membre(
-            "Testeur", "Histo", "2000-01-01", 
-            "histo." + timestamp + "@test.com", 
-            "0102030405", "Rue du Sport", 
-            TypePreference.CARDIO, TypeObjectif.ENDURANCE
+            "Testeur",
+            "Histo",
+            "2000-01-01",
+            "@test.com",
+            "0102030405",
+            "Rue du Sport",
+            "123",
+            TypeObjectif.ENDURANCE,
+            TypePreference.MUSCULATION
         );
         membreService.creerMembre(membreTest);
         
