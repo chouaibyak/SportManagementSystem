@@ -1,11 +1,18 @@
 package com.sport.repository;
 
-import com.sport.model.*;
-import com.sport.utils.DBConnection;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.sport.model.SeanceIndividuelle;
+import com.sport.model.TypeCours;
+import com.sport.model.TypeSeance;
+import com.sport.utils.DBConnection;
 
 public class SeanceIndividuelleRepository {
 
@@ -17,13 +24,17 @@ public class SeanceIndividuelleRepository {
                        "FROM seance s " +
                        "JOIN seanceindividuelle si ON s.id = si.seance_id";
 
+        // Stockage temporaire des IDs pour récupérer les objets complets après la fermeture du ResultSet
+        List<Integer> coachIds = new ArrayList<>();
+        List<Integer> membreIds = new ArrayList<>();
+        List<Integer> salleIds = new ArrayList<>();
+
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 SeanceIndividuelle si = new SeanceIndividuelle();
-
                 si.setId(rs.getInt("id"));
                 si.setNom(rs.getString("nom"));
                 si.setCapaciteMax(rs.getInt("capaciteMax"));
@@ -34,23 +45,29 @@ public class SeanceIndividuelleRepository {
                 si.setTarif(rs.getDouble("tarif"));
                 si.setNotesCoach(rs.getString("notesCoach"));
 
-                Salle salle = new Salle();
-                salle.setId(rs.getInt("salle_id"));
-                si.setSalle(salle);
-
-                Coach coach = new Coach();
-                coach.setId(rs.getInt("entraineur_id"));
-                si.setEntraineur(coach);
-
-                Membre membre = new Membre();
-                membre.setId(rs.getInt("membre_id"));
-                si.setMembre(membre);
+                // On stocke juste les IDs pour salle, coach et membre
+                salleIds.add(rs.getInt("salle_id"));
+                coachIds.add(rs.getInt("entraineur_id"));
+                membreIds.add(rs.getInt("membre_id"));
 
                 list.add(si);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
+            return list;
+        }
+
+        // Après la fermeture du ResultSet, récupérer les objets complets
+        SalleRepository salleRepo = new SalleRepository();
+        CoachRepository coachRepo = new CoachRepository();
+        MembreRepository membreRepo = new MembreRepository();
+
+        for (int i = 0; i < list.size(); i++) {
+            SeanceIndividuelle si = list.get(i);
+            si.setSalle(salleRepo.getSalleById(salleIds.get(i)));
+            si.setEntraineur(coachRepo.getCoachById(coachIds.get(i)));
+            si.setMembre(membreRepo.trouverParId(membreIds.get(i)));
         }
 
         return list;
@@ -78,16 +95,16 @@ public class SeanceIndividuelleRepository {
                 stmt1.setInt(3, si.getSalle().getId());
                 stmt1.setTimestamp(4, Timestamp.valueOf(si.getDateHeure()));
                 stmt1.setInt(5, si.getEntraineur().getId());
-                stmt1.setString(6, si.getTypeCours().toString()); // YOGA, MUSCULATION, etc.
-                stmt1.setString(7, si.getTypeSeance().toString()); // INDIVIDUELLE
+                stmt1.setString(6, si.getTypeCours().toString());
+                stmt1.setString(7, si.getTypeSeance().toString());
                 stmt1.setInt(8, si.getDuree());
-
                 stmt1.executeUpdate();
 
-                ResultSet rs = stmt1.getGeneratedKeys();
-                if (rs.next()) {
-                    generatedId = rs.getInt(1);
-                    si.setId(generatedId);
+                try (ResultSet rs = stmt1.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        generatedId = rs.getInt(1);
+                        si.setId(generatedId);
+                    }
                 }
 
                 stmt2.setInt(1, generatedId);

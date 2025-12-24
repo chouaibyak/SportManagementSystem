@@ -1,7 +1,7 @@
 package com.sport;
 
-import java.util.Date;
 import java.util.List;
+import java.util.Date;
 
 import com.sport.model.Salle;
 import com.sport.model.TypeSalle;
@@ -12,39 +12,40 @@ public class SalleServiceTest {
 
     public static void main(String[] args) {
 
-        SalleRepository salleRepository = new SalleRepository();
-        SalleService salleService = new SalleService(salleRepository);
+        SalleRepository repository = new SalleRepository();
+        SalleService service = new SalleService(repository);
+
+        // ⚠️ Ajuste l’ID si tu utilises une salle déjà existante
+        Salle salle = new Salle("Salle Test Main", 40, TypeSalle.MUSCULATION);
 
         // 1️⃣ CREATE
-        Salle salle = new Salle("Salle Test Service", 40, TypeSalle.MUSCULATION);
-        salleService.ajouterSalle(salle);
+        service.ajouterSalle(salle);
         System.out.println("✔ Salle ajoutée ID = " + salle.getId());
 
-        // 2️⃣ READ ALL
-        List<Salle> salles = salleService.getToutesLesSalles();
-        System.out.println("✔ Nombre de salles = " + salles.size());
-
-        for (Salle s : salles) {
-            System.out.println(
-                s.getId() + " | " + s.getNom() + " | " + s.getCapacite() + " | " + s.getType()
-            );
+        // 2️⃣ READ BY ID
+        Salle fetched = service.getSalleById(salle.getId());
+        if (fetched != null) {
+            System.out.println("✔ Salle récupérée : " + fetched.getNom() + " [" + fetched.getType() + "] - Capacité: " + fetched.getCapacite());
         }
 
-        // 3️⃣ READ BY ID
-        Salle found = salleService.getSalleById(salle.getId());
-        System.out.println("✔ Salle trouvée = " + found.getNom());
-
-        // 4️⃣ UPDATE
-        found.setCapacite(60);
-        boolean updated = salleService.modifierSalle(found);
+        // 3️⃣ UPDATE
+        fetched.setCapacite(60);
+        boolean updated = service.modifierSalle(fetched);
         System.out.println("✔ Salle modifiée = " + updated);
 
-        // 5️⃣ DISPONIBILITÉ (logic-only test)
-        boolean disponible = salleService.salleDisponible(found.getId(), new Date());
+        // 4️⃣ LIST ALL
+        List<Salle> all = service.getToutesLesSalles();
+        System.out.println("✔ Nombre total de salles = " + all.size());
+        for (Salle s : all) {
+            System.out.println("- " + s.getId() + " | " + s.getNom() + " | " + s.getCapacite() + " | " + s.getType());
+        }
+
+        // 5️⃣ CHECK AVAILABILITY (logic-only)
+        boolean disponible = service.salleDisponible(fetched.getId(), new Date());
         System.out.println("✔ Salle disponible = " + disponible);
 
         // 6️⃣ DELETE
-        boolean deleted = salleService.supprimerSalle(found.getId());
+        boolean deleted = service.supprimerSalle(fetched.getId());
         System.out.println("✔ Salle supprimée = " + deleted);
     }
 }
