@@ -25,7 +25,7 @@ public class SeanceCollectiveServiceTest {
 
         Coach coach = new Coach();
 
-        Membre membre = new Membre(null, null, null, null, null, null, null, null);
+        Membre membre = new Membre(null, null, null, null, null, null, null, null, null);
         membre.setId(1); // existing membre_id
         membre.setNom("Youssef");
 

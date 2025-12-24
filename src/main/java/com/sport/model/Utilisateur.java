@@ -18,7 +18,7 @@ public abstract class Utilisateur {
     }
 
     public Utilisateur(String nom, String prenom, String dateNaissance,
-                       String email, String telephone, String adresse) {
+                       String email, String telephone, String adresse, String motdePasse) {
         this.id = 0;
         this.nom = nom;
         this.prenom = prenom;
@@ -26,6 +26,7 @@ public abstract class Utilisateur {
         this.email = email;
         this.telephone = telephone;
         this.adresse = adresse;
+        this.motDePasse = motdePasse;
     }
      public Utilisateur(int id, String nom, String prenom, String dateNaissance,
                        String email, String telephone, String adresse) {

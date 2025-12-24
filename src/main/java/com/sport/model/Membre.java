@@ -28,11 +28,11 @@ public class Membre extends Utilisateur {
 
     // --- Constructeur 1 : CRÉATION (Sans ID) ---
     public Membre(String nom, String prenom, String dateNaissance, String email, 
-                  String telephone, String adresse, 
+                  String telephone, String adresse, String motDePasse,
                   TypeObjectif objectifSportif, TypePreference preferences) {
 
         
-        super(nom, prenom, dateNaissance, email, telephone, adresse);
+        super(nom, prenom, dateNaissance, email, telephone, adresse, motDePasse);
         
         this.objectifSportif = objectifSportif;
         this.preferences = preferences;
