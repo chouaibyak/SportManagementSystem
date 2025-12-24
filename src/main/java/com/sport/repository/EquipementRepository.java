@@ -48,7 +48,7 @@ public class EquipementRepository {
                 EtatEquipement etat = EtatEquipement.valueOf(rs.getString("etat"));
                 Date dateAchat = new Date(rs.getDate("dateAchat").getTime());
 
-                Equipement eq = new Equipement();
+                Equipement eq = new Equipement(nom, type, etat, dateAchat);
                 eq.setId(id);
 
                 return eq;
@@ -76,7 +76,7 @@ public class EquipementRepository {
                 EtatEquipement etat = EtatEquipement.valueOf(rs.getString("etat"));
                 Date dateAchat = new Date(rs.getDate("dateAchat").getTime());
 
-                Equipement eq = new Equipement();
+                Equipement eq = new Equipement(nom, type, etat, dateAchat);
                 eq.setId(id);
 
                 list.add(eq);

@@ -18,7 +18,7 @@ public class SalleRepository {
         String sql = "INSERT INTO salle (nom, capacite, type) VALUES (?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)) {
            
             stmt.setString(1, salle.getNom());
             stmt.setInt(2, salle.getCapacite());
