@@ -25,7 +25,7 @@ public class TestAdministrateur {
             "Dupont",
             "Jean",
             "1990-05-15",
-            "jean.dupont@test.com",
+            "chouaib@test.com",
             "0601020304",
             "10 Rue de la Paix",
             "123",
@@ -56,10 +56,10 @@ public class TestAdministrateur {
             "Martin",
             "Paul",
             "1985-03-20",
-            "paul.martin@test.com",
+            "paul@test.com",
             "0611223344",
             "Coach Street",
-            "Fitness"
+            "123"
         );
 
         adminService.ajouterCoach(coach);
@@ -127,7 +127,7 @@ public class TestAdministrateur {
         adminService.modifierSalle(salleBDD);
         System.out.println("Salle modifiée");
 
-        boolean dispo = adminService.verifierDisponibiliteSalle(salleBDD.getId(), "2025-01-10 10:00");
+        boolean dispo = adminService.verifierDisponibiliteSalle(salleBDD.getId(), "2025-01-10 10:00:00");
         System.out.println("Salle disponible ? " + dispo);
 
         adminService.supprimerSalle(salleBDD.getId());
@@ -139,7 +139,7 @@ public class TestAdministrateur {
         System.out.println("\n--- TEST RAPPORT ---");
 
         Rapport rapport = adminService.genererRapport(
-            "ACTIVITES",
+            "STATISTIQUES_GLOBALES",
             "2025-01-01",
             "2025-01-31"
         );
