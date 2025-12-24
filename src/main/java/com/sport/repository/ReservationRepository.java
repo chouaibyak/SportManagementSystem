@@ -256,4 +256,6 @@ public List<Reservation> getReservationsParPeriode(LocalDate debut, LocalDate fi
 
     return reservations;
 }
+
+
 }

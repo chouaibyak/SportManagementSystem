@@ -26,7 +26,7 @@ public class AdministrateurService {
     private EquipementRepository equipementRepository = new EquipementRepository();
     private SalleRepository salleRepository = new SalleRepository();
     private RapportService rapportService = new RapportService();
-    private RapportRepository rapportRepositoryRepository = new RapportRepositoryRepository();
+    private RapportRepository rapportRepository = new RapportRepository();
     
     // =========================
     // MEMBRES

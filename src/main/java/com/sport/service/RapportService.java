@@ -10,11 +10,9 @@ import com.sport.model.Membre;
 import com.sport.model.Rapport;
 import com.sport.model.Reservation;
 import com.sport.model.Seance;
-import com.sport.repository.AbonnementRepository;
-import com.sport.repository.MembreRepository;
-import com.sport.repository.RapportRepository;
-import com.sport.repository.ReservationRepository; 
-import com.sport.repository.SeanceRepository;
+import com.sport.model.TypeSeance;
+import com.sport.repository.*;
+
 
 public class RapportService {
     RapportRepository rapportRepository = new RapportRepository();
@@ -60,40 +58,43 @@ public class RapportService {
     }
     
     // Méthodes spécifiques pour chaque type de rapport
-    private String genererRapportOccupationCours(String dateDebut, String dateFin) {
-    LocalDate debut = LocalDate.parse(dateDebut);
-    LocalDate fin = LocalDate.parse(dateFin);
-
-    // Récupérer toutes les séances planifiées sur la période
-    List<Seance> seances = seanceRepository.getSeancesParPeriode(debut, fin);
-    if (seances.isEmpty()) return "Aucune séance programmée pour cette période.";
-
-    int totalCours = seances.size();
-    int totalCollectifs = 0;
-    int totalIndividuels = 0;
-    int participantsTotal = 0;
-    int capaciteTotal = 0;
-
-    for (Seance s : seances) {
-        if ("COLLECTIVE".equalsIgnoreCase(s.getTypeCours().toString())) {
-            totalCollectifs++;
-            participantsTotal += s.getNombreParticipants();
-            capaciteTotal += s.getCapaciteMax();
-        } else {
-            totalIndividuels++;
+ private String genererRapportOccupationCours(String dateDebut, String dateFin) {
+        LocalDate debut = LocalDate.parse(dateDebut);
+        LocalDate fin = LocalDate.parse(dateFin);
+        
+        List<Seance> seances = seanceRepository.getSeancesParPeriode(debut, fin);
+        
+        if (seances.isEmpty()) {
+            return "Aucune séance programmée pour cette période";
         }
+        
+        // Compter par type de séance
+        int collectives = 0;
+        int individuelles = 0;
+        int capaciteTotale = 0;
+        
+        for (Seance seance : seances) {
+            if (seance.getTypeSeance() == TypeSeance.COLLECTIVE) {
+                collectives++;
+                capaciteTotale += seance.getCapaciteMax();
+            } else if (seance.getTypeSeance() == TypeSeance.INDIVIDUELLE) {
+                individuelles++;
+            }
+        }
+        
+        int totalCours = seances.size();
+        double pctCollectives = (collectives * 100.0) / totalCours;
+        double pctIndividuelles = (individuelles * 100.0) / totalCours;
+        double capaciteMoyenne = collectives > 0 ? 
+            (double) capaciteTotale / collectives : 0;
+        
+        return String.format("Total cours programmés: %d | Collectifs: %d (%.0f%%) | " +
+                           "Individuels: %d (%.0f%%) | Capacité totale: %d places | " +
+                           "Capacité moyenne/cours: %.1f places",
+                           totalCours, collectives, pctCollectives, 
+                           individuelles, pctIndividuelles, capaciteTotale, 
+                           capaciteMoyenne);
     }
-
-    double tauxOccupation = capaciteTotal > 0 ? 
-        (participantsTotal * 100.0) / capaciteTotal : 0;
-
-    double pctCollectifs = (totalCollectifs * 100.0) / totalCours;
-
-    return String.format(
-        "Total cours: %d | Collectifs: %d (%.0f%%) | Individuels: %d | Participants: %d/%d | Taux occupation: %.1f%%",
-        totalCours, totalCollectifs, pctCollectifs, totalIndividuels, participantsTotal, capaciteTotal, tauxOccupation
-    );
-}
     
     private String genererRapportFrequentationSalle(String dateDebut, String dateFin) {
         LocalDate debut = LocalDate.parse(dateDebut);
@@ -130,50 +131,29 @@ public class RapportService {
     }
     
     private String genererRapportRevenusAbonnements(String dateDebut, String dateFin) {
-    LocalDate debut = LocalDate.parse(dateDebut);
-    LocalDate fin = LocalDate.parse(dateFin);
-
-    // Récupérer tous les abonnements sur la période
-    List<Abonnement> abonnements = abonnementRepository.getAbonnementsParPeriode(debut, fin);
-
+    List<Abonnement> abonnements = abonnementRepository.listerTout();
+    
     if (abonnements.isEmpty()) {
-        return "Aucun abonnement enregistré pour cette période";
+        return "Aucun abonnement dans le système";
     }
-
-    // Compteurs et revenus par type d'abonnement
+    
+    // Calculer sans filtrer par période
     int mensuel = 0, trimestriel = 0, annuel = 0;
-    double revenuMensuel = 0, revenuTrimestriel = 0, revenuAnnuel = 0;
-
+    double revenuTotal = 0;
+    
     for (Abonnement abo : abonnements) {
-        if (abo.getTypeAbonnement() != null) {
-            switch (abo.getTypeAbonnement().toString()) {
-                case "MENSUEL" -> {
-                    mensuel++;
-                    revenuMensuel += abo.getMontant();
-                }
-                case "TRIMESTRIEL" -> {
-                    trimestriel++;
-                    revenuTrimestriel += abo.getMontant();
-                }
-                case "ANNUEL" -> {
-                    annuel++;
-                    revenuAnnuel += abo.getMontant();
-                }
-            }
-        }
+        double montant = abo.getMontant();
+        revenuTotal += montant;
+        
+        String type = abo.getTypeAbonnement().name();
+        if (type.contains("Mensuel")) mensuel++;
+        else if (type.contains("Trimestriel")) trimestriel++;
+        else if (type.contains("Annuel")) annuel++;
     }
-
-    double revenuTotal = revenuMensuel + revenuTrimestriel + revenuAnnuel;
-    int totalAbonnements = abonnements.size();
-    double revenuMoyen = revenuTotal / totalAbonnements;
-
-    return String.format(
-        "Total abonnements: %d | Revenu total: %.2f€ | Revenu moyen: %.2f€ | " +
-        "Mensuel: %d (%.2f€) | Trimestriel: %d (%.2f€) | Annuel: %d (%.2f€)",
-        totalAbonnements, revenuTotal, revenuMoyen,
-        mensuel, revenuMensuel, trimestriel, revenuTrimestriel,
-        annuel, revenuAnnuel
-    );
+    
+    return String.format("Total abonnements: %d | Revenu total: %.2f€ | " +
+                       "Mensuel: %d | Trimestriel: %d | Annuel: %d",
+                       abonnements.size(), revenuTotal, mensuel, trimestriel, annuel);
 }
 
     
@@ -182,7 +162,7 @@ public class RapportService {
         LocalDate fin = LocalDate.parse(dateFin);
         
         // Récupérer tous les membres actifs de la période
-        List<Membre> membres = membreRepository.getMembresActifsParPeriode(debut, fin);
+        List<Membre> membres = membreRepository.listerMembres();
         
         if (membres.isEmpty()) {
             return "Aucun membre actif pour cette période";
@@ -229,7 +209,7 @@ public class RapportService {
     }
     
     // Récupérer tous les rapports
-    public List<Rapport> obtenirTousLesRapports() {
+    public List<Rapport> listerRapports() {
         return rapportRepository.listerRapports();
     }
     
