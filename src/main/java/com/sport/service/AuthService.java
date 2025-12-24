@@ -1,12 +1,16 @@
 package com.sport.service;
 
-import com.sport.utils.DBConnection;
-import com.sport.model.Membre;
-import com.sport.model.Coach;
-import com.sport.model.Administrateur;
-import com.sport.model.Utilisateur;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-import java.sql.*;
+import com.sport.model.Administrateur;
+import com.sport.model.Coach;
+import com.sport.model.Membre;
+import com.sport.model.Utilisateur;
+import com.sport.utils.DBConnection;
 
 public class AuthService {
 

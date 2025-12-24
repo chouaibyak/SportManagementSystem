@@ -140,7 +140,7 @@ public class AdministrateurService {
     }
 
     public List<Rapport> listerRapports() {
-        return rapportService.obtenirTousLesRapports();
+        return rapportService.listerRapports();
     }
 
     public void supprimerRapport(int rapportId) {

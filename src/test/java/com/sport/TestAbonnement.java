@@ -28,7 +28,8 @@ public class TestAbonnement {
             "Testeur", "Abo", "1999-01-01", 
             "abo." + timestamp + "@test.com", 
             "0600000000", "Paris", 
-            TypePreference.CARDIO, TypeObjectif.ENDURANCE
+            TypePreference.CARDIO,
+             TypeObjectif.ENDURANCE
         );
         membreService.creerMembre(membre);
 
