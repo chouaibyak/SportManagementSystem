@@ -8,6 +8,8 @@ import com.sport.model.Membre;
 import com.sport.model.Salle;
 import com.sport.model.SeanceCollective;
 import com.sport.model.TypeCours;
+import com.sport.model.TypeObjectif;
+import com.sport.model.TypePreference;
 import com.sport.model.TypeSalle;
 import com.sport.repository.SeanceCollectiveRepository;
 import com.sport.service.SeanceCollectiveService;
@@ -23,11 +25,11 @@ public class SeanceCollectiveServiceTest {
         Salle salle = new Salle("Salle A", 50, TypeSalle.MUSCULATION);
         salle.setId(1); // existing salle_id
 
-        Coach coach = new Coach();
-
-        Membre membre = new Membre(null, null, null, null, null, null, null, null);
-        membre.setId(1); // existing membre_id
-        membre.setNom("Youssef");
+        Coach coach = new Coach("Doe", "John", "1980-01-01", "john.doe@example.com", 
+                 "0612345678", "123 Rue de Paris");
+                                    
+        Membre membre = new Membre("Jhon","Wick","1975-05-05","jhon@email.com","0699877","45 Avenue des Champs",TypePreference.CARDIO,TypeObjectif.PERTE_POIDS);
+        
 
         // 1️⃣ CREATE
         SeanceCollective seance = new SeanceCollective(

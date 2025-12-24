@@ -3,6 +3,41 @@
   "configurations": [
     {
       "type": "java",
+      "name": "EquipementServiceTest",
+      "request": "launch",
+      "mainClass": "com.sport.EquipementServiceTest",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
+      "name": "SeanceIndividuelleServiceTest",
+      "request": "launch",
+      "mainClass": "com.sport.SeanceIndividuelleServiceTest",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
+      "name": "SeanceIndividuelleRepositoryTest",
+      "request": "launch",
+      "mainClass": "com.sport.SeanceIndividuelleRepositoryTest",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
+      "name": "SeanceCollectiveServiceTest",
+      "request": "launch",
+      "mainClass": "com.sport.SeanceCollectiveServiceTest",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
+      "name": "EquipementRepositoryTest",
+      "request": "launch",
+      "mainClass": "com.sport.EquipementRepositoryTest",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
       "name": "SeanceIndividuelleServiceTest",
       "request": "launch",
       "mainClass": "com.sport.service.SeanceIndividuelleServiceTest",
@@ -115,4 +150,7 @@
       "projectName": "SportManagementSystem"
     }
   ]
+
+
+  
 }

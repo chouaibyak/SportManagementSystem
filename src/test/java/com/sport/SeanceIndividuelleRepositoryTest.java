@@ -27,10 +27,10 @@ public class SeanceIndividuelleRepositoryTest {
         Coach coach = coachRepo.getCoachById(1);
         Membre membre = membreRepo.trouverParId(1);
 
-        if (salle == null || coach == null || membre == null) {
-            System.out.println("❌ Salle / Coach / Membre not found in DB");
-            return;
-        }
+       // if (salle == null || coach == null || membre == null) {
+        //    System.out.println("❌ Salle / Coach / Membre not found in DB");
+        //    return;
+        //}
 
         // 2️⃣ Create SeanceIndividuelle
         SeanceIndividuelle seance = new SeanceIndividuelle(
