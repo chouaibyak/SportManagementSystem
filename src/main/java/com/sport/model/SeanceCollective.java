@@ -10,15 +10,18 @@ public class SeanceCollective extends Seance {
     private List<Membre> listeMembers;
 
     // Constructeur corrigé pour accepter les bons paramètres
-    public SeanceCollective(int id, String nom, int capaciteMax, Salle salle, LocalDateTime dateHeure,
-                            Coach entraineur, TypeCours type, int duree, int placesDisponibles) {
-        super(id, nom, capaciteMax, salle, dateHeure, entraineur, type, duree);  // Appel du constructeur de la classe parente Seance
+    public SeanceCollective(int id, String nom, int capaciteMax, Salle salle,
+                            LocalDateTime dateHeure, Coach entraineur,
+                            TypeCours type, int duree, int placesDisponibles) {
+        super(id, nom, capaciteMax, salle, dateHeure, entraineur, type, duree);
+        this.typeSeance = TypeSeance.COLLECTIVE; // ✅
         this.placesDisponibles = placesDisponibles;
         this.listeMembers = new ArrayList<>();
     }
-
     public SeanceCollective() {
-        super(); // constructeur par défaut
+        super();
+        this.typeSeance = TypeSeance.COLLECTIVE; // ✅
+        this.listeMembers = new ArrayList<>();
     }
 
   

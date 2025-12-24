@@ -1,14 +1,22 @@
 package com.sport.repository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.sport.model.Membre;
 import com.sport.model.Reservation;
 import com.sport.model.Seance;
-import com.sport.model.StatutReservation; // Assurez-vous d'avoir cet Enum
+import com.sport.model.StatutReservation;
+import com.sport.model.TypeCours;
+import com.sport.model.TypeSeance;
 import com.sport.utils.DBConnection;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ReservationRepository {
 
@@ -169,35 +177,89 @@ public class ReservationRepository {
             r.setDateReservation(new java.util.Date(ts.getTime()));
         }
 
-        // Conversion String -> Enum StatutReservation
-        String statutStr = rs.getString("statut");
-        if (statutStr != null) {
-            try {
-                r.setStatut(StatutReservation.valueOf(statutStr));
-            } catch (IllegalArgumentException e) {
-                System.out.println("Statut inconnu : " + statutStr);
-            }
+    // Conversion String -> Enum StatutReservation
+    String statutStr = rs.getString("statut");
+    if (statutStr != null) {
+        try {
+            r.setStatut(StatutReservation.valueOf(statutStr));
+        } catch (IllegalArgumentException e) {
+            System.out.println("Statut inconnu : " + statutStr);
         }
-
-        // --- GESTION DES RELATIONS (Membre et Séance) ---
-        // Ici, on crée des objets temporaires contenant seulement l'ID.
-        // Si vous avez besoin de toutes les infos du membre (nom, email...), 
-        // il faudrait utiliser MembreRepository.trouverParId() ici.
-        
-        int membreId = rs.getInt("membre_id");
-        if (membreId > 0) {
-            Membre m = new Membre();
-            m.setId(membreId);
-            r.setMembre(m);
-        }
-
-        int seanceId = rs.getInt("seance_id");
-        if (seanceId > 0) {
-            Seance s = new Seance();
-            s.setId(seanceId);
-            r.setSeance(s);
-        }
-
-        return r;
     }
+
+    // --- GESTION DES RELATIONS (Membre et Séance) ---
+    // Ici, on crée des objets temporaires contenant seulement l'ID.
+    // Si vous avez besoin de toutes les infos du membre (nom, email...), 
+    // il faudrait utiliser MembreRepository.trouverParId() ici.
+    
+    int membreId = rs.getInt("membre_id");
+    if (membreId > 0) {
+        Membre m = new Membre();
+        m.setId(membreId);
+        r.setMembre(m);
+    }
+
+    int seanceId = rs.getInt("seance_id");
+    if (seanceId > 0) {
+        Seance s = new Seance();
+        s.setId(seanceId);
+        r.setSeance(s);
+    }
+
+    return r;
+}
+
+// --- READ : Récupérer les réservations par période ---
+public List<Reservation> getReservationsParPeriode(LocalDate debut, LocalDate fin) {
+    List<Reservation> reservations = new ArrayList<>();
+    
+    // CORRECTION : utiliser s.type au lieu de s.typeCours
+    String sql = "SELECT r.*, s.id as seance_id, s.nom, s.type, s.typeSeance, " +
+                 "s.capaciteMax, s.dateHeure " +
+                 "FROM reservation r " +
+                 "JOIN seance s ON r.seance_id = s.id " +
+                 "WHERE DATE(s.dateHeure) BETWEEN ? AND ?";
+    
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        
+        stmt.setDate(1, java.sql.Date.valueOf(debut));
+        stmt.setDate(2, java.sql.Date.valueOf(fin));
+        
+        ResultSet rs = stmt.executeQuery();
+        
+        while (rs.next()) {
+            Reservation reservation = new Reservation();
+            reservation.setId(rs.getInt("id"));
+            // ... autres champs de réservation
+            
+            // Créer l'objet Seance associé
+            Seance seance = new Seance();
+            seance.setId(rs.getInt("seance_id"));
+            seance.setNom(rs.getString("nom"));
+            seance.setCapaciteMax(rs.getInt("capaciteMax"));
+            seance.setDateHeure(rs.getTimestamp("dateHeure").toLocalDateTime());
+            
+            // CORRECTION : utiliser 'type' au lieu de 'typeCours'
+            String typeStr = rs.getString("type");
+            if (typeStr != null) {
+                seance.setTypeCours(TypeCours.valueOf(typeStr));
+            }
+            
+            String typeSeanceStr = rs.getString("typeSeance");
+            if (typeSeanceStr != null) {
+                seance.setTypeSeance(TypeSeance.valueOf(typeSeanceStr));
+            }
+            
+            reservation.setSeance(seance);
+            reservations.add(reservation);
+        }
+        
+    } catch (SQLException e) {
+        System.out.println("Erreur getReservationsParPeriode : " + e.getMessage());
+    }
+    
+    return reservations;
+}
+
 }

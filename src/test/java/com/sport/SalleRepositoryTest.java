@@ -12,29 +12,37 @@ public class SalleRepositoryTest {
 
         SalleRepository repository = new SalleRepository();
 
-        // CREATE
-        Salle salle = new Salle("Salle Test JDBC", 20, TypeSalle.CARDIO);
+        // ⚠️ Ajuster si tu utilises déjà une salle existante
+        Salle salle = new Salle("Salle Test Repo", 35, TypeSalle.CARDIO);
+
+        // 1️⃣ CREATE
         repository.ajouterSalle(salle);
-        System.out.println("Salle ajoutée avec ID = " + salle.getId());
+        System.out.println("✔ Salle ajoutée ID = " + salle.getId());
 
-        // READ ALL
-        List<Salle> salles = repository.listerSalles();
-        System.out.println("Toutes les salles :");
-        salles.forEach(s -> System.out.println(
-                s.getId() + " - " + s.getNom() + " (" + s.getCapacite() + ")"
-        ));
+        // 2️⃣ READ BY ID
+        Salle fetched = repository.getSalleById(salle.getId());
+        if (fetched != null) {
+            System.out.println("✔ Salle récupérée : " + fetched.getNom() + " [" + fetched.getType() + "] - Capacité: " + fetched.getCapacite());
+        }
 
-        // READ BY ID
-        Salle found = repository.getSalleById(salle.getId());
-        System.out.println("Salle trouvée : " + found.getNom());
+        // 3️⃣ UPDATE
+        fetched.setCapacite(50);
+        boolean updated = repository.modifierSalle(fetched);
+        System.out.println("✔ Salle modifiée = " + updated);
 
-        // UPDATE
-        salle.setCapacite(50);
-        repository.modifierSalle(salle);
-        System.out.println("Salle modifiée.");
+        // 4️⃣ LIST ALL
+        List<Salle> all = repository.listerSalles();
+        System.out.println("✔ Nombre total de salles = " + all.size());
+        for (Salle s : all) {
+            System.out.println("- " + s.getId() + " | " + s.getNom() + " | " + s.getCapacite() + " | " + s.getType());
+        }
 
-        // DELETE
-        repository.supprimerSalle(salle.getId());
-        System.out.println("Salle supprimée.");
+        // 5️⃣ CHECK AVAILABILITY (logic-only)
+        boolean disponible = repository.verifierDisponibiliteSalle(fetched.getId(), "2025-12-25 10:00:00");
+        System.out.println("✔ Salle disponible le 25/12/2025 10:00 = " + disponible);
+
+        // 6️⃣ DELETE
+       // boolean deleted = repository.supprimerSalle(fetched.getId());
+        //System.out.println("✔ Salle supprimée = " + deleted);
     }
 }

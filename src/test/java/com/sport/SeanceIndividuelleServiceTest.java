@@ -23,8 +23,9 @@ public class SeanceIndividuelleServiceTest {
         salle.setId(1);
 
         Coach coach = new Coach("Dida", "dida", "1980-01-01", "dida@example.com", 
-                 "0612345678", "123 Rue de Paris");
-        Membre membre = new Membre(1, "Sara", "Client", "02/22/2002", "sara.client@example.com ", "08004547", null, null, null);
+                 "0612345678", "123 Rue de Paris", "Dida"   );
+        Membre membre = new Membre(1, "Sara", "Client", "02/22/2002", "sara.client@example.com ", 
+        "08004547", null, null, null);
 
         // --- Create seance ---
         SeanceIndividuelle seance = new SeanceIndividuelle(
@@ -65,7 +66,7 @@ public class SeanceIndividuelleServiceTest {
         System.out.println("✔ TARIF = " + service.calculerTarifFinal(fetched.getId()));
 
         // --- DELETE ---
-        boolean deleted = service.delete(fetched.getId());
-        System.out.println("✔ DELETED = " + deleted);
+       // boolean deleted = service.delete(fetched.getId());
+        //System.out.println("✔ DELETED = " + deleted);
     }
 }

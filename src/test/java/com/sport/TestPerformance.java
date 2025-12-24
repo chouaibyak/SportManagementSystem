@@ -26,10 +26,15 @@ public class TestPerformance {
         System.out.println("\n--- 0. PRÉPARATION ---");
         long timestamp = System.currentTimeMillis();
         Membre membre = new Membre(
-            "Testeur", "Perf", "1995-05-20", 
-            "perf." + timestamp + "@test.com", 
-            "0102030405", "Gym Street", 
-            TypePreference.CARDIO, TypeObjectif.RENFORCEMENT
+            "Testeur",
+            "Perf",
+            "1995-05-20",
+            "perf." + timestamp + "@test.com",
+            "0102030405",
+            "Gym Street",
+            "123",
+            TypeObjectif.RENFORCEMENT,
+            TypePreference.CARDIO 
         );
         membreService.creerMembre(membre);
         

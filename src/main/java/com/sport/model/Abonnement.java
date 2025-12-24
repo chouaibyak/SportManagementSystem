@@ -10,6 +10,8 @@ public class Abonnement {
     private TypeAbonnement typeAbonnement;
     private StatutAbonnement statutAbonnement;
     private boolean autorenouvellement;
+    private double montant;
+
 
     // Constructeur vide
     public Abonnement() {}
@@ -38,6 +40,9 @@ public class Abonnement {
     public boolean isAutorenouvellement() { return autorenouvellement; }
     public void setAutorenouvellement(boolean autorenouvellement) { this.autorenouvellement = autorenouvellement; }
 
+    public double getMontant() { return montant; }
+    public void setMontant(double montant) { this.montant = montant; }
+    
     // Méthodes Métier
     public void activerAbonnement() {
         this.statutAbonnement = StatutAbonnement.ACTIF;

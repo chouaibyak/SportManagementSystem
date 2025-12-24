@@ -24,8 +24,17 @@ public class SeanceIndividuelleRepositoryTest {
 
         // 1️⃣ Load existing data from DB (IMPORTANT)
         Salle salle = salleRepo.getSalleById(1);
-        Coach coach = coachRepo.getCoachById(1);
-        Membre membre = membreRepo.trouverParId(1);
+  
+        System.out.println("Salle récupérée : " + salle);
+
+        Coach coach = coachRepo.getCoachById(25);
+         System.out.println("Coach récupéré : " + coach);
+        Membre membre = membreRepo.trouverParId(22);
+         System.out.println("Membre récupéré : " + membre);
+
+
+
+
 
        // if (salle == null || coach == null || membre == null) {
         //    System.out.println("❌ Salle / Coach / Membre not found in DB");
@@ -46,6 +55,10 @@ public class SeanceIndividuelleRepositoryTest {
                 150.0,
                 "Bonne séance"
         );
+        seance.setNom("Coaching privé");
+        seance.setEntraineur(coach); // ✅ OBLIGATOIRE
+        seance.setMembre(membre);   // ✅ OBLIGATOIRE
+        seance.setSalle(salle);     // ✅ OBLIGATOIRE
 
         // 3️⃣ INSERT
         repo.ajouter(seance);

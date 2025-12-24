@@ -15,17 +15,16 @@ public class Coach extends Utilisateur {
     // --- Constructor 1: Creation (No ID) ---
     public Coach(String nom, String prenom, String dateNaissance, String email, 
                  String telephone, String adresse, String motDePasse) {
-        super(nom, prenom, dateNaissance, email, telephone, adresse);
-        this.motDePasse = motDePasse;
+        super(nom, prenom, dateNaissance, email, telephone, adresse, motDePasse);
         this.specialites = new ArrayList<>();
         this.seances = new ArrayList<>();
         this.performancesSuivies = new ArrayList<>();
     }
 
     // --- Constructor 2: From DB (With ID) ---
-    public Coach(String nom, String prenom, String dateNaissance, String email, 
+    public Coach(int id, String nom, String prenom, String dateNaissance, String email, 
                  String telephone, String adresse) {
-        super( nom, prenom, dateNaissance, email, telephone, adresse);
+        super(id, nom, prenom, dateNaissance, email, telephone, adresse);
        
         this.specialites = new ArrayList<>();
         this.seances = new ArrayList<>();
@@ -76,12 +75,20 @@ public class Coach extends Utilisateur {
     /*  public String getMotDePasse() { return motDePasse; }
     public void setMotDePasse(String motDePasse) { this.motDePasse = motDePasse; }*/
 
-    public List<String> getSpecialites() { return specialites; }
-    public void setSpecialites(List<String> specialites) { this.specialites = specialites; }
-
     public List<Seance> getSeances() { return seances; }
     public void setSeances(List<Seance> seances) { this.seances = seances; }
 
+
+    public List<String> getSpecialites() {
+        return specialites;
+    }
+
+    public void setSpecialites(List<String> specialites) {
+        this.specialites = specialites;
+    }
+
+
+    
     public List<Performance> getPerformancesSuivies() { return performancesSuivies; }
     public void setPerformancesSuivies(List<Performance> performancesSuivies) { this.performancesSuivies = performancesSuivies; }
 }
