@@ -76,9 +76,6 @@ public class Coach extends Utilisateur {
     /*  public String getMotDePasse() { return motDePasse; }
     public void setMotDePasse(String motDePasse) { this.motDePasse = motDePasse; }*/
 
-    public List<String> getSpecialites() { return specialites; }
-    public void setSpecialites(List<String> specialites) { this.specialites = specialites; }
-
     public List<Seance> getSeances() { return seances; }
     public void setSeances(List<Seance> seances) { this.seances = seances; }
 
