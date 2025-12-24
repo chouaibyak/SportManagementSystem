@@ -28,14 +28,15 @@ public class TestMembreApp {
         String emailUnique = "jean.dupont" + timestamp + "@test.com";
 
         Membre nouveauMembre = new Membre(
-            "Dupont", 
-            "Jean", 
-            "1990-05-15", 
-            emailUnique,  // <--- On utilise l'email unique ici
-            "0601020304", 
+            "Dupont",
+            "Jean",
+            "1990-05-15",
+            emailUnique,
+            "0601020304",
             "10 Rue de la Paix, Paris",
-            TypePreference.CARDIO,    
-            TypeObjectif.PERTE_POIDS  
+            "123",
+            TypeObjectif.PERTE_POIDS, 
+            TypePreference.CARDIO     
         );
 
         service.creerMembre(nouveauMembre);

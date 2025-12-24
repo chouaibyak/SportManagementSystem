@@ -1,5 +1,6 @@
 package com.sport.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,8 @@ public class Membre extends Utilisateur {
     // --- Attributs ---
     private TypeObjectif objectifSportif;
     private TypePreference preferences;
+     private Double noteSatisfaction;  // Note de 1 à 5
+    private LocalDate dateEvaluation; // Date de la dernière évaluation
 
     // Relations (Listes)
     private List<HistoriqueActivite> historiqueActivite;
@@ -24,10 +27,12 @@ public class Membre extends Utilisateur {
     }
 
     // --- Constructeur 1 : CRÉATION (Sans ID) ---
-    public Membre(String nom, String prenom, String dateNaissance,
-                       String email, String telephone, String adresse, TypePreference preferences, TypeObjectif objectifSportif) {
+    public Membre(String nom, String prenom, String dateNaissance, String email, 
+                  String telephone, String adresse, String motDePasse,
+                  TypeObjectif objectifSportif, TypePreference preferences) {
+
         
-        super(nom, prenom, dateNaissance, email, telephone, adresse);
+        super(nom, prenom, dateNaissance, email, telephone, adresse, motDePasse);
         
         this.objectifSportif = objectifSportif;
         this.preferences = preferences;
@@ -92,4 +97,26 @@ public class Membre extends Utilisateur {
 
     public List<Performance> getPerformances() { return performances; }
     public void setPerformances(List<Performance> performances) { this.performances = performances; }
+
+    public Double getNoteSatisfaction() {
+        return noteSatisfaction;
+    }
+    
+    public void setNoteSatisfaction(Double noteSatisfaction) {
+        // Validation : note entre 1 et 5
+        if (noteSatisfaction != null && (noteSatisfaction < 1 || noteSatisfaction > 5)) {
+            throw new IllegalArgumentException("La note doit être entre 1 et 5");
+        }
+        this.noteSatisfaction = noteSatisfaction;
+        this.dateEvaluation = LocalDate.now(); // Mettre à jour la date automatiquement
+    }
+    
+    public LocalDate getDateEvaluation() {
+        return dateEvaluation;
+    }
+    
+    public void setDateEvaluation(LocalDate dateEvaluation) {
+        this.dateEvaluation = dateEvaluation;
+    }
+    
 }

@@ -26,9 +26,6 @@ public class TestReservation {
         System.out.println("\n--- 1. CRÉATION MEMBRE ---");
         long ts = System.currentTimeMillis();
         Membre membre = new Membre(
-            "Testeur", "Resa", "1998-05-05", 
-            "resa." + ts + "@test.com", "0612345678", "Paris", 
-            TypePreference.CARDIO, TypeObjectif.RENFORCEMENT
         );
         membreService.creerMembre(membre);
         

@@ -1,13 +1,17 @@
 package com.sport.repository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.sport.model.Membre;
 import com.sport.model.TypeObjectif;
 import com.sport.model.TypePreference;
 import com.sport.utils.DBConnection;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MembreRepository {
 

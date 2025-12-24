@@ -78,8 +78,8 @@ public class CoachRepository {
 
     String sqlUser = """
         INSERT INTO UTILISATEUR
-        (nom, prenom, dateNaissance, email, telephone, adresse)
-        VALUES (?, ?, ?, ?, ?, ?)
+        (nom, prenom, dateNaissance, email, telephone, adresse, mot_de_passe)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     """;
 
     String sqlCoach = "INSERT INTO COACH (id_utilisateur) VALUES (?)";
@@ -104,6 +104,7 @@ public class CoachRepository {
             stmtUser.setString(4, coach.getEmail());
             stmtUser.setString(5, coach.getTelephone());
             stmtUser.setString(6, coach.getAdresse());
+            stmtUser.setString(7, coach.getMotDePasse()); 
 
             stmtUser.executeUpdate();
 

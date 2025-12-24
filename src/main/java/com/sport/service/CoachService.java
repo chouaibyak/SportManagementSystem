@@ -4,18 +4,27 @@ import com.sport.model.Coach;
 import com.sport.model.Membre;
 import com.sport.model.Performance;
 import com.sport.model.Seance;
+import com.sport.model.SeanceCollective;
 import com.sport.repository.CoachRepository;
 import com.sport.repository.PerformanceRepository;
+import com.sport.repository.SeanceCollectiveRepository;
+import com.sport.repository.SeanceIndividuelleRepository;
 import com.sport.repository.SeanceRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CoachService {
 
     // On instancie le repository pour pouvoir l'utiliser
-    private CoachRepository coachRepository = new CoachRepository();
-    private SeanceRepository seanceRepository = new SeanceRepository();
-    private PerformanceRepository performanceRepository = new PerformanceRepository();
+     private final CoachRepository coachRepository = new CoachRepository();
+    private final SeanceRepository seanceRepository = new SeanceRepository();
+    private final PerformanceRepository performanceRepository = new PerformanceRepository();
+    private final SeanceCollectiveRepository seanceCollectiveRepository = new SeanceCollectiveRepository();
+    private final SeanceIndividuelleRepository seanceIndividuelleRepository = new SeanceIndividuelleRepository();
 
     // ============================================================
     // GESTION DES COACHS
@@ -151,4 +160,40 @@ public boolean verifierDisponibiliteSalle(Coach coach, Seance seance) {
             System.out.println("Erreur : Membre ou Performance null.");
         }
     }
+
+    
+    // ============================================================
+    // DASHBOARD / STATISTIQUES
+    // ============================================================
+
+    public long getNbSeancesToday(Coach coach) {
+        LocalDate today = LocalDate.now();
+        List<Seance> seances = seanceRepository.getSeancesByCoach(coach.getId());
+
+        return seances.stream()
+                .filter(s -> s.getDateHeure().toLocalDate().equals(today))
+                .count();
+    }
+
+    public long getNbMembresSuivis(Coach coach) {
+        List<SeanceCollective> seances = seanceCollectiveRepository.getAll().stream()
+                .filter(s -> s.getEntraineur().getId() == coach.getId())
+                .collect(Collectors.toList());
+
+        return seances.stream()
+                .flatMap(s -> s.getListeMembers().stream())
+                .distinct()
+                .count();
+    }
+
+    public Seance getNextSeance(Coach coach) {
+        LocalDateTime now = LocalDateTime.now();
+        List<Seance> seances = seanceRepository.getSeancesByCoach(coach.getId());
+
+        return seances.stream()
+                .filter(s -> s.getDateHeure().isAfter(now))
+                .min(Comparator.comparing(Seance::getDateHeure))
+                .orElse(null);
+    }
+
 }
