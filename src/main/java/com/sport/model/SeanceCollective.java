@@ -18,8 +18,10 @@ public class SeanceCollective extends Seance {
     }
 
     public SeanceCollective() {
-        super(); // constructeur par défaut
-    }
+    super();
+    this.listeMembers = new ArrayList<>(); // <-- Toujours initialisée
+}
+
 
   
     // Getters et setters
