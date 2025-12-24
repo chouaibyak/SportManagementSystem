@@ -1,10 +1,19 @@
 package com.sport;
 
-import com.sport.model.*;
-import com.sport.service.AdministrateurService;
-
 import java.util.Date;
 import java.util.List;
+
+import com.sport.model.Coach;
+import com.sport.model.Equipement;
+import com.sport.model.EtatEquipement;
+import com.sport.model.Membre;
+import com.sport.model.Rapport;
+import com.sport.model.Salle;
+import com.sport.model.TypeEquipement;
+import com.sport.model.TypeObjectif;
+import com.sport.model.TypePreference;
+import com.sport.model.TypeSalle;
+import com.sport.service.AdministrateurService;
 
 public class TestAdministrateur {
 
@@ -37,15 +46,17 @@ public class TestAdministrateur {
         System.out.println("Membre ajouté");
 
         List<Membre> membres = adminService.listerMembres();
-        System.out.println("Liste des membres : " + membres.size());
+        System.out.println("Nombre de membres : " + membres.size());
 
-        Membre membreBDD = membres.get(0);
-        membreBDD.setAdresse("Nouvelle adresse");
-        adminService.modifierMembre(membreBDD);
-        System.out.println("Membre modifié");
+        if (!membres.isEmpty()) {
+            Membre membreBDD = membres.get(membres.size() - 1); // dernier ajouté
+            membreBDD.setAdresse("Nouvelle adresse");
+            adminService.modifierMembre(membreBDD);
+            System.out.println("Membre modifié");
 
-        adminService.supprimerMembre(membreBDD.getId());
-        System.out.println("Membre supprimé");
+            adminService.supprimerMembre(membreBDD.getId());
+            System.out.println("Membre supprimé");
+        }
 
         // ==================================================
         // 2. TEST COACH
@@ -68,13 +79,23 @@ public class TestAdministrateur {
         List<Coach> coachs = adminService.listerCoachs();
         System.out.println("Nombre de coachs : " + coachs.size());
 
-        Coach coachBDD = coachs.get(0);
-        coachBDD.getSpecialites().add("CrossFit");
-        adminService.modifierCoach(coachBDD);
-        System.out.println("Coach modifié");
+        if (!coachs.isEmpty()) {
+            Coach coachBDD = coachs.get(coachs.size() - 1); // dernier ajouté
 
-        adminService.supprimerCoach(coachBDD.getId());
-        System.out.println("Coach supprimé");
+            // modifier infos utilisateur
+            coachBDD.setTelephone("0699999999");
+
+            // modifier spécialités si gérées via le modèle
+            if (coachBDD.getSpecialites() != null) {
+                coachBDD.getSpecialites().add("CrossFit");
+            }
+
+            adminService.modifierCoach(coachBDD);
+            System.out.println("Coach modifié");
+
+            adminService.supprimerCoach(coachBDD.getId());
+            System.out.println("Coach supprimé");
+        }
 
         // ==================================================
         // 3. TEST EQUIPEMENT
@@ -82,10 +103,10 @@ public class TestAdministrateur {
         System.out.println("\n--- TEST EQUIPEMENT ---");
 
         Equipement equipement = new Equipement(
-             "Tapis de course",             // nom
-            TypeEquipement.VELO,         // type
-            EtatEquipement.EN_MAINTENANCE, 
-            new Date()     
+            "Tapis de course",
+            TypeEquipement.VELO,
+            EtatEquipement.EN_MAINTENANCE,
+            new Date()
         );
 
         adminService.ajouterEquipement(equipement);
@@ -94,27 +115,26 @@ public class TestAdministrateur {
         List<Equipement> equipements = adminService.listerEquipements();
         System.out.println("Nombre d'équipements : " + equipements.size());
 
-        Equipement equipBDD = equipements.get(0);
-        equipBDD.setEtat(EtatEquipement.EN_MAINTENANCE);
-        adminService.modifierEquipement(equipBDD);
-        System.out.println("Équipement modifié");
+        if (!equipements.isEmpty()) {
+            Equipement equipBDD = equipements.get(equipements.size() - 1);
+            equipBDD.setEtat(EtatEquipement.EN_MAINTENANCE);
+            adminService.modifierEquipement(equipBDD);
+            System.out.println("Équipement modifié");
 
-        List<Equipement> enPanne = adminService.listerEquipementsParEtat(EtatEquipement.EN_MAINTENANCE);
-        System.out.println("Équipements en panne : " + enPanne.size());
+            List<Equipement> enMaintenance =
+                adminService.listerEquipementsParEtat(EtatEquipement.EN_MAINTENANCE);
+            System.out.println("Équipements en maintenance : " + enMaintenance.size());
 
-        adminService.supprimerEquipement(equipBDD.getId());
-        System.out.println("Équipement supprimé");
+            adminService.supprimerEquipement(equipBDD.getId());
+            System.out.println("Équipement supprimé");
+        }
 
         // ==================================================
         // 4. TEST SALLE
         // ==================================================
         System.out.println("\n--- TEST SALLE ---");
 
-        Salle salle = new Salle(
-            "Salle Cardio",
-            30,
-            TypeSalle.CARDIO
-        );
+        Salle salle = new Salle("Salle Cardio", 30, TypeSalle.CARDIO);
 
         adminService.ajouterSalle(salle);
         System.out.println("Salle ajoutée");
@@ -122,16 +142,18 @@ public class TestAdministrateur {
         List<Salle> salles = adminService.listerSalles();
         System.out.println("Nombre de salles : " + salles.size());
 
-        Salle salleBDD = salles.get(0);
-        salleBDD.setCapacite(40);
-        adminService.modifierSalle(salleBDD);
-        System.out.println("Salle modifiée");
+        if (!salles.isEmpty()) {
+            Salle salleBDD = salles.get(salles.size() - 1);
+            salleBDD.setCapacite(40);
+            adminService.modifierSalle(salleBDD);
+            System.out.println("Salle modifiée");
 
         boolean dispo = adminService.verifierDisponibiliteSalle(salleBDD.getId(), "2025-01-10 10:00:00");
         System.out.println("Salle disponible ? " + dispo);
 
-        adminService.supprimerSalle(salleBDD.getId());
-        System.out.println("Salle supprimée");
+            adminService.supprimerSalle(salleBDD.getId());
+            System.out.println("Salle supprimée");
+        }
 
         // ==================================================
         // 5. TEST RAPPORT
@@ -150,7 +172,7 @@ public class TestAdministrateur {
         System.out.println("Nombre de rapports : " + rapports.size());
 
         if (!rapports.isEmpty()) {
-            adminService.supprimerRapport(rapports.get(0).getId());
+            adminService.supprimerRapport(rapports.get(rapports.size() - 1).getId());
             System.out.println("Rapport supprimé");
         }
 
