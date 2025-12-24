@@ -23,13 +23,10 @@ public class TestAbonnement {
         // 0. PRÉPARATION : Création d'un Membre (Obligatoire)
         // ---------------------------------------------------------------
         System.out.println("\n--- 0. PRÉPARATION (Création Membre) ---");
-        long timestamp = System.currentTimeMillis();
         Membre membre = new Membre(
             "Testeur", "Abo", "1999-01-01", 
-            "abo." + timestamp + "@test.com", 
-            "0600000000", "Paris", 
-            TypePreference.CARDIO,
-             TypeObjectif.ENDURANCE
+            "@test.com" , "0600000000", 
+            "Paris", TypeObjectif.PERTE_POIDS, TypePreference.CARDIO
         );
         membreService.creerMembre(membre);
 

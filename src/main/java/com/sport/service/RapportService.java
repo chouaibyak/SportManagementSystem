@@ -128,7 +128,7 @@ public class RapportService {
         totalVisites, yoga, musculation, cardio, pilates
     );
 }
-    }
+
     
     private String genererRapportRevenusAbonnements(String dateDebut, String dateFin) {
     List<Abonnement> abonnements = abonnementRepository.listerTout();
@@ -217,3 +217,4 @@ public class RapportService {
     public void supprimerRapport(int rapportId) {
         rapportRepository.supprimerRapport(rapportId);
     }
+}

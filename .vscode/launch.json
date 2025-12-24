@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "TestSalleApp",
+      "request": "launch",
+      "mainClass": "com.sport.TestSalleApp",
+      "projectName": "demo"
+    },
+    {
+      "type": "java",
       "name": "SeanceIndividuelleServiceTest",
       "request": "launch",
       "mainClass": "com.sport.service.SeanceIndividuelleServiceTest",

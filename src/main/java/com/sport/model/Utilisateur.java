@@ -32,7 +32,7 @@ public abstract class Utilisateur {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
-        this.dateNaissance = dateNaissance;
+        this.dateNaissance = dateNaissance.toString();
         this.email = email;
         this.telephone = telephone;
         this.adresse = adresse;
