@@ -15,8 +15,6 @@ import com.sport.repository.SalleRepository;
 import com.sport.repository.RapportRepository;
 
 import com.sport.model.Rapport;
-import com.sport.model.TypeRapport;
-import com.sport.service.RapportService;
 
 public class AdministrateurService {
 

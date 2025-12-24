@@ -33,6 +33,7 @@ public class TestHistoriqueActivite {
             "@test.com",
             "0102030405",
             "Rue du Sport",
+            "123",
             TypeObjectif.ENDURANCE,
             TypePreference.MUSCULATION
         );

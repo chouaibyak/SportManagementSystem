@@ -26,7 +26,7 @@ public class TestAbonnement {
         Membre membre = new Membre(
             "Testeur", "Abo", "1999-01-01", 
             "@test.com" , "0600000000", 
-            "Paris", TypeObjectif.PERTE_POIDS, TypePreference.CARDIO
+            "Paris", "123", TypeObjectif.PERTE_POIDS, TypePreference.CARDIO
         );
         membreService.creerMembre(membre);
 

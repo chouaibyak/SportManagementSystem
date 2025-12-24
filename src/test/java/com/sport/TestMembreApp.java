@@ -34,6 +34,7 @@ public class TestMembreApp {
             emailUnique,
             "0601020304",
             "10 Rue de la Paix, Paris",
+            "123",
             TypeObjectif.PERTE_POIDS, 
             TypePreference.CARDIO     
         );

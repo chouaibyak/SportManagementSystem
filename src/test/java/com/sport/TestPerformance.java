@@ -32,6 +32,7 @@ public class TestPerformance {
             "perf." + timestamp + "@test.com",
             "0102030405",
             "Gym Street",
+            "123",
             TypeObjectif.RENFORCEMENT,
             TypePreference.CARDIO 
         );
