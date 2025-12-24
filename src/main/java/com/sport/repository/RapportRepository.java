@@ -1,6 +1,9 @@
 package com.sport.repository;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +15,7 @@ public class RapportRepository {
 
 // CREATE
     public void ajouterRapport(Rapport rapport) {
-        String sql = "INSERT INTO RAPPORT (type, dateDebut, dateFin, donnees, dateCreation) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO RAPPORT (type, dateDebut, dateFin, donnees) VALUES (?, ?, ?, ?)";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -21,7 +24,6 @@ public class RapportRepository {
             stmt.setString(2, rapport.getDateDebut());
             stmt.setString(3, rapport.getDateFin());
             stmt.setString(4, rapport.getDonnees());
-            stmt.setString(5, rapport.getDateDebut());
             
             stmt.executeUpdate();
              } catch (SQLException e) {
@@ -31,7 +33,7 @@ public class RapportRepository {
 // READ (Tout)
     public List<Rapport> listerRapports() {
         List<Rapport> rapports = new ArrayList<>();
-        String sql = "SELECT * FROM RAPPORT ORDER BY dateCreation DESC";
+        String sql = "SELECT * FROM RAPPORT";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -110,7 +112,6 @@ public class RapportRepository {
         rapport.setDateDebut(rs.getString("dateDebut"));
         rapport.setDateFin(rs.getString("dateFin"));
         rapport.setDonnees(rs.getString("donnees"));
-        rapport.setDateDebut(rs.getString("dateCreation"));
         
         return rapport;
     }  
