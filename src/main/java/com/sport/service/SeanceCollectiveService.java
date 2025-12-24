@@ -5,6 +5,10 @@ import java.util.List;
 import com.sport.model.Membre;
 import com.sport.model.SeanceCollective;
 import com.sport.repository.SeanceCollectiveRepository;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.stream.Collectors;
+
 
 public class SeanceCollectiveService {
 
@@ -81,4 +85,42 @@ public class SeanceCollectiveService {
             System.out.println("[Notification] " + membre.getNom() + ": " + message);
         }
     }
+
+
+// --- MÉTHODES POUR DASHBOARD COACH ---
+
+// Retourne toutes les séances du coach donné
+public List<SeanceCollective> getSeancesByCoach(int coachId) {
+    return getAll().stream()
+            .filter(s -> s.getEntraineur().getId() == coachId)
+            .collect(Collectors.toList());
+}
+
+// Nombre de séances aujourd'hui pour un coach
+public long getNbSeancesToday(int coachId) {
+    LocalDate today = LocalDate.now();
+    return getSeancesByCoach(coachId).stream()
+            .filter(s -> s.getDateHeure().toLocalDate().isEqual(today))
+            .count();
+}
+
+// Prochaine séance du coach
+public SeanceCollective getNextSeance(int coachId) {
+    LocalDateTime now = LocalDateTime.now();
+    return getSeancesByCoach(coachId).stream()
+            .filter(s -> s.getDateHeure().isAfter(now))
+            .sorted((s1, s2) -> s1.getDateHeure().compareTo(s2.getDateHeure()))
+            .findFirst()
+            .orElse(null);
+}
+
+// Nombre total de membres suivis par le coach
+public long getNbMembresSuivis(int coachId) {
+    return getSeancesByCoach(coachId).stream()
+            .flatMap(s -> s.getListeMembers().stream())
+            .distinct()
+            .count();
+}
+
+
 }

@@ -163,4 +163,45 @@ public boolean verifierDisponibiliteSalle(Salle salle, java.time.LocalDateTime d
         }
         return false;
     }
+
+// Récupérer toutes les séances d'un coach
+public List<Seance> getSeancesByCoach(int coachId) {
+    List<Seance> liste = new ArrayList<>();
+    String query = "SELECT * FROM seance WHERE entraineur_id = ?";
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(query)) {
+
+        stmt.setInt(1, coachId);
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            Seance s = new Seance();
+            s.setId(rs.getInt("id"));
+            s.setNom(rs.getString("nom"));
+            s.setCapaciteMax(rs.getInt("capaciteMax"));
+            s.setDuree(rs.getInt("duree"));
+            s.setDateHeure(rs.getTimestamp("dateHeure").toLocalDateTime());
+
+            // Salle
+            Salle salle = new Salle();
+            salle.setId(rs.getInt("salle_id"));
+            s.setSalle(salle);
+
+            // Coach
+            Coach coach = new Coach();
+            coach.setId(rs.getInt("entraineur_id"));
+            s.setEntraineur(coach);
+
+            liste.add(s);
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return liste;
+}
+
+
 }
