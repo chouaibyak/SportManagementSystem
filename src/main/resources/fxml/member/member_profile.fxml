@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.sport.controller.member.MemberProfileController"
+            fitToWidth="true" style="-fx-background-color: transparent;" styleClass="profile-root">
+
+    <VBox spacing="20" style="-fx-background-color: #f5f5f5;">
+        <padding>
+            <Insets top="20" right="30" bottom="20" left="30"/>
+        </padding>
+
+        <!-- EN-TÊTE AVEC PHOTO DE PROFIL -->
+        <VBox styleClass="dashboard-card" spacing="20" alignment="CENTER">
+            <padding>
+                <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
+
+            <StackPane>
+                <ImageView fx:id="imgProfile" fitWidth="150" fitHeight="150" preserveRatio="true">
+                    <clip>
+                        <Circle centerX="75" centerY="75" radius="75"/>
+                    </clip>
+                </ImageView>
+            </StackPane>
+
+            <VBox alignment="CENTER" spacing="5">
+                <Label fx:id="lblNomComplet" text="Nom Complet"
+                       style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                <Label fx:id="lblEmail" text="email@example.com"
+                       style="-fx-font-size: 14; -fx-text-fill: #7f8c8d;"/>
+            </VBox>
+
+            <Button fx:id="btnChangerPhoto" text="📷 Changer la photo"
+                    onAction="#handleChangerPhoto" styleClass="btn-primary"/>
+        </VBox>
+
+        <!-- ONGLETS -->
+        <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE">
+
+            <!-- ONGLET 1 : INFORMATIONS PERSONNELLES -->
+            <Tab text="👤 Informations Personnelles">
+                <content>
+                    <VBox spacing="20" styleClass="dashboard-card">
+                        <padding>
+                            <Insets top="20" right="30" bottom="20" left="30"/>
+                        </padding>
+
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="Informations Personnelles"
+                                   style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="btnModifier" text="Modifier"
+                                    onAction="#handleModifier" styleClass="btn-primary"/>
+                            <Button fx:id="btnAnnuler" text="✕ Annuler"
+                                    onAction="#handleAnnuler" styleClass="btn-secondary"
+                                    visible="false" managed="false">
+                                <HBox.margin>
+                                    <Insets left="10"/>
+                                </HBox.margin>
+                            </Button>
+                        </HBox>
+
+                        <Separator/>
+
+                        <GridPane hgap="20" vgap="15">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="50"/>
+                                <ColumnConstraints percentWidth="50"/>
+                            </columnConstraints>
+
+                            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Label text="Nom *" styleClass="form-label"/>
+                                <TextField fx:id="txtNom" styleClass="form-field" disable="true"/>
+                            </VBox>
+
+                            <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Label text="Prénom *" styleClass="form-label"/>
+                                <TextField fx:id="txtPrenom" styleClass="form-field" disable="true"/>
+                            </VBox>
+
+                            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                <Label text="Date de Naissance *" styleClass="form-label"/>
+                                <DatePicker fx:id="dateNaissance" styleClass="form-field"
+                                            maxWidth="Infinity" disable="true"/>
+                            </VBox>
+
+                            <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <Label text="Email *" styleClass="form-label"/>
+                                <TextField fx:id="txtEmail" styleClass="form-field" disable="true"/>
+                            </VBox>
+
+                            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                                <Label text="Téléphone" styleClass="form-label"/>
+                                <TextField fx:id="txtTelephone" styleClass="form-field" disable="true"/>
+                            </VBox>
+
+                            <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                <Label text="Adresse" styleClass="form-label"/>
+                                <TextField fx:id="txtAdresse" styleClass="form-field" disable="true"/>
+                            </VBox>
+                        </GridPane>
+                    </VBox>
+                </content>
+            </Tab>
+
+            <!-- ONGLET 2 : OBJECTIFS ET PRÉFÉRENCES -->
+            <Tab text="🎯 Objectifs &amp; Préférences">
+                <content>
+                    <VBox spacing="20" styleClass="dashboard-card">
+                        <padding>
+                            <Insets top="20" right="30" bottom="20" left="30"/>
+                        </padding>
+
+                        <Label text="Objectifs et Préférences Sportives"
+                               style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+                        <Separator/>
+
+                        <GridPane hgap="20" vgap="15">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="50"/>
+                                <ColumnConstraints percentWidth="50"/>
+                            </columnConstraints>
+
+                            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Label text="Objectif Sportif *" styleClass="form-label"/>
+                                <ComboBox fx:id="comboObjectif" styleClass="form-field"
+                                          maxWidth="Infinity" disable="true"/>
+                            </VBox>
+
+                            <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Label text="Préférence *" styleClass="form-label"/>
+                                <ComboBox fx:id="comboPreference" styleClass="form-field"
+                                          maxWidth="Infinity" disable="true"/>
+                            </VBox>
+                        </GridPane>
+                    </VBox>
+                </content>
+            </Tab>
+
+            <!-- ONGLET 3 : SÉCURITÉ -->
+            <Tab text="🔒 Sécurité">
+                <content>
+                    <VBox spacing="20" styleClass="dashboard-card">
+                        <padding>
+                            <Insets top="20" right="30" bottom="20" left="30"/>
+                        </padding>
+
+                        <Label text="Changer le Mot de Passe"
+                               style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+                        <Separator/>
+
+                        <VBox spacing="15" maxWidth="400">
+                            <VBox spacing="5">
+                                <Label text="Ancien Mot de Passe *" styleClass="form-label"/>
+                                <PasswordField fx:id="txtAncienMdp"
+                                               promptText="••••••••" styleClass="form-field"/>
+                            </VBox>
+
+                            <VBox spacing="5">
+                                <Label text="Nouveau Mot de Passe *" styleClass="form-label"/>
+                                <PasswordField fx:id="txtNouveauMdp"
+                                               promptText="••••••••" styleClass="form-field"/>
+                            </VBox>
+
+                            <VBox spacing="5">
+                                <Label text="Confirmer le Nouveau Mot de Passe *" styleClass="form-label"/>
+                                <PasswordField fx:id="txtConfirmMdp"
+                                               promptText="••••••••" styleClass="form-field"/>
+                            </VBox>
+
+                            <Button fx:id="btnChangerMdp" text="Changer le Mot de Passe"
+                                    onAction="#handleChangerMotDePasse"
+                                    styleClass="btn-warning" prefWidth="250"/>
+                        </VBox>
+
+                       
+                    </VBox>
+                </content>
+            </Tab>
+
+        </TabPane>
+
+    </VBox>
+</ScrollPane>

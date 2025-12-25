@@ -27,6 +27,7 @@ com\sport\model\Salle.class
 com\sport\model\TypeRapport.class
 com\sport\service\SalleService.class
 com\sport\App.class
+com\sport\controller\member\MemberProfileController.class
 com\sport\model\Abonnement.class
 com\sport\controller\member\MemberLayoutController.class
 com\sport\service\AuthService.class
