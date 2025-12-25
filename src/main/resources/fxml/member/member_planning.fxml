@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane stylesheets="@../../css/style.css" 
+           xmlns="http://javafx.com/javafx/21" 
+           xmlns:fx="http://javafx.com/fxml/1" 
+           fx:controller="com.sport.controller.member.MemberPlanningController">
+
+    <VBox spacing="20.0">
+        <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+
+        <VBox>
+            <Label text="PLANNING DES SÉANCES" styleClass="title-label"/>
+            <Label text="Réservez vos prochains cours" styleClass="subtitle-label"/>
+        </VBox>
+
+        <TableView fx:id="tablePlanning" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colDate" text="Date &amp; Heure" prefWidth="140"/>
+                <TableColumn fx:id="colCours" text="Activité" prefWidth="150"/>
+                <TableColumn fx:id="colCoach" text="Coach" prefWidth="120"/>
+                <TableColumn fx:id="colSalle" text="Salle" prefWidth="100"/>
+                <TableColumn fx:id="colPlaces" text="Disponibilité" prefWidth="100"/>
+                <!-- Colonne magique pour le bouton -->
+                <TableColumn fx:id="colAction" text="Action" prefWidth="140"/>
+            </columns>
+            <placeholder>
+                <Label text="Aucune séance disponible cette semaine."/>
+            </placeholder>
+        </TableView>
+    </VBox>
+</StackPane>
