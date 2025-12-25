@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.sport.controller.member.MemberPerformanceController"
+            fitToWidth="true" style="-fx-background-color: transparent;">
+
+    <VBox spacing="20" style="-fx-background-color: #f5f5f5;">
+        <padding>
+            <Insets top="20" right="30" bottom="20" left="30"/>
+        </padding>
+
+        <!-- EN-TÊTE -->
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <VBox VBox.vgrow="ALWAYS">
+                <Label text="📊 Ma Progression" 
+                       style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                <Label text="Suivez l'évolution de vos performances corporelles" 
+                       style="-fx-font-size: 14; -fx-text-fill: #7f8c8d;"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <ComboBox fx:id="comboPeriode" styleClass="form-field" prefWidth="180"/>
+            <Button text="🔄 Rafraîchir" onAction="#handleRafraichir" styleClass="btn-primary"/>
+            <Button text="📥 Exporter" onAction="#handleExporter" styleClass="btn-primary"/>
+        </HBox>
+
+        <!-- STATISTIQUES ACTUELLES -->
+        <HBox spacing="15">
+            <!-- Poids -->
+            <VBox styleClass="stat-card" spacing="8" HBox.hgrow="ALWAYS">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+                <Label text="⚖️" style="-fx-font-size: 28;"/>
+                <Label text="Poids Actuel" styleClass="stat-label"/>
+                <Label fx:id="lblPoidsActuel" text="-- kg" styleClass="stat-value" 
+                       style="-fx-font-size: 24;"/>
+                <Label fx:id="lblEvolutionPoids" text="-- kg" 
+                       style="-fx-font-size: 13; -fx-text-fill: #7f8c8d;"/>
+            </VBox>
+            
+            <!-- IMC -->
+            <VBox styleClass="stat-card" spacing="8" HBox.hgrow="ALWAYS">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+                <Label text="📏" style="-fx-font-size: 28;"/>
+                <Label text="IMC" styleClass="stat-label"/>
+                <Label fx:id="lblIMCActuel" text="--" styleClass="stat-value" 
+                       style="-fx-font-size: 24;"/>
+                <Label fx:id="lblEvolutionIMC" text="--" 
+                       style="-fx-font-size: 13; -fx-text-fill: #7f8c8d;"/>
+            </VBox>
+            
+            <!-- Tour de taille -->
+            <VBox styleClass="stat-card" spacing="8" HBox.hgrow="ALWAYS">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+                <Label text="📐" style="-fx-font-size: 28;"/>
+                <Label text="Tour de Taille" styleClass="stat-label"/>
+                <Label fx:id="lblTourTailleActuel" text="-- cm" styleClass="stat-value" 
+                       style="-fx-font-size: 24;"/>
+                <Label fx:id="lblEvolutionTourTaille" text="-- cm" 
+                       style="-fx-font-size: 13; -fx-text-fill: #7f8c8d;"/>
+            </VBox>
+            
+            <!-- Force -->
+            <VBox styleClass="stat-card" spacing="8" HBox.hgrow="ALWAYS">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+                <Label text="💪" style="-fx-font-size: 28;"/>
+                <Label text="Force" styleClass="stat-label"/>
+                <Label fx:id="lblForceActuelle" text="--" styleClass="stat-value" 
+                       style="-fx-font-size: 24;"/>
+            </VBox>
+            
+            <!-- Endurance -->
+            <VBox styleClass="stat-card" spacing="8" HBox.hgrow="ALWAYS">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+                <Label text="🏃" style="-fx-font-size: 28;"/>
+                <Label text="Endurance" styleClass="stat-label"/>
+                <Label fx:id="lblEnduranceActuelle" text="--" styleClass="stat-value" 
+                       style="-fx-font-size: 24;"/>
+            </VBox>
+        </HBox>
+
+        <!-- OBJECTIF DE POIDS -->
+        <VBox styleClass="dashboard-card" spacing="15">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            
+            <Label text="🎯 Mon Objectif de Poids" 
+                   style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+            
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Label text="Poids objectif :" styleClass="form-label"/>
+                <TextField fx:id="txtPoidsObjectif" promptText="Ex: 75" 
+                          styleClass="form-field" prefWidth="100"/>
+                <Label text="kg" styleClass="form-label"/>
+                <Button text="✓ Définir" onAction="#handleDefinirObjectif" styleClass="btn-success"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="lblProgressPourcentage" text="0%" 
+                       style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #667eea;"/>
+            </HBox>
+            
+            <VBox spacing="8">
+                <ProgressBar fx:id="progressPoids" progress="0" prefWidth="Infinity" 
+                            prefHeight="25" styleClass="custom-progress"/>
+                <Label fx:id="lblObjectifPoids" text="Définissez un objectif" 
+                       style="-fx-text-fill: #7f8c8d; -fx-font-size: 12;"/>
+            </VBox>
+        </VBox>
+
+        <!-- GRAPHIQUES -->
+        <GridPane hgap="20" vgap="20">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50"/>
+                <ColumnConstraints percentWidth="50"/>
+            </columnConstraints>
+            
+            <!-- Graphique Poids -->
+            <VBox styleClass="dashboard-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+                <LineChart fx:id="chartPoids" title="Évolution du Poids" 
+                          legendVisible="false" prefHeight="250">
+                    <xAxis>
+                        <CategoryAxis side="BOTTOM" label="Date"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis side="LEFT" label="Poids (kg)"/>
+                    </yAxis>
+                </LineChart>
+            </VBox>
+            
+            <!-- Graphique IMC -->
+            <VBox styleClass="dashboard-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+                <LineChart fx:id="chartIMC" title="Évolution de l'IMC" 
+                          legendVisible="false" prefHeight="250">
+                    <xAxis>
+                        <CategoryAxis side="BOTTOM" label="Date"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis side="LEFT" label="IMC"/>
+                    </yAxis>
+                </LineChart>
+            </VBox>
+            
+            <!-- Graphique Tour de Taille -->
+            <VBox styleClass="dashboard-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+                <LineChart fx:id="chartTourTaille" title="Évolution du Tour de Taille" 
+                          legendVisible="false" prefHeight="250">
+                    <xAxis>
+                        <CategoryAxis side="BOTTOM" label="Date"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis side="LEFT" label="Tour (cm)"/>
+                    </yAxis>
+                </LineChart>
+            </VBox>
+            
+            <!-- Graphique Comparaison Force/Endurance -->
+            <VBox styleClass="dashboard-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+                <BarChart fx:id="chartComparaison" title="Force &amp; Endurance : Avant/Après"
+         prefHeight="250">
+
+                    <xAxis>
+                        <CategoryAxis side="BOTTOM"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis side="LEFT" label="Score"/>
+                    </yAxis>
+                </BarChart>
+            </VBox>
+        </GridPane>
+
+        <!-- HISTORIQUE DES MESURES -->
+        <VBox styleClass="dashboard-card" spacing="15">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            
+            <HBox alignment="CENTER_LEFT">
+                <Label text="📋 Historique des Mesures" 
+                       style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="lblDateDerniereMesure" text="Dernière mesure : --" 
+                       style="-fx-text-fill: #7f8c8d; -fx-font-size: 12;"/>
+            </HBox>
+            
+            <TableView fx:id="tableHistorique" prefHeight="300" styleClass="table-view">
+                <columns>
+                    <TableColumn fx:id="colDate" text="Date" prefWidth="120"/>
+                    <TableColumn fx:id="colPoids" text="Poids" prefWidth="100"/>
+                    <TableColumn fx:id="colIMC" text="IMC" prefWidth="80"/>
+                    <TableColumn fx:id="colTourTaille" text="Tour Taille" prefWidth="110"/>
+                    <TableColumn fx:id="colForce" text="Force" prefWidth="80"/>
+                    <TableColumn fx:id="colEndurance" text="Endurance" prefWidth="100"/>
+                </columns>
+            </TableView>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

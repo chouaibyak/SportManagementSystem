@@ -19,6 +19,7 @@ com\sport\repository\SalleRepository.class
 com\sport\controller\common\LoginController.class
 com\sport\model\Performance.class
 com\sport\controller\coach\CoachSeancesController.class
+com\sport\controller\member\MemberPerformanceController$PerformanceDisplay.class
 com\sport\model\StatutAbonnement.class
 com\sport\model\TypeObjectif.class
 com\sport\service\AbonnementService.class
@@ -28,6 +29,7 @@ com\sport\model\TypeRapport.class
 com\sport\service\SalleService.class
 com\sport\App.class
 com\sport\controller\member\MemberProfileController.class
+com\sport\controller\member\MemberPerformanceController.class
 com\sport\model\Abonnement.class
 com\sport\controller\member\MemberLayoutController.class
 com\sport\service\AuthService.class
