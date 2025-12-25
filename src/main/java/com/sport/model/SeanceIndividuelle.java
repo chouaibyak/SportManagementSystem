@@ -16,10 +16,12 @@ public class SeanceIndividuelle extends Seance {
         this.membre = membre;
         this.tarif = tarif;
         this.notesCoach = notesCoach;
+        this.typeSeance = TypeSeance.INDIVIDUELLE;
     }
 
         public SeanceIndividuelle() {
         super(); // constructeur par défaut
+        this.typeSeance = TypeSeance.INDIVIDUELLE;
     }
 
 
