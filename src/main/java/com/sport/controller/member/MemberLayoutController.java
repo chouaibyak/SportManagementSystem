@@ -1,6 +1,9 @@
 package com.sport.controller.member;
 
+import java.io.IOException;
+
 import com.sport.utils.UserSession;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +13,6 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 
 public class MemberLayoutController {
 
@@ -59,6 +61,8 @@ public class MemberLayoutController {
 
     @FXML
     private void afficherProfil(ActionEvent event) {
+        // Crée ce fichier fxml plus tard
+        System.out.println("CLICK PROFIL OK");
         chargerVue("/fxml/member/member_profile.fxml"); 
         setButtonActive(btnProfil);
     }
@@ -66,18 +70,23 @@ public class MemberLayoutController {
     // --- LOGIQUE DE CHANGEMENT DE VUE ---
 
     private void chargerVue(String fxmlPath) {
-        try {
-            if (getClass().getResource(fxmlPath) == null) {
-                System.err.println("ERREUR : Fichier introuvable -> " + fxmlPath);
-                return;
-            }
-            
-            Parent vue = FXMLLoader.load(getClass().getResource(fxmlPath));
-            contentArea.getChildren().setAll(vue);
-            
-        } catch (IOException e) {
-            e.printStackTrace();
+       try {
+        var url = getClass().getResource(fxmlPath);
+        if (url == null) {
+            System.err.println("ERREUR : Fichier introuvable -> " + fxmlPath);
+            return;
         }
+
+        FXMLLoader loader = new FXMLLoader(url);
+        Parent vue = loader.load();   // si ça plante, on verras l'exception
+        contentArea.getChildren().setAll(vue);
+
+        System.out.println("Vue chargée: " + fxmlPath);
+
+    } catch (Exception e) {
+        System.err.println("ERREUR chargement vue: " + fxmlPath);
+        e.printStackTrace();
+    }
     }
 
     /**
