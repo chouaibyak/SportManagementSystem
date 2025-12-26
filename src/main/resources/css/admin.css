@@ -1,0 +1,186 @@
+/* --- CONFIGURATION GLOBALE --- */
+.root { /* --- NavBar --- */
+    -fx-background-color: #deec14;
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+/* --- SIDEBAR ADMIN --- */
+.sidebar {
+    -fx-background-color: #2c3e50;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);
+}
+
+.sidebar-logo {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+    -fx-padding: 20 0 5 0;
+}
+
+.sidebar-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #0edfee;
+    -fx-alignment: CENTER;
+    -fx-padding: 0 0 20 0;
+}
+.nav {
+    -fx-background-color: #2c3e50;
+    -fx-padding: 10 0;
+}
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #16c4f0;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 15 25;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-border-width: 0 0 0 4;
+    -fx-border-color: transparent;
+}
+
+.nav-button:hover {
+    -fx-background-color: #34495e;
+    -fx-text-fill: white;
+}
+
+.nav-button-active {
+    -fx-background-color: #34495e;
+    -fx-text-fill: white;
+    -fx-border-color: #27ae60;
+    -fx-font-weight: bold;
+}
+
+.nav-button-logout {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e74c3c;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 15 25;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-border-top-color: #34495e;
+    -fx-border-top-width: 1;
+    -fx-border-top-style: solid;
+}
+
+.nav-button-logout:hover {
+    -fx-background-color: #c0392b;
+    -fx-text-fill: white;
+}
+
+/* --- CARTES DASHBOARD ADMIN --- */
+.dashboard-card {
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+    -fx-min-width: 200;
+}
+
+.card-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+}
+
+.card-value {
+    -fx-font-size: 24px;
+    -fx-text-fill: #27ae60; /* Green accent like primary buttons */
+    -fx-font-weight: bold;
+}
+
+/* --- TEXT FIELDS, COMBO BOX, DATE PICKER --- */
+.text-field, .password-field, .date-picker, .combo-box {
+    -fx-background-color: #ecf0f1;
+    -fx-background-radius: 5;
+    -fx-border-color: transparent;
+    -fx-padding: 10;
+    -fx-prompt-text-fill: #95a5a6;
+    -fx-font-size: 13px;
+}
+
+.text-field:focused, .password-field:focused, .date-picker:focused, .combo-box:focused {
+    -fx-background-color: white;
+    -fx-border-color: #27ae60;
+    -fx-border-radius: 5;
+}
+
+.combo-box .list-cell, .date-picker .text-field {
+    -fx-background-color: transparent; 
+}
+
+/* --- BOUTONS --- */
+.button-primary {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.button-primary:hover {
+    -fx-background-color: #2ecc71;
+}
+
+.button-secondary {
+    -fx-background-color: #95a5a6;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.button-secondary:hover {
+    -fx-background-color: #7f8c8d;
+}
+
+.link-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2980b9;
+    -fx-cursor: hand;
+    -fx-underline: true;
+}
+
+.link-button:hover {
+    -fx-text-fill: #3498db;
+}
+
+/* --- TABLES --- */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #dcdcdc;
+    -fx-border-radius: 5;
+    -fx-padding: 10;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #ecf0f1;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-size: 30;
+}
+
+/* --- NOTIFICATIONS BOX --- */
+.notifications-box {
+    -fx-background-color: #ecf0f1;
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+    -fx-spacing: 5;
+}
+
+/* --- LABELS --- */
+.label-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.label-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #7f8c8d;
+}

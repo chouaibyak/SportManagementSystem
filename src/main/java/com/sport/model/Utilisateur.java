@@ -11,19 +11,20 @@ public abstract class Utilisateur {
     protected String motDePasse;
     protected String telephone;
     protected String adresse;
-
+    protected String role;
     // ----- Constructeurs -----
 
     public Utilisateur() {
     }
 
     public Utilisateur(String nom, String prenom, String dateNaissance,
-                       String email, String telephone, String adresse, String motdePasse) {
+                       String email, String telephone, String adresse, String motdePasse, String role) {
         this.id = 0;
         this.nom = nom;
         this.prenom = prenom;
         this.dateNaissance = dateNaissance;
         this.email = email;
+        this.role = role;
         this.telephone = telephone;
         this.adresse = adresse;
         this.motDePasse = motdePasse;
@@ -99,6 +100,13 @@ public abstract class Utilisateur {
 
     public void setAdresse(String adresse) {
         this.adresse = adresse;
+    }
+
+    public String getRole() {
+        return role;
+    }
+    public void setRole(String role) {
+        this.role = role;
     }
 }
 

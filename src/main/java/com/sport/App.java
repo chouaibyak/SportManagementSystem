@@ -1,13 +1,13 @@
 package com.sport;
 
+import java.io.IOException;
+import java.net.URL;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.net.URL;
 
 public class App extends Application {
 
@@ -19,8 +19,11 @@ public class App extends Application {
         App.stage = stage; // On sauvegarde le stage
         
         // On démarre sur le Register pour tester, ou Login selon ton choix
-        String fxmlPath = "/fxml/common/register.fxml"; 
-        
+        //String fxmlPath = "/fxml/common/register.fxml"; 
+       String fxmlPath = "/fxml/admin/admin_layout.fxml";
+        //String fxmlPath = "/fxml/admin/member-admin.fxml";
+
+
         URL fxmlUrl = getClass().getResource(fxmlPath);
         if (fxmlUrl == null) {
             System.err.println("ERREUR : Fichier FXML introuvable : " + fxmlPath);
@@ -29,6 +32,7 @@ public class App extends Application {
 
         FXMLLoader loader = new FXMLLoader(fxmlUrl);
         Parent root = loader.load();
+        
         
         // CORRECTION ICI :
         // 1. On ne met PAS de taille fixe (400, 550). On laisse le root décider.

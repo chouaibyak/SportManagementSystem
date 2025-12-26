@@ -15,7 +15,7 @@ public class Coach extends Utilisateur {
     // --- Constructor 1: Creation (No ID) ---
     public Coach(String nom, String prenom, String dateNaissance, String email, 
                  String telephone, String adresse, String motDePasse) {
-        super(nom, prenom, dateNaissance, email, telephone, adresse, motDePasse);
+        super(nom, prenom, dateNaissance, email, telephone, adresse, motDePasse, "coach");
         this.specialites = new ArrayList<>();
         this.seances = new ArrayList<>();
         this.performancesSuivies = new ArrayList<>();
