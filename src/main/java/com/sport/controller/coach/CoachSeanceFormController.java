@@ -1,20 +1,34 @@
 package com.sport.controller.coach;
 
-import com.sport.model.*;
-import com.sport.repository.SalleRepository;
-import com.sport.repository.SeanceCollectiveRepository;
-import com.sport.repository.SeanceIndividuelleRepository;
-import com.sport.utils.UserSession;
-import javafx.collections.FXCollections;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.stage.Stage;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import com.sport.model.Coach;
+import com.sport.model.Salle;
+import com.sport.model.Seance;
+import com.sport.model.SeanceCollective;
+import com.sport.model.SeanceIndividuelle;
+import com.sport.model.TypeCours;
+import com.sport.model.TypeSeance;
+import com.sport.model.Utilisateur;
+import com.sport.repository.SalleRepository;
+import com.sport.repository.SeanceCollectiveRepository;
+import com.sport.repository.SeanceIndividuelleRepository;
+import com.sport.utils.UserSession;
+
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 public class CoachSeanceFormController {
 
@@ -128,7 +142,7 @@ public class CoachSeanceFormController {
 
         // Vérifier disponibilité salle
         Salle salleChoisie = cbSalle.getValue();
-           boolean dispo = salleRepo.verifierDisponibiliteSalle(salleChoisie.getId(), dateHeure);
+        boolean dispo = salleRepo.verifierDisponibiliteSalle(salleChoisie.getId(), dateHeure);
         if (!dispo && seance == null) {
             showAlert("Erreur", "La salle sélectionnée n'est pas disponible à cette date et heure.");
             return;

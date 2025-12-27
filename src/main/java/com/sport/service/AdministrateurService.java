@@ -1,21 +1,20 @@
 package com.sport.service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.sport.model.Coach;
 import com.sport.model.Equipement;
 import com.sport.model.EtatEquipement;
 import com.sport.model.Membre;
+import com.sport.model.Rapport;
 import com.sport.model.Salle;
 import com.sport.model.TypeSalle;
 import com.sport.repository.CoachRepository;
 import com.sport.repository.EquipementRepository;
 import com.sport.repository.MembreRepository;
-import com.sport.repository.SalleRepository;
 import com.sport.repository.RapportRepository;
-
-import com.sport.model.Rapport;
+import com.sport.repository.SalleRepository;
 
 public class AdministrateurService {
 
@@ -127,7 +126,7 @@ public class AdministrateurService {
         return salleRepository.listerSallesParType(type);
     }
 
-    public boolean verifierDisponibiliteSalle(int salleId, String dateHeure) {
+    public boolean verifierDisponibiliteSalle(int salleId, LocalDateTime dateHeure) {
         return salleRepository.verifierDisponibiliteSalle(salleId, dateHeure);
     }
 

@@ -7,12 +7,9 @@
 
 <ScrollPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.sport.controller.member.MemberSettingsController"
-            fitToWidth="true" style="-fx-background-color: transparent;">
+            fitToWidth="true" style="-fx-background-color: transparent;" styleClass = "settings-root">
 
-<styleClass>
-        <String fx:value="settings-root"/>
- </styleClass>
-
+       
     <VBox spacing="20" style="-fx-background-color: #f5f5f5;">
         <padding>
             <Insets top="20" right="30" bottom="20" left="30"/>
@@ -20,7 +17,7 @@
 
         <!-- EN-TÊTE -->
         <VBox spacing="5">
-            <Label text="⚙️ Paramètres" 
+            <Label text="Paramètres" 
                    style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
             <Label text="Gérez la confidentialité et l'apparence de votre compte" 
                    style="-fx-font-size: 14; -fx-text-fill: #7f8c8d;"/>
@@ -32,7 +29,7 @@
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
             
-            <Label text="🔒 Confidentialité et Partage" 
+            <Label text="Confidentialité et Partage" 
                    style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
             <Separator/>
             
@@ -65,7 +62,6 @@
             <!-- Info confidentialité -->
             <HBox spacing="10" alignment="CENTER_LEFT" 
                  style="-fx-background-color: #e3f2fd; -fx-padding: 15; -fx-background-radius: 8;">
-                <Label text="ℹ️" style="-fx-font-size: 20;"/>
                 <VBox spacing="3">
                     <Label text="Protection de vos données" 
                            style="-fx-font-weight: bold; -fx-text-fill: #1565c0;"/>
@@ -81,7 +77,7 @@
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
             
-            <Label text="🎨 Apparence et Affichage" 
+            <Label text=" Apparence et Affichage" 
                    style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
             <Separator/>
             
@@ -95,8 +91,8 @@
             <VBox spacing="8">
                 <Label text="Thème :" styleClass="form-label"/>
                 <HBox spacing="20">
-                    <RadioButton fx:id="radioModeClair" text="☀️ Mode Clair"/>
-                    <RadioButton fx:id="radioModeSombre" text="🌙 Mode Sombre"/>
+                    <RadioButton fx:id="radioModeClair" text="Mode Clair"/>
+                    <RadioButton fx:id="radioModeSombre" text="Mode Sombre"/>
                 </HBox>
                 <Label text="Le mode sombre sera bientôt disponible" 
                        style="-fx-text-fill: #7f8c8d; -fx-font-size: 11;"/>
@@ -139,7 +135,7 @@
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
             
-            <Label text="📊 Mes Données" 
+            <Label text="Mes Données" 
                    style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
             <Separator/>
             
@@ -193,7 +189,7 @@
             <HBox spacing="15">
                 <Button text="📥 Exporter mes données" onAction="#handleExporterDonnees" 
                        styleClass="btn-primary" prefWidth="200"/>
-                <Button text="🗑️ Vider le cache" onAction="#handleViderCache" 
+                <Button text=" Vider le cache" onAction="#handleViderCache" 
                        styleClass="btn-secondary" prefWidth="200"/>
             </HBox>
         </VBox>
@@ -205,16 +201,14 @@
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
             
-            <Label text="⚠️ Zone Dangereuse" 
+            <Label text="Suppression définitive du compte" 
                    style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #e74c3c;"/>
             <Separator/>
             
             <VBox spacing="10">
-                <Label text="Suppression définitive du compte" 
-                       style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
                 <Label text="Une fois votre compte supprimé, toutes vos données seront définitivement effacées. Cette action est irréversible." 
                        wrapText="true" style="-fx-text-fill: #7f8c8d; -fx-font-size: 12;"/>
-                <Button text="🗑️ Supprimer mon compte" onAction="#handleSupprimerCompte" 
+                <Button text="Supprimer mon compte" onAction="#handleSupprimerCompte" 
                        styleClass="btn-danger" prefWidth="220"/>
             </VBox>
         </VBox>
