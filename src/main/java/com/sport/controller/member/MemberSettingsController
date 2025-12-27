@@ -1,0 +1,145 @@
+package com.sport.controller.member;
+
+import com.sport.model.Membre;
+import com.sport.utils.UserSession;
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+
+public class MemberSettingsController {
+
+    @FXML private CheckBox chkProfilPublic;
+    @FXML private CheckBox chkPartagerPerformances;
+    @FXML private CheckBox chkVisibleCoachs;
+    @FXML private CheckBox chkHistoriquePublic;
+    
+    @FXML private ComboBox<String> comboLangue;
+    @FXML private RadioButton radioModeClair;
+    @FXML private RadioButton radioModeSombre;
+    private ToggleGroup groupeTheme;
+    @FXML private ComboBox<String> comboUnitesPoids;
+    @FXML private ComboBox<String> comboUnitesDistance;
+    @FXML private Slider sliderTaillePolice;
+    @FXML private Label lblTaillePolice;
+    
+    @FXML private Label lblNombreSeances;
+    @FXML private Label lblNombrePerformances;
+    @FXML private Label lblDateInscription;
+    @FXML private Label lblEspaceUtilise;
+    
+    @FXML private Button btnSauvegarder;
+    @FXML private Button btnAnnuler;
+    @FXML private Button btnExporterDonnees;
+    @FXML private Button btnSupprimerCompte;
+    
+    private Membre membreConnecte;
+
+    @FXML
+    public void initialize() {
+        membreConnecte = (Membre) UserSession.getInstance().getUtilisateur();
+        
+        configurerComboBox();
+        configurerToggleGroups();
+        configurerSlider();
+        chargerParametres();
+        chargerStatistiques();
+    }
+
+    private void configurerComboBox() {
+        comboLangue.setItems(FXCollections.observableArrayList(
+            "Français", "English", "العربية"
+        ));
+        
+        comboUnitesPoids.setItems(FXCollections.observableArrayList(
+            "Kilogrammes (kg)", "Livres (lbs)"
+        ));
+        
+        comboUnitesDistance.setItems(FXCollections.observableArrayList(
+            "Mètres / Kilomètres", "Pieds / Miles"
+        ));
+    }
+
+    private void configurerToggleGroups() {
+        groupeTheme = new ToggleGroup();
+        radioModeClair.setToggleGroup(groupeTheme);
+        radioModeSombre.setToggleGroup(groupeTheme);
+    }
+
+    private void configurerSlider() {
+        sliderTaillePolice.setMin(12);
+        sliderTaillePolice.setMax(20);
+        sliderTaillePolice.setValue(14);
+        
+        sliderTaillePolice.valueProperty().addListener((obs, oldVal, newVal) -> {
+            lblTaillePolice.setText(String.format("%.0f px", newVal.doubleValue()));
+        });
+    }
+
+    private void chargerParametres() {
+        chkProfilPublic.setSelected(false);
+        chkPartagerPerformances.setSelected(false);
+        chkVisibleCoachs.setSelected(true);
+        chkHistoriquePublic.setSelected(false);
+        
+        comboLangue.setValue("Français");
+        radioModeClair.setSelected(true);
+        comboUnitesPoids.setValue("Kilogrammes (kg)");
+        comboUnitesDistance.setValue("Mètres / Kilomètres");
+        sliderTaillePolice.setValue(14);
+        lblTaillePolice.setText("14 px");
+    }
+
+    private void chargerStatistiques() {
+        if (membreConnecte != null) {
+            int nbSeances = membreConnecte.getListeSeances().size();
+            lblNombreSeances.setText(nbSeances + " séance" + (nbSeances > 1 ? "s" : ""));
+            
+            int nbPerformances = membreConnecte.getPerformances().size();
+            lblNombrePerformances.setText(nbPerformances + " mesure" + (nbPerformances > 1 ? "s" : ""));
+            
+            lblDateInscription.setText("Membre depuis " + 
+                (membreConnecte.getDateNaissance() != null ? membreConnecte.getDateNaissance() : "N/A"));
+            
+            double espaceKo = (nbSeances * 0.5) + (nbPerformances * 0.3);
+            lblEspaceUtilise.setText(String.format("%.1f Ko", espaceKo));
+        }
+    }
+
+    @FXML
+    private void handleSauvegarder() {
+        System.out.println("=== Paramètres sauvegardés ===");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Succès");
+        alert.setContentText("Paramètres enregistrés avec succès !");
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void handleAnnuler() {
+        chargerParametres();
+    }
+
+    @FXML
+    private void handleExporterDonnees() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Export");
+        alert.setContentText("Fonctionnalité à venir.");
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void handleViderCache() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Cache");
+        alert.setContentText("Cache vidé avec succès !");
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void handleSupprimerCompte() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Suppression");
+        alert.setContentText("Fonctionnalité désactivée en démo.");
+        alert.showAndWait();
+    }
+}

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.sport.controller.member.MemberSettingsController"
+            fitToWidth="true" style="-fx-background-color: transparent;">
+
+<styleClass>
+        <String fx:value="settings-root"/>
+ </styleClass>
+
+    <VBox spacing="20" style="-fx-background-color: #f5f5f5;">
+        <padding>
+            <Insets top="20" right="30" bottom="20" left="30"/>
+        </padding>
+
+        <!-- EN-TÊTE -->
+        <VBox spacing="5">
+            <Label text="⚙️ Paramètres" 
+                   style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+            <Label text="Gérez la confidentialité et l'apparence de votre compte" 
+                   style="-fx-font-size: 14; -fx-text-fill: #7f8c8d;"/>
+        </VBox>
+
+        <!-- CONFIDENTIALITÉ -->
+        <VBox styleClass="dashboard-card" spacing="15">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            
+            <Label text="🔒 Confidentialité et Partage" 
+                   style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+            <Separator/>
+            
+            <VBox spacing="15">
+                <VBox spacing="8">
+                    <CheckBox fx:id="chkProfilPublic" text="Rendre mon profil visible par les autres membres"/>
+                    <Label text="Les autres membres pourront voir votre nom et photo de profil" 
+                           style="-fx-text-fill: #7f8c8d; -fx-font-size: 11; -fx-padding: 0 0 0 25;"/>
+                </VBox>
+                
+                <VBox spacing="8">
+                    <CheckBox fx:id="chkPartagerPerformances" text="Partager mes performances avec les autres membres"/>
+                    <Label text="Vos statistiques de progression seront visibles par la communauté" 
+                           style="-fx-text-fill: #7f8c8d; -fx-font-size: 11; -fx-padding: 0 0 0 25;"/>
+                </VBox>
+                
+                <VBox spacing="8">
+                    <CheckBox fx:id="chkVisibleCoachs" text="Autoriser les coachs à voir mes statistiques"/>
+                    <Label text="Recommandé pour un suivi personnalisé de votre progression" 
+                           style="-fx-text-fill: #7f8c8d; -fx-font-size: 11; -fx-padding: 0 0 0 25;"/>
+                </VBox>
+                
+                <VBox spacing="8">
+                    <CheckBox fx:id="chkHistoriquePublic" text="Rendre mon historique d'activités public"/>
+                    <Label text="Votre calendrier de séances sera visible par les autres" 
+                           style="-fx-text-fill: #7f8c8d; -fx-font-size: 11; -fx-padding: 0 0 0 25;"/>
+                </VBox>
+            </VBox>
+            
+            <!-- Info confidentialité -->
+            <HBox spacing="10" alignment="CENTER_LEFT" 
+                 style="-fx-background-color: #e3f2fd; -fx-padding: 15; -fx-background-radius: 8;">
+                <Label text="ℹ️" style="-fx-font-size: 20;"/>
+                <VBox spacing="3">
+                    <Label text="Protection de vos données" 
+                           style="-fx-font-weight: bold; -fx-text-fill: #1565c0;"/>
+                    <Label text="Vos informations personnelles ne seront jamais partagées avec des tiers sans votre consentement." 
+                           wrapText="true" style="-fx-text-fill: #1565c0; -fx-font-size: 11;"/>
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <!-- AFFICHAGE -->
+        <VBox styleClass="dashboard-card" spacing="15">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            
+            <Label text="🎨 Apparence et Affichage" 
+                   style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+            <Separator/>
+            
+            <!-- Langue -->
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Label text="Langue :" styleClass="form-label" prefWidth="150"/>
+                <ComboBox fx:id="comboLangue" styleClass="form-field" prefWidth="200"/>
+            </HBox>
+            
+            <!-- Thème -->
+            <VBox spacing="8">
+                <Label text="Thème :" styleClass="form-label"/>
+                <HBox spacing="20">
+                    <RadioButton fx:id="radioModeClair" text="☀️ Mode Clair"/>
+                    <RadioButton fx:id="radioModeSombre" text="🌙 Mode Sombre"/>
+                </HBox>
+                <Label text="Le mode sombre sera bientôt disponible" 
+                       style="-fx-text-fill: #7f8c8d; -fx-font-size: 11;"/>
+            </VBox>
+            
+            <!-- Unités de mesure -->
+            <GridPane hgap="20" vgap="15">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="50"/>
+                    <ColumnConstraints percentWidth="50"/>
+                </columnConstraints>
+                
+                <VBox spacing="5" GridPane.columnIndex="0">
+                    <Label text="Unités de poids" styleClass="form-label"/>
+                    <ComboBox fx:id="comboUnitesPoids" styleClass="form-field" maxWidth="Infinity"/>
+                </VBox>
+                
+                <VBox spacing="5" GridPane.columnIndex="1">
+                    <Label text="Unités de distance" styleClass="form-label"/>
+                    <ComboBox fx:id="comboUnitesDistance" styleClass="form-field" maxWidth="Infinity"/>
+                </VBox>
+            </GridPane>
+            
+            <!-- Taille de police -->
+            <VBox spacing="8">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Taille de police :" styleClass="form-label"/>
+                    <Label fx:id="lblTaillePolice" text="14 px" 
+                           style="-fx-text-fill: #667eea; -fx-font-weight: bold;"/>
+                </HBox>
+                <Slider fx:id="sliderTaillePolice" prefWidth="300"/>
+                <Label text="Ajustez la taille du texte pour un meilleur confort de lecture" 
+                       style="-fx-text-fill: #7f8c8d; -fx-font-size: 11;"/>
+            </VBox>
+        </VBox>
+
+        <!-- MES DONNÉES -->
+        <VBox styleClass="dashboard-card" spacing="15">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            
+            <Label text="📊 Mes Données" 
+                   style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+            <Separator/>
+            
+            <!-- Statistiques -->
+            <GridPane hgap="30" vgap="15">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="50"/>
+                    <ColumnConstraints percentWidth="50"/>
+                </columnConstraints>
+                
+                <HBox spacing="10" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <Label text="📅" style="-fx-font-size: 20;"/>
+                    <VBox>
+                        <Label text="Séances enregistrées" style="-fx-text-fill: #7f8c8d; -fx-font-size: 11;"/>
+                        <Label fx:id="lblNombreSeances" text="0 séance" 
+                               style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                    </VBox>
+                </HBox>
+                
+                <HBox spacing="10" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <Label text="📈" style="-fx-font-size: 20;"/>
+                    <VBox>
+                        <Label text="Performances mesurées" style="-fx-text-fill: #7f8c8d; -fx-font-size: 11;"/>
+                        <Label fx:id="lblNombrePerformances" text="0 mesure" 
+                               style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                    </VBox>
+                </HBox>
+                
+                <HBox spacing="10" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <Label text="📆" style="-fx-font-size: 20;"/>
+                    <VBox>
+                        <Label text="Date d'inscription" style="-fx-text-fill: #7f8c8d; -fx-font-size: 11;"/>
+                        <Label fx:id="lblDateInscription" text="N/A" 
+                               style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                    </VBox>
+                </HBox>
+                
+                <HBox spacing="10" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <Label text="💾" style="-fx-font-size: 20;"/>
+                    <VBox>
+                        <Label text="Espace utilisé" style="-fx-text-fill: #7f8c8d; -fx-font-size: 11;"/>
+                        <Label fx:id="lblEspaceUtilise" text="0 Ko" 
+                               style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                    </VBox>
+                </HBox>
+            </GridPane>
+            
+            <Separator/>
+            
+            <!-- Actions sur les données -->
+            <HBox spacing="15">
+                <Button text="📥 Exporter mes données" onAction="#handleExporterDonnees" 
+                       styleClass="btn-primary" prefWidth="200"/>
+                <Button text="🗑️ Vider le cache" onAction="#handleViderCache" 
+                       styleClass="btn-secondary" prefWidth="200"/>
+            </HBox>
+        </VBox>
+
+        <!-- ZONE DANGER -->
+        <VBox styleClass="dashboard-card" spacing="15" 
+             style="-fx-border-color: #e74c3c; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-radius: 10;">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            
+            <Label text="⚠️ Zone Dangereuse" 
+                   style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #e74c3c;"/>
+            <Separator/>
+            
+            <VBox spacing="10">
+                <Label text="Suppression définitive du compte" 
+                       style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                <Label text="Une fois votre compte supprimé, toutes vos données seront définitivement effacées. Cette action est irréversible." 
+                       wrapText="true" style="-fx-text-fill: #7f8c8d; -fx-font-size: 12;"/>
+                <Button text="🗑️ Supprimer mon compte" onAction="#handleSupprimerCompte" 
+                       styleClass="btn-danger" prefWidth="220"/>
+            </VBox>
+        </VBox>
+
+        <!-- BOUTONS D'ACTION -->
+        <HBox spacing="15" alignment="CENTER">
+            <Button fx:id="btnSauvegarder" text="💾 Enregistrer les modifications" 
+                   onAction="#handleSauvegarder" styleClass="btn-success" prefWidth="250"/>
+            <Button fx:id="btnAnnuler" text="✕ Annuler" 
+                   onAction="#handleAnnuler" styleClass="btn-secondary" prefWidth="150"/>
+        </HBox>
+
+    </VBox>
+</ScrollPane>

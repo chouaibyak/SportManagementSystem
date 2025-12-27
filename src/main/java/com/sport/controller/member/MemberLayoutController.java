@@ -23,6 +23,7 @@ public class MemberLayoutController {
     @FXML private Button btnSeances;
     @FXML private Button btnPerformance;
     @FXML private Button btnProfil;
+    @FXML private Button btnParametres;
 
     @FXML
     public void initialize() {
@@ -60,10 +61,16 @@ public class MemberLayoutController {
         setButtonActive(btnProfil);
     }
 
+    @FXML
+    private void afficherParametres(ActionEvent event) {
+    chargerVue("/fxml/member/member_settings.fxml"); // Nom plus générique
+    setButtonActive(btnParametres);
+}
+
     // --- LOGIQUE DE CHANGEMENT DE VUE ---
 
     private void chargerVue(String fxmlPath) {
-       try {
+    try {
         var url = getClass().getResource(fxmlPath);
         if (url == null) {
             System.err.println("ERREUR : Fichier introuvable -> " + fxmlPath);
@@ -71,8 +78,15 @@ public class MemberLayoutController {
         }
 
         FXMLLoader loader = new FXMLLoader(url);
-        Parent vue = loader.load();   // si ça plante, on verras l'exception
+        Parent vue = loader.load();
+
         contentArea.getChildren().setAll(vue);
+
+        // IMPORTANT pour StackPane
+        StackPane.setAlignment(vue, javafx.geometry.Pos.TOP_LEFT);
+        if (vue instanceof javafx.scene.layout.Region region) {
+            region.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        }
 
         System.out.println("Vue chargée: " + fxmlPath);
 
@@ -80,7 +94,8 @@ public class MemberLayoutController {
         System.err.println("ERREUR chargement vue: " + fxmlPath);
         e.printStackTrace();
     }
-    }
+}
+
 
     /**
      * Change le style du bouton cliqué pour montrer qu'il est actif.
@@ -101,6 +116,7 @@ public class MemberLayoutController {
         btnSeances.getStyleClass().remove("nav-button-active");
         btnPerformance.getStyleClass().remove("nav-button-active");
         btnProfil.getStyleClass().remove("nav-button-active");
+        btnParametres.getStyleClass().remove("nav-button-active"); 
     }
 
     // --- DECONNEXION ---

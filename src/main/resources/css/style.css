@@ -320,3 +320,130 @@
     -fx-background-color: #e0e0e0;
     -fx-background-radius: 12;
 }
+
+/* =====================================================
+   SETTINGS PAGE (Member)
+   Scoped styling: applies only inside nodes with styleClass="settings-root"
+   ===================================================== */
+
+.settings-root {
+    -fx-background-color: transparent;
+}
+
+.settings-root .viewport {
+    -fx-background-color: #f6f8fa;
+}
+
+/* Cards (reprend ton style mais plus moderne) */
+.settings-root .dashboard-card {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: rgba(44,62,80,0.08);
+    -fx-border-width: 1;
+    -fx-padding: 24;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.10), 18, 0, 0, 8);
+}
+
+.settings-root .dashboard-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.14), 22, 0, 0, 10);
+}
+
+/* Labels */
+.settings-root .label {
+    -fx-text-fill: #2c3e50;
+}
+
+/* Form labels / fields */
+.settings-root .form-label {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.settings-root .form-field,
+.settings-root .text-field,
+.settings-root .password-field,
+.settings-root .date-picker,
+.settings-root .combo-box {
+    -fx-background-color: #f1f3f5;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: transparent;
+    -fx-padding: 10 14;
+    -fx-text-fill: #2c3e50;
+}
+
+.settings-root .text-field:focused,
+.settings-root .password-field:focused,
+.settings-root .date-picker:focused,
+.settings-root .combo-box:focused,
+.settings-root .form-field:focused {
+    -fx-background-color: white;
+    -fx-border-color: rgba(39,174,96,0.80);
+    -fx-effect: dropshadow(three-pass-box, rgba(39,174,96,0.18), 12, 0, 0, 0);
+}
+
+/* Buttons (compatibles avec tes styleClass dans FXML) */
+.settings-root .button {
+    -fx-background-radius: 14;
+    -fx-padding: 10 16;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+/* Primary = violet/bleu (comme ton design performance) */
+.settings-root .btn-primary {
+    -fx-background-color: #667eea;
+    -fx-text-fill: white;
+}
+.settings-root .btn-primary:hover { -fx-background-color: #5a6fe0; }
+.settings-root .btn-primary:pressed { -fx-background-color: #4f63d6; }
+
+/* Success */
+.settings-root .btn-success {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+}
+.settings-root .btn-success:hover { -fx-background-color: #229a55; }
+.settings-root .btn-success:pressed { -fx-background-color: #1e874b; }
+
+/* Secondary */
+.settings-root .btn-secondary {
+    -fx-background-color: #eef2f7;
+    -fx-text-fill: #2c3e50;
+    -fx-border-color: #dbe4f0;
+    -fx-border-width: 1;
+}
+.settings-root .btn-secondary:hover { -fx-background-color: #e6edf6; }
+.settings-root .btn-secondary:pressed { -fx-background-color: #dde6f2; }
+
+/* CheckBox / Radio */
+.settings-root .check-box, 
+.settings-root .radio-button {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 12.5px;
+}
+
+.settings-root .check-box .box {
+    -fx-background-color: white;
+    -fx-border-color: #cfd8e6;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.settings-root .radio-button .radio {
+    -fx-background-color: white;
+    -fx-border-color: #cfd8e6;
+    -fx-border-radius: 100;
+    -fx-background-radius: 100;
+}
+
+/* Separator */
+.settings-root .separator .line {
+    -fx-border-color: rgba(44,62,80,0.12);
+}
+
+/* =====================================================
+   END SETTINGS PAGE
+   ===================================================== */
