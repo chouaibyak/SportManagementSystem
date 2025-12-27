@@ -31,6 +31,13 @@
             <Label text="Prochaine séance" styleClass="card-title"/>
             <Label fx:id="lblProchaine" text="Aucune" styleClass="card-value"/>
         </VBox>
+
+        <VBox styleClass="dashboard-card">
+            <Label text="Séances terminées aujourd'hui" styleClass="card-title"/>
+            <Label fx:id="lblSeancesTerminees" text="0" styleClass="card-value"/>
+        </VBox>
+
+       
     </HBox>
 
     <!-- Graphique -->
@@ -51,5 +58,11 @@
         <Label text="Notifications (prochaines séances dans l'heure)" styleClass="card-title"/>
         <VBox fx:id="notificationsBox" spacing="5"/>
     </VBox>
+
+    <!-- Boutons d'action -->
+    <HBox spacing="10">
+        <Button fx:id="btnRefresh" text="Rafraîchir"/>
+        <Button fx:id="btnGestionSeances" text="Gestion Séances"/>
+    </HBox>
 
 </VBox>

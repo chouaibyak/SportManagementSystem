@@ -1,123 +1,160 @@
 package com.sport.controller.coach;
 
-import com.sport.model.SeanceCollective;
-import com.sport.model.SeanceIndividuelle;
+import com.sport.model.*;
 import com.sport.repository.SeanceCollectiveRepository;
 import com.sport.repository.SeanceIndividuelleRepository;
-import com.sport.service.SeanceCollectiveService;
-import com.sport.service.SeanceIndividuelleService;
-
+import com.sport.utils.UserSession;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CoachSeancesController {
 
-    @FXML private TableView<SeanceCollective> tableCollective;
-    @FXML private TableColumn<SeanceCollective, Integer> colId;
-    @FXML private TableColumn<SeanceCollective, String> colNom;
-    @FXML private TableColumn<SeanceCollective, String> colDate;
-    @FXML private TableColumn<SeanceCollective, String> colSalle;
-    @FXML private TableColumn<SeanceCollective, Integer> colPlaces;
-    @FXML private TableColumn<SeanceCollective, Void> colActions;
+    @FXML private TableView<Seance> tableSeances;
+    @FXML private TableColumn<Seance, String> colNom;
+    @FXML private TableColumn<Seance, String> colType;
+    @FXML private TableColumn<Seance, String> colDateHeure;
+    @FXML private TableColumn<Seance, String> colDuree;
+    @FXML private TableColumn<Seance, String> colMembres;
 
-    @FXML private TableView<SeanceIndividuelle> tableIndividuelle;
-    @FXML private TableColumn<SeanceIndividuelle, Integer> colIdInd;
-    @FXML private TableColumn<SeanceIndividuelle, String> colMembre;
-    @FXML private TableColumn<SeanceIndividuelle, String> colDateInd;
-    @FXML private TableColumn<SeanceIndividuelle, String> colSalleInd;
-    @FXML private TableColumn<SeanceIndividuelle, Void> colActionsInd;
+    @FXML private Button btnAddSeance;
+    @FXML private Button btnEditSeance;
+    @FXML private Button btnDeleteSeance;
+    @FXML private Button btnRefresh;
 
- private SeanceCollectiveService seanceCService = new SeanceCollectiveService(new SeanceCollectiveRepository());
-private SeanceIndividuelleService seanceIService = new SeanceIndividuelleService(new SeanceIndividuelleRepository());
+    private Coach coach;
 
+    private final SeanceCollectiveRepository collectiveRepo = new SeanceCollectiveRepository();
+    private final SeanceIndividuelleRepository indivRepo = new SeanceIndividuelleRepository();
+
+    private ObservableList<Seance> seancesData = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
-        setupCollectiveTable();
-        setupIndividuelleTable();
-        loadCollectiveSeances();
-        loadIndividuelleSeances();
-    }
+        // Coach connecté
+        Utilisateur user = UserSession.getInstance().getUtilisateur();
+        if (user instanceof Coach) {
+            coach = (Coach) user;
+        }
 
-    private void setupCollectiveTable() {
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        colDate.setCellValueFactory(new PropertyValueFactory<>("dateHeure"));
-        colSalle.setCellValueFactory(cell -> 
-            new javafx.beans.property.SimpleStringProperty(cell.getValue().getSalle().getNom())
+        // Colonnes
+        colNom.setCellValueFactory(data ->
+                new SimpleStringProperty(data.getValue().getNom())
         );
-        colPlaces.setCellValueFactory(new PropertyValueFactory<>("placesDisponibles"));
 
-        colActions.setCellFactory(param -> new TableCell<>() {
-            private final Button btnSupprimer = new Button("Supprimer");
-            private final HBox pane = new HBox(5, btnSupprimer);
+        colType.setCellValueFactory(data ->
+                new SimpleStringProperty(
+                        data.getValue() instanceof SeanceCollective ? "Collective" : "Individuelle"
+                )
+        );
 
-            {
-                btnSupprimer.setOnAction(event -> {
-                    SeanceCollective s = getTableView().getItems().get(getIndex());
-                    seanceCService.delete(s.getId());
-                    loadCollectiveSeances();
-                });
+        colDateHeure.setCellValueFactory(data ->
+                new SimpleStringProperty(
+                        data.getValue().getDateHeure()
+                                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+                )
+        );
+
+        colDuree.setCellValueFactory(data ->
+                new SimpleStringProperty(data.getValue().getDuree() + " min")
+        );
+
+        colMembres.setCellValueFactory(data -> {
+            if (data.getValue() instanceof SeanceCollective sc) {
+                return new SimpleStringProperty(
+                        sc.getListeMembers().size() + "/" + sc.getCapaciteMax()
+                );
             }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                setGraphic(empty ? null : pane);
-            }
+            return new SimpleStringProperty("-");
         });
-    }
 
-    private void setupIndividuelleTable() {
-        colIdInd.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colMembre.setCellValueFactory(cell -> 
-            new javafx.beans.property.SimpleStringProperty(cell.getValue().getMembre().getNom())
-        );
-        colDateInd.setCellValueFactory(new PropertyValueFactory<>("dateHeure"));
-        colSalleInd.setCellValueFactory(cell -> 
-            new javafx.beans.property.SimpleStringProperty(cell.getValue().getSalle().getNom())
-        );
+        // Désactiver boutons au départ
+        btnEditSeance.setDisable(true);
+        btnDeleteSeance.setDisable(true);
 
-        colActionsInd.setCellFactory(param -> new TableCell<>() {
-            private final Button btnFeedback = new Button("Feedback");
-            private final Button btnSupprimer = new Button("Supprimer");
-            private final HBox pane = new HBox(5, btnFeedback, btnSupprimer);
-
-            {
-                btnFeedback.setOnAction(event -> {
-                    SeanceIndividuelle s = getTableView().getItems().get(getIndex());
-                    System.out.println("Donner Feedback à " + s.getMembre().getNom());
-                    // Ajouter la logique de feedback ici
-                });
-
-                btnSupprimer.setOnAction(event -> {
-                    SeanceIndividuelle s = getTableView().getItems().get(getIndex());
-                    seanceIService.delete(s.getId());
-                    loadIndividuelleSeances();
-                });
-            }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                setGraphic(empty ? null : pane);
-            }
+        tableSeances.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            boolean selected = newVal != null;
+            btnEditSeance.setDisable(!selected);
+            btnDeleteSeance.setDisable(!selected);
         });
+
+        chargerSeances();
+
+        btnRefresh.setOnAction(e -> chargerSeances());
+        btnAddSeance.setOnAction(e -> ouvrirPopupAjout(null));
+        btnEditSeance.setOnAction(e -> ouvrirPopupAjout(tableSeances.getSelectionModel().getSelectedItem()));
+        btnDeleteSeance.setOnAction(e -> supprimerSeance());
     }
 
-    private void loadCollectiveSeances() {
-        tableCollective.getItems().clear();
-        List<SeanceCollective> seances = seanceCService.getAll();
-        tableCollective.getItems().addAll(seances);
+    private void chargerSeances() {
+        seancesData.clear();
+
+        List<SeanceCollective> collectives = collectiveRepo.getAll().stream()
+                .filter(s -> s.getEntraineur().getId() == coach.getId())
+                .collect(Collectors.toList());
+
+        List<SeanceIndividuelle> individuelles = indivRepo.getAll().stream()
+                .filter(s -> s.getEntraineur().getId() == coach.getId())
+                .collect(Collectors.toList());
+
+        seancesData.addAll(collectives);
+        seancesData.addAll(individuelles);
+
+        tableSeances.setItems(seancesData);
     }
 
-    private void loadIndividuelleSeances() {
-        tableIndividuelle.getItems().clear();
-        List<SeanceIndividuelle> seances = seanceIService.getAll();
-        tableIndividuelle.getItems().addAll(seances);
+    private void supprimerSeance() {
+        Seance selected = tableSeances.getSelectionModel().getSelectedItem();
+        if (selected == null) return;
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Supprimer la séance");
+        alert.setContentText("Voulez-vous vraiment supprimer cette séance ?");
+
+        if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            if (selected instanceof SeanceCollective) {
+                collectiveRepo.delete(selected.getId());
+            } else {
+                indivRepo.delete(selected.getId());
+            }
+            chargerSeances();
+        }
+    }
+
+  private void ouvrirPopupAjout(Seance seance) {
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/coach/coach_seance_form.fxml"));
+        VBox root = loader.load(); // VBox men FXML
+
+        CoachSeanceFormController controller = loader.getController();
+        if (seance != null) {
+            controller.setSeance(seance);
+        }
+
+        Stage stage = new Stage();
+        stage.setTitle(seance == null ? "Ajouter une séance" : "Modifier la séance");
+        stage.setScene(new Scene(root));
+        stage.initOwner(tableSeances.getScene().getWindow());
+        stage.showAndWait();
+
+        chargerSeances();
+    } catch (Exception e) {
+        e.printStackTrace();
     }
 }
+
+
+}
+
+
