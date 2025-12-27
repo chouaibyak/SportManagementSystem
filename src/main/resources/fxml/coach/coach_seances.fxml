@@ -1,44 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane xmlns="http://javafx.com/javafx/21"
-           xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.sport.controller.coach.CoachSeancesController"
-           style="-fx-padding: 20; -fx-background-color: #f4f6f7;">
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.sport.controller.coach.CoachSeancesController"
+      spacing="20"
+      style="-fx-background-color: #f4f6f7; -fx-padding: 20;"
+      stylesheets="@style.css">
 
-    <VBox spacing="20">
-        <Label text="Mes Séances" styleClass="title-label"/>
+    <!-- Titre -->
+    <Label text="Gestion des Séances" styleClass="title-label"/>
 
-        <TabPane fx:id="tabPane">
-            <Tab text="Collectives">
-                <VBox spacing="10" style="-fx-padding: 10;">
-                    <TableView fx:id="tableCollective">
-                        <columns>
-                            <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
-                            <TableColumn fx:id="colNom" text="Nom" prefWidth="150"/>
-                            <TableColumn fx:id="colDate" text="Date / Heure" prefWidth="150"/>
-                            <TableColumn fx:id="colSalle" text="Salle" prefWidth="100"/>
-                            <TableColumn fx:id="colPlaces" text="Places dispo" prefWidth="100"/>
-                            <TableColumn fx:id="colActions" text="Actions" prefWidth="150"/>
-                        </columns>
-                    </TableView>
-                </VBox>
-            </Tab>
+    <!-- Boutons d'action -->
+    <HBox spacing="10">
+        <Button text="Ajouter Séance" fx:id="btnAddSeance" styleClass="button-primary"/>
+        <Button text="Modifier Séance" fx:id="btnEditSeance" styleClass="button-secondary"/>
+        <Button text="Supprimer Séance" fx:id="btnDeleteSeance" styleClass="button-secondary"/>
+        <Button text="Refresh" fx:id="btnRefresh" styleClass="button-primary"/>
+    </HBox>
 
-            <Tab text="Individuelles">
-                <VBox spacing="10" style="-fx-padding: 10;">
-                    <TableView fx:id="tableIndividuelle">
-                        <columns>
-                            <TableColumn fx:id="colIdInd" text="ID" prefWidth="50"/>
-                            <TableColumn fx:id="colMembre" text="Membre" prefWidth="150"/>
-                            <TableColumn fx:id="colDateInd" text="Date / Heure" prefWidth="150"/>
-                            <TableColumn fx:id="colSalleInd" text="Salle" prefWidth="100"/>
-                            <TableColumn fx:id="colActionsInd" text="Actions" prefWidth="150"/>
-                        </columns>
-                    </TableView>
-                </VBox>
-            </Tab>
-        </TabPane>
-    </VBox>
-</StackPane>
+    <!-- Tableau des séances -->
+    <TableView fx:id="tableSeances" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn text="Nom" fx:id="colNom" prefWidth="150"/>
+            <TableColumn text="Type" fx:id="colType" prefWidth="120"/>
+            <TableColumn text="Date &amp; Heure" fx:id="colDateHeure" prefWidth="180"/>
+            <TableColumn text="Durée (min)" fx:id="colDuree" prefWidth="100"/>
+            <TableColumn text="Membres inscrits" fx:id="colMembres" prefWidth="120"/>
+        </columns>
+    </TableView>
+
+</VBox>
