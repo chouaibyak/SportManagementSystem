@@ -20,6 +20,7 @@ public class MemberLayoutController {
     
     // Références aux boutons pour gérer le style "Actif"
     @FXML private Button btnDashboard;
+    @FXML private Button btnPlanning;   
     @FXML private Button btnSeances;
     @FXML private Button btnPerformance;
     @FXML private Button btnProfil;
@@ -39,16 +40,22 @@ public class MemberLayoutController {
         setButtonActive(btnDashboard);
     }
 
+    // <--- 2. AJOUT DE LA MÉTHODE D'AFFICHAGE
+    @FXML
+    private void afficherPlanning(ActionEvent event) {
+        // Assurez-vous que le fichier member_planning.fxml existe bien !
+        chargerVue("/fxml/member/member_planning.fxml"); 
+        setButtonActive(btnPlanning);
+    }
+
     @FXML
     private void afficherSeances(ActionEvent event) {
-        // Crée ce fichier fxml plus tard
         chargerVue("/fxml/member/member_seances.fxml"); 
         setButtonActive(btnSeances);
     }
 
     @FXML
     private void afficherPerformances(ActionEvent event) {
-        // Crée ce fichier fxml plus tard
         chargerVue("/fxml/member/member_performances.fxml"); 
         setButtonActive(btnPerformance);
     }
@@ -101,10 +108,8 @@ public class MemberLayoutController {
      * Change le style du bouton cliqué pour montrer qu'il est actif.
      */
     private void setButtonActive(Button activeButton) {
-        // 1. On remet tous les boutons en style normal
         resetButtonStyles();
 
-        // 2. On applique le style actif au bouton cliqué (si ce n'est pas null)
         if (activeButton != null) {
             activeButton.getStyleClass().add("nav-button-active");
         }
@@ -130,7 +135,6 @@ public class MemberLayoutController {
             Stage stage = (Stage) contentArea.getScene().getWindow();
             stage.setScene(new Scene(root));
             
-            // On remet la taille "Login" et on bloque le redimensionnement
             stage.sizeToScene();
             stage.centerOnScreen();
             stage.setResizable(false);

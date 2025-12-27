@@ -36,6 +36,10 @@ public class ReservationService {
         return reservationRepository.trouverReservationParId(id);
     }
 
+    public List<Reservation> getReservationsMembre(int membreId) {
+        return reservationRepository.trouverParMembre(membreId);
+    }
+
     /**
      * Change le statut à PRESENT (Logique du diagramme)
      */
@@ -64,5 +68,14 @@ public class ReservationService {
         } else {
             System.out.println("Erreur : Réservation introuvable.");
         }
+    }
+
+    
+    public int getNombrePlacesReservees(int seanceId) {
+        return reservationRepository.compterInscrits(seanceId);
+    }
+
+    public boolean isMembreDejaInscrit(int membreId, int seanceId) {
+        return reservationRepository.estDejaInscrit(membreId, seanceId);
     }
 }

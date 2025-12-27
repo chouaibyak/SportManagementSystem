@@ -16,7 +16,7 @@
 /* --- TITRES --- */
 .title-label {
     -fx-text-fill: #2c3e50;
-    -fx-font-size: 22px;
+    -fx-font-size: 28px;
     -fx-font-weight: bold;
 }
 
@@ -25,7 +25,7 @@
     -fx-font-size: 14px;
 }
 
-/* --- CHAMPS DE SAISIE (TextField, PasswordField, DatePicker, ComboBox) --- */
+/* --- CHAMPS DE SAISIE --- */
 .text-field, .password-field, .date-picker, .combo-box {
     -fx-background-color: #ecf0f1;
     -fx-background-radius: 5;
@@ -41,23 +41,19 @@
     -fx-border-radius: 5;
 }
 
-/* Correction spécifique pour ComboBox et DatePicker */
-.combo-box .list-cell, .date-picker .text-field {
-    -fx-background-color: transparent; 
-}
-
 /* --- BOUTONS --- */
 .button-primary {
-    -fx-background-color: #27ae60;
+    -fx-background-color: #6a11cb;
+    -fx-background-radius: 12;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-background-radius: 5;
-    -fx-padding: 10 20;
+    -fx-padding: 10 25;
     -fx-cursor: hand;
+    -fx-transition: all 0.3s ease;
 }
 
 .button-primary:hover {
-    -fx-background-color: #2ecc71; /* Un peu plus clair au survol */
+    -fx-background-color: #2575fc;
 }
 
 .button-secondary {
@@ -73,7 +69,7 @@
     -fx-background-color: #7f8c8d;
 }
 
-/* --- LIENS (Boutons transparents) --- */
+/* --- LIENS --- */
 .link-button {
     -fx-background-color: transparent;
     -fx-text-fill: #2980b9;
@@ -99,18 +95,12 @@
     -fx-background-color: #27ae60;
 }
 
-/*  **********************************/
-/*           page de member         */
-/*************************************/
-
-/* --- AMÉLIORATION SIDEBAR --- */
-
+/* --- SIDEBAR --- */
 .sidebar {
-    -fx-background-color: #2c3e50; /* Couleur sombre élégante */
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0); /* Ombre vers le contenu */
+    -fx-background-color: #2c3e50;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);
 }
 
-/* Logo / Titre dans la sidebar */
 .sidebar-logo {
     -fx-font-size: 24px;
     -fx-font-weight: bold;
@@ -126,15 +116,14 @@
     -fx-padding: 0 0 20 0;
 }
 
-/* Boutons de navigation */
 .nav-button {
     -fx-background-color: transparent;
     -fx-text-fill: #ecf0f1;
     -fx-alignment: CENTER_LEFT;
-    -fx-padding: 15 25; /* Plus d'espace */
+    -fx-padding: 15 25;
     -fx-font-size: 14px;
     -fx-cursor: hand;
-    -fx-border-width: 0 0 0 4; /* Bordure gauche invisible par défaut */
+    -fx-border-width: 0 0 0 4;
     -fx-border-color: transparent;
 }
 
@@ -143,15 +132,13 @@
     -fx-text-fill: white;
 }
 
-/* Bouton actif (Page en cours) */
 .nav-button-active {
     -fx-background-color: #34495e;
     -fx-text-fill: white;
-    -fx-border-color: #27ae60; /* La bordure verte apparaît */
+    -fx-border-color: #27ae60;
     -fx-font-weight: bold;
 }
 
-/* Bouton Déconnexion */
 .nav-button-logout {
     -fx-background-color: transparent;
     -fx-text-fill: #e74c3c;
@@ -168,28 +155,59 @@
     -fx-background-color: #c0392b;
     -fx-text-fill: white;
 }
-/* --- CARTES DASHBOARD --- */
+
+/* --- DASHBOARD CARDS --- */
 .dashboard-card {
-    -fx-background-color: white;
-    -fx-background-radius: 10;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 3);
-    -fx-padding: 20;
-    -fx-min-width: 200;
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f0f4f8);
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 5);
+    -fx-padding: 25;
+    -fx-min-width: 220;
+    -fx-transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.25), 15, 0, 0, 8);
+    -fx-translate-y: -3;
 }
 
 .card-title {
-    -fx-font-size: 12px;
-    -fx-text-fill: #95a5a6;
-    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: #7f8c8d;
+    -fx-font-weight: 600;
 }
 
 .card-value {
-    -fx-font-size: 32px;
+    -fx-font-size: 36px;
     -fx-font-weight: bold;
+    -fx-text-fill: #27ae60;
 }
 
+/* --- BAR CHART --- */
+.bar-chart .chart-plot-background {
+    -fx-background-color: #ecf0f1;
+}
+
+.bar-chart .chart-legend {
+    -fx-background-color: transparent;
+}
+
+/* --- NOTIFICATIONS --- */
+#notificationsBox Label {
+    -fx-background-color: #eafaf1;
+    -fx-text-fill: #27ae60;
+    -fx-padding: 8 12;
+    -fx-background-radius: 10;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 4, 0, 0, 2);
+    -fx-spacing: 5;
+}
+
+/*  **********************************/
+/*           end memeber         */
+/*************************************/
 /* =====================================================
-   PROFILE PAGE 
+   PROFILE PAGE
    ===================================================== */
 
 /* Fond spécifique au profil */
@@ -201,7 +219,6 @@
     -fx-background-color: #f6f8fa;
 }
 
-/* ---- Cartes du profil ---- */
 .profile-root .dashboard-card {
     -fx-background-color: white;
     -fx-background-radius: 18;
@@ -215,7 +232,6 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.14), 22, 0, 0, 10);
 }
 
-/* ---- Tabs (profil uniquement) ---- */
 .profile-root .tab-pane {
     -fx-background-color: transparent;
 }
@@ -250,52 +266,84 @@
     -fx-text-fill: #2c3e50;
     -fx-font-weight: bold;
 }
+/*  **********************************/
+/*          Fin de Coach_Dashboard        */
+/*************************************/
 
-/* ---- Champs du profil ---- */
-.profile-root .text-field,
-.profile-root .password-field,
-.profile-root .date-picker,
-.profile-root .combo-box {
-    -fx-background-color: #f1f3f5;
-    -fx-background-radius: 14;
-    -fx-border-radius: 14;
-    -fx-border-color: transparent;
-    -fx-padding: 10 14;
+/* --- TAGS --- */
+
+/* =====================================================
+   PROFILE COACH
+   ===================================================== */
+
+/* Cards avec hover */
+.card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 15;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10,0,0,2);
+    -fx-transition: all 0.3s ease-in-out;
 }
 
-.profile-root .text-field:focused,
-.profile-root .password-field:focused,
-.profile-root .date-picker:focused,
-.profile-root .combo-box:focused {
-    -fx-background-color: white;
-    -fx-border-color: rgba(39,174,96,0.8);
-    -fx-effect: dropshadow(three-pass-box, rgba(39,174,96,0.18), 12, 0, 0, 0);
+.card:hover {
+    -fx-translate-y: -3;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 12,0,0,4);
 }
 
-/* ---- Boutons profil ---- */
-.profile-root .button {
-    -fx-background-radius: 14;
-    -fx-padding: 10 20;
+/* Boutons doux */
+.btn-soft {
+    -fx-background-color: #262d49; /* bleu pastel */
+    -fx-text-fill: white;
+    -fx-background-radius: 12;
+    -fx-padding: 6 20 6 20;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-transition: all 0.2s ease-in-out;
 }
 
-/* Boutons existants (compatibles avec ton code actuel) */
-.profile-root .btn-primary,
-.profile-root .button-primary {
-    -fx-effect: dropshadow(three-pass-box, rgba(39,174,96,0.25), 12, 0, 0, 5);
+.btn-soft:hover {
+    -fx-background-color: #262d49;
 }
 
-.profile-root .btn-warning {
-    -fx-effect: dropshadow(three-pass-box, rgba(243,156,18,0.25), 12, 0, 0, 5);
+/* Bouton ajouter certification */
+.btn-add {
+    -fx-background-color: #df9a2c; /* orange doux */
+    -fx-text-fill: white;
+    -fx-background-radius: 12;
 }
 
-/* ---- Séparateurs ---- */
-.profile-root .separator .line {
-    -fx-border-color: rgba(44,62,80,0.12);
+.btn-add:hover {
+    -fx-background-color: #d2c1a5;
 }
 
-/* ---- Labels ---- */
-.profile-root .label {
-    -fx-text-fill: #2c3e50;
+/* Tags spécialités / certifications */
+.tag {
+    -fx-background-radius: 15;
+    -fx-padding: 4 12;
+    -fx-font-size: 12;
+    -fx-text-fill: white;
+}
+
+.tag-specialite {
+    -fx-background-color: #4FC3F7; /* bleu pastel */
+}
+
+.tag-certification {
+    -fx-background-color: #dd962c; /* orange doux */
+}
+
+
+
+.button-primary {
+    -fx-background-color: #1976D2;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+
+.button-primary:hover {
+    -fx-background-color: #155a9c;
 }
 
 /* =====================================================

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane stylesheets="@../../css/style.css" 
+           xmlns="http://javafx.com/javafx/21" 
+           xmlns:fx="http://javafx.com/fxml/1" 
+           fx:controller="com.sport.controller.member.MemberSeancesController">
+
+    <VBox spacing="20.0">
+        <padding>
+            <Insets bottom="30" left="30" right="30" top="30" />
+        </padding>
+
+        <!-- En-tête -->
+        <VBox>
+            <Label styleClass="title-label" text="MES SÉANCES" />
+            <Label styleClass="subtitle-label" text="Historique et réservations à venir" />
+        </VBox>
+
+        <!-- Tableau des réservations -->
+        <TableView fx:id="tableSeances" VBox.vgrow="ALWAYS">
+            <columns>
+                <!-- Colonne Date -->
+                <TableColumn fx:id="colDate" prefWidth="150.0" text="Date &amp; Heure" />
+                
+                <!-- Colonne Nom du Cours -->
+                <TableColumn fx:id="colNom" prefWidth="200.0" text="Cours" />
+                
+                <!-- Colonne Durée -->
+                <TableColumn fx:id="colDuree" prefWidth="100.0" text="Durée" />
+                
+                <!-- Colonne Statut -->
+                <TableColumn fx:id="colStatut" prefWidth="150.0" text="Statut" />
+                
+                <!-- Colonne Action (Bouton Annuler) -->
+                <TableColumn fx:id="colAction" prefWidth="120.0" text="Action" />
+            </columns>
+            
+            <!-- Message si vide -->
+            <placeholder>
+                <Label text="Aucune réservation trouvée." />
+            </placeholder>
+        </TableView>
+
+    </VBox>
+</StackPane>
