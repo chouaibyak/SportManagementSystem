@@ -45,12 +45,12 @@ public class AdminLayoutController {
 
     @FXML
     private void showSalles() {
-        loadSection("room-admin.fxml", "Salles");
+        loadSection("salle-admin.fxml", "Salles");
     }
 
     @FXML
     private void showEquipements() {
-        loadSection("equipment-admin.fxml", "Equipements");
+        loadSection("equipement-admin.fxml", "Equipements");
     }
 
     @FXML

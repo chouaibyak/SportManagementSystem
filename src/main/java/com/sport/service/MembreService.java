@@ -1,15 +1,16 @@
 package com.sport.service;
 
+import java.util.List;
+
 import com.sport.model.Membre;
 import com.sport.repository.MembreRepository;
-import java.util.List;
 
 public class MembreService {
 
     // On initialise directement ici
     private MembreRepository membreRepository = new MembreRepository();
 
-
+    
     // Créer un membre avec validation
     public void creerMembre(Membre membre) {
         if (membre.getNom() == null || membre.getNom().isEmpty()) {

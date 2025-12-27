@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.sport.controller.admin.SalleAdminController"
+      spacing="15">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+    <!-- ================= TITLE ================= -->
+    <Label text="Gestion des Salles"
+           style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+    
+    <!-- ================= TABLE ================= -->
+
+    <TableView fx:id="salleTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="nomColumn" text="Nom" prefWidth="190"/>
+            <TableColumn fx:id="capaciteColumn" text="Capacité" prefWidth="150"/>
+            <TableColumn fx:id="typeColumn" text="Type" prefWidth="190"/>
+            <TableColumn fx:id="colNbPersonnes" text="Occupants" prefWidth="120"/>
+            <TableColumn fx:id="colStatus" text="Disponible" prefWidth="120"/>
+            <TableColumn fx:id="colModify" text="Modifier" prefWidth="85"/>
+            <TableColumn fx:id="colDelete" text="Supprimer" prefWidth="85"/>
+        </columns>
+    </TableView>
+  
+     <Button fx:id="btnAddSalle" text="Ajouter Salle" style="-fx-font-size: 14px; " onAction="#openAddSalleForm"/>
+
+</VBox>

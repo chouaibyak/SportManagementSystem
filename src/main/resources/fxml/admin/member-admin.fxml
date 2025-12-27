@@ -23,7 +23,7 @@
             <TableColumn fx:id="colTelephone" text="Téléphone" prefWidth="120"/>
             <TableColumn fx:id="colObjectif" text="Objectif" prefWidth="120"/>
             <TableColumn fx:id="colPreference" text="Préférence" prefWidth="120"/>
-            <TableColumn fx:id="colModify" text="Modifier" prefWidth="80"/>
+            <TableColumn fx:id="colModify" text="Modifier" prefWidth="85"/>
             <TableColumn fx:id="colDelete" text="Supprimer" prefWidth="80"/>
         </columns>
     </TableView>

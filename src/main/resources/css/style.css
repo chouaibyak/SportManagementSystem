@@ -100,7 +100,7 @@
 }
 
 /*  **********************************/
-/*           page de memeber         */
+/*           page de member         */
 /*************************************/
 
 /* --- AMÉLIORATION SIDEBAR --- */
@@ -188,33 +188,112 @@
     -fx-font-weight: bold;
 }
 
+/* =====================================================
+   PROFILE PAGE 
+   ===================================================== */
 
-
-/*  **********************************/
-/*           page de Dashboard_Coach      */
-/*************************************/
-
-
-.dashboard-card {
-    -fx-background-color: #ffffff;
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
-    -fx-padding: 15;
-    -fx-alignment: center;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+/* Fond spécifique au profil */
+.profile-root {
+    -fx-background-color: transparent;
 }
 
-.card-title {
+.profile-root .viewport {
+    -fx-background-color: #f6f8fa;
+}
+
+/* ---- Cartes du profil ---- */
+.profile-root .dashboard-card {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: rgba(44,62,80,0.08);
+    -fx-padding: 24;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.10), 18, 0, 0, 8);
+}
+
+.profile-root .dashboard-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.14), 22, 0, 0, 10);
+}
+
+/* ---- Tabs (profil uniquement) ---- */
+.profile-root .tab-pane {
+    -fx-background-color: transparent;
+}
+
+.profile-root .tab-header-area {
+    -fx-padding: 0 0 14 0;
+}
+
+.profile-root .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.profile-root .tab {
+    -fx-background-color: #ecf0f1;
+    -fx-background-radius: 14;
+    -fx-padding: 8 18;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(44,62,80,0.08);
+}
+
+.profile-root .tab:hover {
+    -fx-background-color: #e4e9ee;
+}
+
+.profile-root .tab:selected {
+    -fx-background-color: white;
+    -fx-border-color: rgba(39,174,96,0.5);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 14, 0, 0, 6);
+}
+
+.profile-root .tab-label {
+    -fx-text-fill: #2c3e50;
     -fx-font-weight: bold;
-    -fx-font-size: 14px;
-    -fx-text-fill: #333333;
 }
 
-.card-value {
-    -fx-font-size: 24px;
-    -fx-text-fill: #2a9d8f;
-    -fx-font-weight: bold;
+/* ---- Champs du profil ---- */
+.profile-root .text-field,
+.profile-root .password-field,
+.profile-root .date-picker,
+.profile-root .combo-box {
+    -fx-background-color: #f1f3f5;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: transparent;
+    -fx-padding: 10 14;
 }
-/*  **********************************/
-/*          Fin de Coach_Dashboard        */
-/*************************************/
+
+.profile-root .text-field:focused,
+.profile-root .password-field:focused,
+.profile-root .date-picker:focused,
+.profile-root .combo-box:focused {
+    -fx-background-color: white;
+    -fx-border-color: rgba(39,174,96,0.8);
+    -fx-effect: dropshadow(three-pass-box, rgba(39,174,96,0.18), 12, 0, 0, 0);
+}
+
+/* ---- Boutons profil ---- */
+.profile-root .button {
+    -fx-background-radius: 14;
+    -fx-padding: 10 20;
+}
+
+/* Boutons existants (compatibles avec ton code actuel) */
+.profile-root .btn-primary,
+.profile-root .button-primary {
+    -fx-effect: dropshadow(three-pass-box, rgba(39,174,96,0.25), 12, 0, 0, 5);
+}
+
+.profile-root .btn-warning {
+    -fx-effect: dropshadow(three-pass-box, rgba(243,156,18,0.25), 12, 0, 0, 5);
+}
+
+/* ---- Séparateurs ---- */
+.profile-root .separator .line {
+    -fx-border-color: rgba(44,62,80,0.12);
+}
+
+/* ---- Labels ---- */
+.profile-root .label {
+    -fx-text-fill: #2c3e50;
+}
