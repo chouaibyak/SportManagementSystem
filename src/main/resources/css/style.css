@@ -203,9 +203,14 @@
     -fx-spacing: 5;
 }
 
+/*  **********************************/
+/*           end memeber         */
+/*************************************/
 /* =====================================================
    PROFILE PAGE
    ===================================================== */
+
+/* Fond spécifique au profil */
 .profile-root {
     -fx-background-color: transparent;
 }
@@ -261,6 +266,9 @@
     -fx-text-fill: #2c3e50;
     -fx-font-weight: bold;
 }
+/*  **********************************/
+/*          Fin de Coach_Dashboard        */
+/*************************************/
 
 /* --- TAGS --- */
 
@@ -323,12 +331,6 @@
 .tag-certification {
     -fx-background-color: #dd962c; /* orange doux */
 }
-
-
-
-
-
-
 
 
 

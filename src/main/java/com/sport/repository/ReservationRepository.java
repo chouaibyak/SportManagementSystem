@@ -12,6 +12,7 @@ import java.util.List;
 
 import com.sport.model.Membre;
 import com.sport.model.Reservation;
+import com.sport.model.Salle;
 import com.sport.model.Seance;
 import com.sport.model.StatutReservation;
 import com.sport.model.TypeCours;
@@ -113,16 +114,50 @@ public class ReservationRepository {
     // --- READ : Trouver les réservations d'un membre ---
     public List<Reservation> trouverParMembre(int membreId) {
         List<Reservation> list = new ArrayList<>();
-        String sql = "SELECT * FROM RESERVATION WHERE membre_id = ?";
+    
+        // On fait un JOIN pour récupérer les infos de la séance en même temps
+        String sql = "SELECT r.*, s.nom as seance_nom, s.dateHeure, s.duree, s.salle_id " +
+                    "FROM RESERVATION r " +
+                    "JOIN SEANCE s ON r.seance_id = s.id " +
+                    "WHERE r.membre_id = ? " +
+                    "ORDER BY s.dateHeure ASC"; // On trie par date (la plus proche en premier)
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, membreId);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                list.add(mapResultSetToReservation(rs));
+                Reservation r = new Reservation();
+                r.setId(rs.getInt("id"));
+                r.setStatut(com.sport.model.StatutReservation.valueOf(rs.getString("statut")));
+                
+                Timestamp tsRes = rs.getTimestamp("dateReservation");
+                if (tsRes != null) r.setDateReservation(new java.util.Date(tsRes.getTime()));
+
+                // --- C'est ici que la magie opère : On remplit l'objet Seance ---
+                Seance s = new Seance();
+                s.setId(rs.getInt("seance_id"));
+                s.setNom(rs.getString("seance_nom")); // On a récupéré le nom !
+                s.setDuree(rs.getInt("duree"));
+                
+                Timestamp tsSeance = rs.getTimestamp("dateHeure");
+                if (tsSeance != null) s.setDateHeure(tsSeance.toLocalDateTime());
+                
+                // (Optionnel) Récupérer l'ID salle
+                Salle salle = new Salle();
+                salle.setId(rs.getInt("salle_id"));
+                s.setSalle(salle);
+
+                r.setSeance(s);
+                
+                // On associe le membre (juste l'ID suffit ici)
+                Membre m = new Membre();
+                m.setId(membreId);
+                r.setMembre(m);
+
+                list.add(r);
             }
 
         } catch (SQLException e) {
@@ -130,6 +165,7 @@ public class ReservationRepository {
         }
         return list;
     }
+
 
     // --- UPDATE : Modifier une réservation (ex: Changer le statut) ---
     public void modifierReservation(Reservation reservation) {
@@ -260,6 +296,31 @@ public List<Reservation> getReservationsParPeriode(LocalDate debut, LocalDate fi
     }
     
     return reservations;
+}
+
+// 1. Compter combien de gens sont inscrits à une séance
+public int compterInscrits(int seanceId) {
+    String sql = "SELECT COUNT(*) FROM reservation WHERE seance_id = ? AND statut != 'ANNULEE'";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, seanceId);
+        ResultSet rs = stmt.executeQuery();
+        if(rs.next()) return rs.getInt(1);
+    } catch (SQLException e) { e.printStackTrace(); }
+    return 0;
+}
+
+// 2. Vérifier si MOI (le membre connecté) je suis déjà inscrit
+public boolean estDejaInscrit(int membreId, int seanceId) {
+    String sql = "SELECT COUNT(*) FROM reservation WHERE membre_id = ? AND seance_id = ? AND statut != 'ANNULEE'";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, membreId);
+        stmt.setInt(2, seanceId);
+        ResultSet rs = stmt.executeQuery();
+        if(rs.next()) return rs.getInt(1) > 0;
+    } catch (SQLException e) { e.printStackTrace(); }
+    return false;
 }
 
 }

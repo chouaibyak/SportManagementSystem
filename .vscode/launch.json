@@ -3,20 +3,17 @@
   "configurations": [
     {
       "type": "java",
-<<<<<<< HEAD
       "name": "EquipementServiceTest",
       "request": "launch",
       "mainClass": "com.sport.EquipementServiceTest",
-=======
+
       "name": "TestAdministrateur",
       "request": "launch",
       "mainClass": "com.sport.TestAdministrateur",
->>>>>>> origin/main
       "projectName": "demo"
     },
     {
       "type": "java",
-<<<<<<< HEAD
       "name": "SeanceIndividuelleServiceTest",
       "request": "launch",
       "mainClass": "com.sport.SeanceIndividuelleServiceTest",
@@ -41,11 +38,10 @@
       "name": "EquipementRepositoryTest",
       "request": "launch",
       "mainClass": "com.sport.EquipementRepositoryTest",
-=======
+
       "name": "TestSalleApp",
       "request": "launch",
       "mainClass": "com.sport.TestSalleApp",
->>>>>>> origin/main
       "projectName": "demo"
     },
     {

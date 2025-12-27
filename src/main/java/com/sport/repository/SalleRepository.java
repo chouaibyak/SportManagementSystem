@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -149,21 +150,27 @@ public class SalleRepository {
     }
 
     // Vérifier la disponibilité d'une salle
-public boolean verifierDisponibiliteSalle(int salleId, LocalDateTime dateHeure) {
-    String sql = "SELECT COUNT(*) FROM seance WHERE salle_id = ? AND dateHeure = ?";
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
+    public boolean verifierDisponibiliteSalle(int salleId, String dateStr) {
+        
+        // Convertir la String en LocalDateTime DANS la méthode
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateHeure = LocalDateTime.parse(dateStr, formatter);
 
-        stmt.setInt(1, salleId);
-        stmt.setTimestamp(2, java.sql.Timestamp.valueOf(dateHeure));
+        String sql = "SELECT COUNT(*) FROM seance WHERE salle_id = ? AND dateHeure = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        ResultSet rs = stmt.executeQuery();
-        if (rs.next()) return rs.getInt(1) == 0;
+            stmt.setInt(1, salleId);
+            stmt.setTimestamp(2, java.sql.Timestamp.valueOf(dateHeure));
 
-    } catch (SQLException e) {
-        e.printStackTrace();
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) return rs.getInt(1) == 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
-    return false;
-}
 
 }

@@ -100,15 +100,18 @@ public class SeanceRepository {
         }
     }
 
-    public List<Seance> getSeancesParPeriode(LocalDate debut, LocalDate fin) {
-
+   public List<Seance> getSeancesParPeriode(LocalDate debut, LocalDate fin) {
     List<Seance> seances = new ArrayList<>();
 
-    String sql = """
-        SELECT id, dateHeure, type, typeSeance, capaciteMax
-        FROM SEANCE
-        WHERE dateHeure >= ? AND dateHeure < ?
-    """;
+    // CORRECTION : c.id_utilisateur au lieu de c.id
+    String sql = "SELECT s.*, " +
+                 "sa.id as salle_id_r, sa.nom as nom_salle, sa.capacite as cap_salle, " +
+                 "u.nom as nom_coach, u.prenom as prenom_coach " +
+                 "FROM SEANCE s " +
+                 "JOIN SALLE sa ON s.salle_id = sa.id " +
+                 "JOIN COACH c ON s.entraineur_id = c.id_utilisateur " +  // <--- C'EST ICI LA CORRECTION
+                 "JOIN UTILISATEUR u ON c.id_utilisateur = u.id " +
+                 "WHERE s.dateHeure >= ? AND s.dateHeure < ?";
 
     LocalDateTime start = debut.atStartOfDay();
     LocalDateTime endExclusive = fin.plusDays(1).atStartOfDay();
@@ -121,14 +124,29 @@ public class SeanceRepository {
 
         try (ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                Seance s = new Seance();
+                Seance seance = new Seance();
 
-                s.setId(rs.getInt("id"));
-                s.setDateHeure(rs.getTimestamp("dateHeure").toLocalDateTime());
-                s.setTypeSeance(TypeSeance.valueOf(rs.getString("typeSeance")));
-                s.setCapaciteMax(rs.getInt("capaciteMax"));
+                seance.setId(rs.getInt("id"));
+                seance.setNom(rs.getString("nom"));
+                seance.setCapaciteMax(rs.getInt("capaciteMax"));
+                seance.setDateHeure(rs.getTimestamp("dateHeure").toLocalDateTime());
+                seance.setDuree(rs.getInt("duree"));
+                
+                // Remplissage Salle
+                Salle salle = new Salle();
+                salle.setId(rs.getInt("salle_id_r"));
+                salle.setNom(rs.getString("nom_salle"));
+                salle.setCapacite(rs.getInt("cap_salle"));
+                seance.setSalle(salle);
 
-                seances.add(s);
+                // Remplissage Coach
+                com.sport.model.Coach coach = new com.sport.model.Coach();
+                coach.setId(rs.getInt("entraineur_id"));
+                coach.setNom(rs.getString("nom_coach"));
+                coach.setPrenom(rs.getString("prenom_coach"));
+                seance.setEntraineur(coach);
+
+                seances.add(seance);
             }
         }
     } catch (SQLException e) {
