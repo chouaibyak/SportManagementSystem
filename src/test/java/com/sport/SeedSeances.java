@@ -2,7 +2,6 @@ package com.sport;
 
 import com.sport.model.*;
 import com.sport.repository.SeanceCollectiveRepository;
-import com.sport.repository.SeanceRepository;
 import com.sport.utils.DBConnection;
 
 import java.time.LocalDateTime;

@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -148,36 +150,27 @@ public class SalleRepository {
     }
 
     // Vérifier la disponibilité d'une salle
-    public boolean verifierDisponibiliteSalle(int salleId, String dateHeure) {
-        // On vérifie s'il existe une séance dans cette salle à cette heure précise
-        String sql = "SELECT COUNT(*) FROM seance WHERE salle_id = ? AND dateHeure = ?";
+    public boolean verifierDisponibiliteSalle(int salleId, String dateStr) {
+        
+        // Convertir la String en LocalDateTime DANS la méthode
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateHeure = LocalDateTime.parse(dateStr, formatter);
 
+        String sql = "SELECT COUNT(*) FROM seance WHERE salle_id = ? AND dateHeure = ?";
+        
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, salleId);
-
-            // --- CORRECTION ICI ---
-            // On convertit le String directement en Timestamp SQL
-            // Attention : le String doit être au format "yyyy-MM-dd HH:mm:ss"
-            try {
-                stmt.setTimestamp(2, java.sql.Timestamp.valueOf(dateHeure));
-            } catch (IllegalArgumentException e) {
-                System.out.println("Erreur de format de date : " + dateHeure);
-                System.out.println("Format attendu : yyyy-MM-dd HH:mm:ss");
-                return false; // Date invalide, on retourne false par sécurité
-            }
+            stmt.setTimestamp(2, java.sql.Timestamp.valueOf(dateHeure));
 
             ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                int count = rs.getInt(1);
-                // Si 0 séance trouvée => Disponible (true)
-                return count == 0;
-            }
+            if (rs.next()) return rs.getInt(1) == 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false; 
+        return false;
     }
+
 }

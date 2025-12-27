@@ -38,6 +38,9 @@
             
             <Button fx:id="btnDashboard" text="Tableau de Bord" onAction="#afficherDashboard" 
                     maxWidth="Infinity" styleClass="nav-button"/>
+                    
+            <Button fx:id="btnPlanning" text="Planning des Cours" onAction="#afficherPlanning" 
+                    maxWidth="Infinity" styleClass="nav-button"/>
             
             <Button fx:id="btnSeances" text="Mes Séances" onAction="#afficherSeances" 
                     maxWidth="Infinity" styleClass="nav-button"/>

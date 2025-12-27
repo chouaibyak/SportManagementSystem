@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.sport.controller.coach.CoachProfilController"
+            fitToWidth="true"
+            stylesheets="@style.css"
+            style="-fx-background-color:#F0F2F5;">
+
+    <VBox spacing="25" style="-fx-padding:20;">
+
+        <!-- HEADER -->
+        <HBox spacing="20" alignment="CENTER_LEFT" styleClass="card">
+            <StackPane>
+                <ImageView fx:id="imgProfile" fitWidth="100" fitHeight="100" preserveRatio="true">
+                    <clip>
+                        <Circle centerX="50" centerY="50" radius="50"/>
+                    </clip>
+                </ImageView>
+                <Button fx:id="btnChangerPhoto" text="📷" styleClass="btn-soft" layoutX="70" layoutY="70"/>
+            </StackPane>
+            <VBox spacing="5">
+                <Label fx:id="lblNom" text="Nom Complet" style="-fx-font-size:20; -fx-font-weight:bold; -fx-text-fill:#2C3E50;"/>
+                <Label fx:id="lblEmail" text="email@example.com" style="-fx-font-size:14; -fx-text-fill:#7F8C8D;"/>
+            </VBox>
+        </HBox>
+
+        <HBox spacing="20" alignment="TOP_LEFT">
+
+            <!-- COLONNE GAUCHE -->
+            <VBox spacing="25" prefWidth="300">
+
+                <VBox spacing="15" styleClass="card">
+                    <Label text="Spécialités" style="-fx-font-weight:bold; -fx-text-fill:#2C3E50;"/>
+                    <FlowPane fx:id="flowSpecialites" hgap="10" vgap="10"/>
+                </VBox>
+
+                <VBox spacing="15" styleClass="card">
+                    <Label text="Certifications" style="-fx-font-weight:bold; -fx-text-fill:#2C3E50;"/>
+                    <FlowPane fx:id="flowCertifications" hgap="10" vgap="10"/>
+                    
+                    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding:5 0 0 0;">
+                        <TextField fx:id="txtNouvelleCertif" promptText="Nouvelle certification" HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="btnAjouterCertif" text="Ajouter" styleClass="btn-add"/>
+                    </HBox>
+                </VBox>
+
+            </VBox>
+
+            <!-- COLONNE DROITE -->
+            <VBox spacing="25" HBox.hgrow="ALWAYS">
+
+                <!-- Infos personnelles -->
+                <VBox spacing="20" styleClass="card">
+                    <Label text="Informations Personnelles" style="-fx-font-size:18; -fx-font-weight:bold; -fx-text-fill:#2C3E50;"/>
+                    <GridPane hgap="20" vgap="15">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50"/>
+                            <ColumnConstraints percentWidth="50"/>
+                        </columnConstraints>
+
+                        <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label text="Nom" style="-fx-font-weight:bold;"/>
+                            <TextField fx:id="txtNom" disable="true"/>
+                        </VBox>
+                        <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label text="Prénom" style="-fx-font-weight:bold;"/>
+                            <TextField fx:id="txtPrenom" disable="true"/>
+                        </VBox>
+                        <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label text="Téléphone" style="-fx-font-weight:bold;"/>
+                            <TextField fx:id="txtTelephone" disable="true"/>
+                        </VBox>
+                        <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Label text="Adresse" style="-fx-font-weight:bold;"/>
+                            <TextField fx:id="txtAdresse" disable="true"/>
+                        </VBox>
+                    </GridPane>
+
+                    <HBox spacing="10" alignment="CENTER_RIGHT">
+                        <Button fx:id="btnModifier" text="Modifier" styleClass="btn-soft"/>
+                        <Button fx:id="btnAnnuler" text="Annuler" styleClass="btn-soft" visible="false" managed="false"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Bouton pour afficher le form mot de passe -->
+                <Button fx:id="btnAfficherMdp" text="Changer le mot de passe" styleClass="btn-soft"/>
+
+                <!-- Formulaire mot de passe (caché par défaut) -->
+                <VBox fx:id="vboxMdp" spacing="15" styleClass="card" visible="false" managed="false">
+                    <Label text="Sécurité - Changer le mot de passe" style="-fx-font-size:16; -fx-font-weight:bold; -fx-text-fill:#2C3E50;"/>
+                    <Separator/>
+                    <VBox spacing="15" maxWidth="400">
+                        <Label text="Ancien mot de passe"/>
+                        <PasswordField fx:id="txtAncienMdp" promptText="••••••••"/>
+                        <Label text="Nouveau mot de passe"/>
+                        <PasswordField fx:id="txtNouveauMdp" promptText="••••••••"/>
+                        <Label text="Confirmer le nouveau mot de passe"/>
+                        <PasswordField fx:id="txtConfirmMdp" promptText="••••••••"/>
+                        <Button fx:id="btnChangerMdp" text="Valider" styleClass="btn-soft" prefWidth="250"/>
+                    </VBox>
+                </VBox>
+
+            </VBox>
+
+        </HBox>
+
+    </VBox>
+</ScrollPane>

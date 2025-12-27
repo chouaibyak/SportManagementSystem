@@ -24,7 +24,6 @@ public class TestReservation {
         // 1. CRÉATION MEMBRE
         // -----------------------------------------------------------
         System.out.println("\n--- 1. CRÉATION MEMBRE ---");
-        long ts = System.currentTimeMillis();
         Membre membre = new Membre(
         );
         membreService.creerMembre(membre);

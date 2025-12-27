@@ -4,58 +4,90 @@ import com.sport.model.*;
 import com.sport.utils.DBConnection;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SeanceCollectiveRepository {
 
     // GET ALL
-    public List<SeanceCollective> getAll() {
-        List<SeanceCollective> list = new ArrayList<>();
-        String query = "SELECT s.id, s.nom, s.capaciteMax, s.dateHeure, s.type AS typeCours, s.typeSeance, s.duree, s.salle_id, s.entraineur_id, " +
-                       "sc.placesDisponibles " +
-                       "FROM seance s " +
-                       "JOIN seancecollective sc ON s.id = sc.seance_id";
+  public List<SeanceCollective> getAll() {
+    List<SeanceCollective> list = new ArrayList<>();
+    String query = "SELECT s.id, s.nom, s.capaciteMax, s.dateHeure, s.type AS typeCours, s.typeSeance, s.duree, s.salle_id, s.entraineur_id, " +
+                   "sc.placesDisponibles " +
+                   "FROM seance s " +
+                   "JOIN seancecollective sc ON s.id = sc.seance_id";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(query);
+         ResultSet rs = stmt.executeQuery()) {
 
-            while (rs.next()) {
-                SeanceCollective sc = new SeanceCollective();
-                sc.setListeMembers(new ArrayList<>()); // sécurité
+        while (rs.next()) {
+            SeanceCollective sc = new SeanceCollective();
 
-                sc.setId(rs.getInt("id"));
-                sc.setNom(rs.getString("nom"));
-                sc.setCapaciteMax(rs.getInt("capaciteMax"));
-                sc.setDateHeure(rs.getTimestamp("dateHeure").toLocalDateTime());
-                sc.setDuree(rs.getInt("duree"));
+            sc.setId(rs.getInt("id"));
+            sc.setNom(rs.getString("nom"));
+            sc.setCapaciteMax(rs.getInt("capaciteMax"));
+            sc.setDateHeure(rs.getTimestamp("dateHeure").toLocalDateTime());
+            sc.setDuree(rs.getInt("duree"));
+            sc.setTypeCours(TypeCours.valueOf(rs.getString("typeCours")));
+            sc.setTypeSeance(TypeSeance.valueOf(rs.getString("typeSeance")));
+            sc.setPlacesDisponibles(rs.getInt("placesDisponibles"));
 
-                // TypeCours et TypeSeance
-                sc.setTypeCours(TypeCours.valueOf(rs.getString("typeCours")));
-                sc.setTypeSeance(TypeSeance.valueOf(rs.getString("typeSeance")));
+            // Salle
+            Salle salle = new Salle();
+            salle.setId(rs.getInt("salle_id"));
+            sc.setSalle(salle);
 
-                sc.setPlacesDisponibles(rs.getInt("placesDisponibles"));
+            // Coach
+            Coach coach = new Coach();
+            coach.setId(rs.getInt("entraineur_id"));
+            sc.setEntraineur(coach);
 
-                // Salle
-                Salle salle = new Salle();
-                salle.setId(rs.getInt("salle_id"));
-                sc.setSalle(salle);
+            // **⚡ Charger les membres suivis**
 
-                // Coach
-                Coach coach = new Coach();
-                coach.setId(rs.getInt("entraineur_id"));
-                sc.setEntraineur(coach);
-
-                list.add(sc);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+            list.add(sc);
         }
 
-        return list;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+
+    return list;
+}
+    public List<Membre> getMembresParSeance(int seanceId) {
+    List<Membre> membres = new ArrayList<>();
+    String sql = "SELECT u.* " +
+                 "FROM seancecollective_membre scm " +
+                 "JOIN membre m ON scm.membre_id = m.id_utilisateur " +
+                 "JOIN utilisateur u ON m.id_utilisateur = u.id " +
+                 "WHERE scm.seance_id = ?";
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setInt(1, seanceId);
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            Membre m = new Membre();
+            m.setId(rs.getInt("id"));
+            m.setNom(rs.getString("nom"));
+            m.setPrenom(rs.getString("prenom"));
+            m.setEmail(rs.getString("email"));
+            m.setTelephone(rs.getString("telephone"));
+            m.setAdresse(rs.getString("adresse"));
+            m.setDateNaissance(rs.getString("dateNaissance"));
+            membres.add(m);
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return membres;
+}
+
 
     // GET BY ID
     public SeanceCollective getById(int seanceId) {

@@ -45,7 +45,6 @@ public class TestSeances {
         sc.setTypeSeance(TypeSeance.COLLECTIVE);
         sc.setPlacesDisponibles(5);
 
-        int scId = scService.getAll().size() + 1; // optionnel si repository gère ID automatiquement
         scService.ajouterSeance(sc);
         System.out.println("Séance Collective créée ID=" + sc.getId());
 

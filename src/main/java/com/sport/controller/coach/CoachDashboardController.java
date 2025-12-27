@@ -1,12 +1,16 @@
 package com.sport.controller.coach;
 
-import com.sport.model.*;
+import com.sport.model.Coach;
+import com.sport.model.Seance;
+import com.sport.model.SeanceCollective;
+import com.sport.model.Utilisateur;
 import com.sport.repository.SeanceCollectiveRepository;
 import com.sport.utils.UserSession;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
@@ -20,8 +24,11 @@ public class CoachDashboardController {
     @FXML private Label lblSeances;
     @FXML private Label lblMembres;
     @FXML private Label lblProchaine;
+    @FXML private Label lblSeancesTerminees;
     @FXML private BarChart<String, Number> barChart;
     @FXML private VBox notificationsBox;
+    @FXML private Button btnRefresh;
+    @FXML private Button btnGestionSeances;
 
     private Coach coach;
     private SeanceCollectiveRepository seanceRepo;
@@ -33,39 +40,55 @@ public class CoachDashboardController {
             coach = (Coach) user;
             seanceRepo = new SeanceCollectiveRepository();
             chargerStats();
+
+            // Action du bouton refresh
+            btnRefresh.setOnAction(e -> refreshDashboard());
+
+            // Action du bouton gestion des séances
+            btnGestionSeances.setOnAction(e -> {
+                System.out.println("Ouvrir gestion des séances");
+            });
         }
     }
 
     private void chargerStats() {
-        List<Seance> toutesSeances = seanceRepo.getAll().stream()
+        List<SeanceCollective> toutesSeances = seanceRepo.getAll().stream()
                 .filter(s -> s.getEntraineur().getId() == coach.getId())
                 .collect(Collectors.toList());
 
         LocalDate today = LocalDate.now();
         LocalDateTime now = LocalDateTime.now();
 
-        // 1️⃣ Séances aujourd'hui
+        // Séances aujourd'hui
         long countToday = toutesSeances.stream()
                 .filter(s -> s.getDateHeure().toLocalDate().isEqual(today))
                 .count();
         lblSeances.setText(String.valueOf(countToday));
 
-        // 2️⃣ Membres suivis (seulement pour les séances collectives)
+        // Membres suivis
         long membresCount = toutesSeances.stream()
-                .filter(s -> s instanceof SeanceCollective)
-                .mapToLong(s -> ((SeanceCollective) s).getListeMembers().size())
+                .mapToLong(sc -> sc.getListeMembers() != null ? sc.getListeMembers().size() : 0)
                 .sum();
         lblMembres.setText(String.valueOf(membresCount));
 
-        // 3️⃣ Prochaine séance
-        Seance prochaine = toutesSeances.stream()
+        // Prochaine séance
+        SeanceCollective prochaine = toutesSeances.stream()
                 .filter(s -> s.getDateHeure().isAfter(now))
                 .min((s1, s2) -> s1.getDateHeure().compareTo(s2.getDateHeure()))
                 .orElse(null);
         lblProchaine.setText(prochaine != null ?
                 prochaine.getNom() + " à " + prochaine.getDateHeure().toLocalTime() : "Aucune");
 
-        // 4️⃣ Graphique : Séances par jour (7 derniers jours)
+        // Séances terminées aujourd'hui
+        long countTerminees = toutesSeances.stream()
+                .filter(s -> s.getDateHeure().toLocalDate().isEqual(today))
+                .filter(s -> s.getDateHeure().isBefore(now))
+                .count();
+        lblSeancesTerminees.setText(String.valueOf(countTerminees));
+
+       
+
+        // Graphique : Séances par jour (7 derniers jours)
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         for (int i = 0; i < 7; i++) {
             LocalDate date = today.minusDays(6 - i);
@@ -76,13 +99,17 @@ public class CoachDashboardController {
         }
         barChart.setData(FXCollections.observableArrayList(series));
 
-        // 5️⃣ Notifications : séances dans l'heure
+        // Notifications : séances dans l'heure
         notificationsBox.getChildren().clear();
         toutesSeances.stream()
-                .filter(s -> s.getDateHeure().isAfter(now) &&
-                             s.getDateHeure().isBefore(now.plusHours(1)))
+                .filter(s -> s.getDateHeure().isAfter(now) && s.getDateHeure().isBefore(now.plusHours(1)))
                 .forEach(s -> notificationsBox.getChildren().add(
                         new Label("Prochaine séance: " + s.getNom() + " à " + s.getDateHeure().toLocalTime())
                 ));
+    }
+
+    private void refreshDashboard() {
+        chargerStats();
+        System.out.println("Dashboard rafraîchi");
     }
 }

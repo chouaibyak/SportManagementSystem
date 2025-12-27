@@ -84,16 +84,18 @@ public class CoachRepository {
 
     String sqlCoach = "INSERT INTO COACH (id_utilisateur) VALUES (?)";
 
+    String sqlSpec = "INSERT INTO COACH_SPECIALITE (coach_id, specialite) VALUES (?, ?)";
+
     Connection conn = null;
 
     try {
         conn = DBConnection.getConnection();
-        conn.setAutoCommit(false); // 🔒 TRANSACTION
+        conn.setAutoCommit(false); //TRANSACTION
 
         int userId = -1;
 
         // ------------------------------------------------
-        // 1️⃣ INSERT UTILISATEUR
+        // 1️ INSERT UTILISATEUR
         // ------------------------------------------------
         try (PreparedStatement stmtUser =
                      conn.prepareStatement(sqlUser, Statement.RETURN_GENERATED_KEYS)) {
@@ -111,12 +113,12 @@ public class CoachRepository {
             ResultSet rs = stmtUser.getGeneratedKeys();
             if (rs.next()) {
                 userId = rs.getInt(1);
-                coach.setId(userId); // 🔑 héritage
+                coach.setId(userId); // héritage
             }
         }
 
         // ------------------------------------------------
-        // 2️⃣ INSERT COACH
+        // 2️ INSERT COACH
         // ------------------------------------------------
         if (userId != -1) {
             try (PreparedStatement stmtCoach =
@@ -124,6 +126,17 @@ public class CoachRepository {
 
                 stmtCoach.setInt(1, userId);
                 stmtCoach.executeUpdate();
+            }
+             // INSERT SPECIALITES (Nouveau)
+            if (coach.getSpecialites() != null && !coach.getSpecialites().isEmpty()) {
+                try (PreparedStatement stmtSpecBatch = conn.prepareStatement(sqlSpec)) {
+                    for (String spec : coach.getSpecialites()) {
+                        stmtSpecBatch.setInt(1, userId);
+                        stmtSpecBatch.setString(2, spec);
+                        stmtSpecBatch.addBatch();
+                    }
+                    stmtSpecBatch.executeBatch();
+                }
             }
         }
 
