@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 
 <StackPane stylesheets="@../../css/style.css" 
            xmlns="http://javafx.com/javafx/21" 
@@ -15,9 +17,16 @@
     <VBox spacing="20.0">
         <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
 
-        <VBox>
+        <VBox spacing="10">
             <Label text="PLANNING DES SÉANCES" styleClass="title-label"/>
             <Label text="Réservez vos prochains cours" styleClass="subtitle-label"/>
+            
+            <!-- === AJOUT : Zone de filtre === -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label text="Filtrer par type :" style="-fx-font-weight: bold;"/>
+                <ComboBox fx:id="cbFiltreType" prefWidth="200.0" promptText="Choisir le type de séance"/>
+            </HBox>
+            <!-- ============================== -->
         </VBox>
 
         <TableView fx:id="tablePlanning" VBox.vgrow="ALWAYS">
@@ -27,11 +36,10 @@
                 <TableColumn fx:id="colCoach" text="Coach" prefWidth="120"/>
                 <TableColumn fx:id="colSalle" text="Salle" prefWidth="100"/>
                 <TableColumn fx:id="colPlaces" text="Disponibilité" prefWidth="100"/>
-                <!-- Colonne magique pour le bouton -->
                 <TableColumn fx:id="colAction" text="Action" prefWidth="140"/>
             </columns>
             <placeholder>
-                <Label text="Aucune séance disponible cette semaine."/>
+                <Label text="Veuillez sélectionner un type de séance pour voir le planning."/>
             </placeholder>
         </TableView>
     </VBox>

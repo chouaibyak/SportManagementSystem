@@ -203,6 +203,14 @@
     -fx-spacing: 5;
 }
 
+/* planning scance */
+.list-cell {
+    -fx-text-fill: white;
+}
+.combo-box .list-cell {
+    -fx-text-fill: black;
+}
+
 /*  **********************************/
 /*           end memeber         */
 /*************************************/

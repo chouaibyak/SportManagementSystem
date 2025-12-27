@@ -13,8 +13,8 @@ import javafx.stage.Stage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CoachSeanceFormController {
 
@@ -128,7 +128,15 @@ public class CoachSeanceFormController {
 
         // Vérifier disponibilité salle
         Salle salleChoisie = cbSalle.getValue();
-           boolean dispo = salleRepo.verifierDisponibiliteSalle(salleChoisie.getId(), dateHeure);
+
+        // --- CORRECTION ICI ---
+        // On formate la date en String car votre Repository attend une String
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String dateStr = dateHeure.format(formatter); 
+
+        boolean dispo = salleRepo.verifierDisponibiliteSalle(salleChoisie.getId(), dateStr);
+        // ----------------------
+
         if (!dispo && seance == null) {
             showAlert("Erreur", "La salle sélectionnée n'est pas disponible à cette date et heure.");
             return;
@@ -167,9 +175,10 @@ public class CoachSeanceFormController {
 
                 indivRepo.ajouter(si);
             }
-        } else { // =============================
-                 // MODIFICATION
-                 // =============================
+        } else { 
+            // =============================
+            // MODIFICATION
+            // =============================
             seance.setNom(nom);
             seance.setDateHeure(dateHeure);
             seance.setDuree(duree);
