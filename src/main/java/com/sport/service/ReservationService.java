@@ -1,5 +1,6 @@
 package com.sport.service;
 
+import com.sport.model.Membre;
 import com.sport.model.Reservation;
 import com.sport.model.StatutReservation; // Assurez-vous d'avoir cet Enum
 import com.sport.repository.ReservationRepository;
@@ -10,6 +11,12 @@ import java.util.List;
 public class ReservationService {
 
     private ReservationRepository reservationRepository = new ReservationRepository();
+
+    public Membre trouverMembreParUtilisateurId(int utilisateurId) {
+        // Le service délègue la tâche au repository
+        return reservationRepository.trouverMembreParUtilisateurId(utilisateurId);
+    }
+    
 
     // --- Méthodes Métier ---
 
@@ -77,5 +84,5 @@ public class ReservationService {
 
     public boolean isMembreDejaInscrit(int membreId, int seanceId) {
         return reservationRepository.estDejaInscrit(membreId, seanceId);
-    }
+    } 
 }

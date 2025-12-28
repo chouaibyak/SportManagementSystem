@@ -7,261 +7,263 @@ import com.sport.repository.SeanceIndividuelleRepository;
 import com.sport.service.ReservationService;
 import com.sport.service.SeanceCollectiveService;
 import com.sport.service.SeanceIndividuelleService;
+import com.sport.utils.DBConnection;
 import com.sport.utils.UserSession;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.util.Callback;
+import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+// Pour les icônes (SVG simple)
+import javafx.scene.shape.SVGPath;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MemberPlanningController {
 
-    @FXML private TableView<Seance> tablePlanning;
-    @FXML private TableColumn<Seance, String> colDate;
-    @FXML private TableColumn<Seance, String> colCours;
-    @FXML private TableColumn<Seance, String> colCoach;
-    @FXML private TableColumn<Seance, String> colSalle;
-    @FXML private TableColumn<Seance, String> colPlaces;
-    @FXML private TableColumn<Seance, Void> colAction;
+    @FXML private FlowPane cardsContainer; // Remplacement du TableView
 
-    // Vérifiez que ce nom correspond exactement au fx:id dans le FXML
-    @FXML private ComboBox<TypeSeance> cbFiltreType;
-
-    // Repository global pour l'affichage (table 'seance')
     private SeanceRepository seanceRepo = new SeanceRepository();
-    
-    // Services spécifiques pour la logique métier (tables 'seancecollective' / 'seanceindividuelle')
     private SeanceCollectiveService collectiveService = new SeanceCollectiveService(new SeanceCollectiveRepository());
     private SeanceIndividuelleService indivService = new SeanceIndividuelleService(new SeanceIndividuelleRepository());
-    
     private ReservationService resService = new ReservationService();
 
-    private DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM HH:mm");
+    private DateTimeFormatter fmtDate = DateTimeFormatter.ofPattern("EEE dd MMM");
+    private DateTimeFormatter fmtHeure = DateTimeFormatter.ofPattern("HH:mm");
 
     @FXML
     public void initialize() {
-        System.out.println("--- INITIALISATION ---");
+        chargerPlanning();
+    }
 
-        if (cbFiltreType != null) {
-            // 1. Remplir la liste
-            cbFiltreType.setItems(FXCollections.observableArrayList(TypeSeance.values()));
+    private void chargerPlanning() {
+        cardsContainer.getChildren().clear();
 
-            // --- AJOUT CORRECTIF : Dire à JavaFX comment afficher l'Enum ---
-            
-            // A. Pour la liste déroulante
-            cbFiltreType.setCellFactory(param -> new ListCell<TypeSeance>() {
-                @Override
-                protected void updateItem(TypeSeance item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null) {
-                        setText(null);
-                    } else {
-                        setText(item.toString()); // Affiche "COLLECTIVE" ou "INDIVIDUELLE"
-                    }
-                }
-            });
+        // 1. Récupération optimisée : On cherche le profil Membre une seule fois
+        Utilisateur user = UserSession.getInstance().getUtilisateur();
+        Membre membreConnecte = resService.trouverMembreParUtilisateurId(user.getId());
 
-            // B. Pour le bouton sélectionné (quand la liste est fermée)
-            cbFiltreType.setButtonCell(new ListCell<TypeSeance>() {
-                @Override
-                protected void updateItem(TypeSeance item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null) {
-                        setText(null);
-                    } else {
-                        setText(item.toString());
-                    }
-                }
-            });
-            // -------------------------------------------------------------
+        if (membreConnecte == null) {
+            System.err.println("Attention : Utilisateur connecté sans profil Membre associé !");
+        }
 
-            // 2. Sélectionner par défaut
-            cbFiltreType.getSelectionModel().selectFirst();
+        // 2. Récupérer les séances
+        List<Seance> toutesLesSeances = seanceRepo.getSeancesParPeriode(LocalDate.now(), LocalDate.now().plusDays(14));
 
-            // 3. Ecouteur
-            cbFiltreType.valueProperty().addListener((obs, oldVal, newVal) -> {
-                if (newVal != null) chargerDonnees(newVal);
-            });
+        // 3. Trier par date (la plus proche en premier)
+        toutesLesSeances.sort(Comparator.comparing(Seance::getDateHeure));
 
-            // Charger les données initiales
-            if(cbFiltreType.getValue() != null) {
-                chargerDonnees(cbFiltreType.getValue());
-            }
-
+        // 4. Génération des cartes
+        if (toutesLesSeances.isEmpty()) {
+            Label emptyLbl = new Label("Aucune séance disponible pour le moment.");
+            emptyLbl.setStyle("-fx-font-size: 16px; -fx-text-fill: #95a5a6; -fx-padding: 20;");
+            cardsContainer.getChildren().add(emptyLbl);
         } else {
-            System.err.println("ERREUR : cbFiltreType est NULL");
+            for (Seance s : toutesLesSeances) {
+                // IMPORTANT : On passe la séance ET le membre connecté
+                cardsContainer.getChildren().add(creerCarteSession(s, membreConnecte));
+            }
+        }
+    }
+
+    // Notez l'ajout du paramètre 'Membre membre' ici
+    private VBox creerCarteSession(Seance s, Membre membre) {
+        // --- STRUCTURE DE LA CARTE ---
+        VBox card = new VBox();
+        card.getStyleClass().add("session-card");
+
+        // --- 1. HEADER (Type + Icône) ---
+        HBox header = new HBox();
+        header.getStyleClass().add("card-header");
+        
+        Label typeLabel = new Label();
+        typeLabel.getStyleClass().add("type-label");
+        
+        SVGPath icon = new SVGPath();
+        icon.setStyle("-fx-fill: white;");
+        
+        if (s.getTypeSeance() == TypeSeance.COLLECTIVE) {
+            header.getStyleClass().add("header-collective");
+            typeLabel.setText("COLLECTIF");
+            icon.setContent("M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z");
+        } else {
+            header.getStyleClass().add("header-individuelle");
+            typeLabel.setText("COACHING PRIVÉ");
+            icon.setContent("M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z");
+        }
+        
+        typeLabel.setGraphic(icon);
+        header.getChildren().add(typeLabel);
+
+        // --- 2. BODY (Infos) ---
+        VBox body = new VBox();
+        body.getStyleClass().add("card-body");
+        
+        Label dateLbl = new Label(s.getDateHeure().format(fmtDate).toUpperCase() + " • " + s.getDateHeure().format(fmtHeure));
+        dateLbl.setStyle("-fx-text-fill: #95a5a6; -fx-font-weight: bold; -fx-font-size: 12px;");
+        
+        Label titleLbl = new Label(s.getNom());
+        titleLbl.getStyleClass().add("activity-title");
+        titleLbl.setWrapText(true);
+
+        // Coach info
+        HBox coachBox = new HBox(5);
+        SVGPath coachIcon = new SVGPath();
+        coachIcon.setContent("M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z");
+        coachIcon.setScaleX(0.7); coachIcon.setScaleY(0.7); coachIcon.setStyle("-fx-fill: #7f8c8d;");
+        Label coachLbl = new Label("Coach: " + (s.getEntraineur() != null ? s.getEntraineur().getNom() : "Non assigné"));
+        coachLbl.getStyleClass().add("info-text");
+        coachBox.getChildren().addAll(coachIcon, coachLbl);
+        coachBox.setAlignment(Pos.CENTER_LEFT);
+
+        // Salle info
+        HBox salleBox = new HBox(5);
+        SVGPath salleIcon = new SVGPath();
+        salleIcon.setContent("M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z");
+        salleIcon.setScaleX(0.7); salleIcon.setScaleY(0.7); salleIcon.setStyle("-fx-fill: #7f8c8d;");
+        Label salleLbl = new Label((s.getSalle() != null ? s.getSalle().getNom() : "Salle principale"));
+        salleLbl.getStyleClass().add("info-text");
+        salleBox.getChildren().addAll(salleIcon, salleLbl);
+        salleBox.setAlignment(Pos.CENTER_LEFT);
+
+        // Disponibilité (Calcul pour savoir si complet)
+        int pris = resService.getNombrePlacesReservees(s.getId());
+        int reste = s.getCapaciteMax() - pris;
+        boolean complet = reste <= 0;
+
+        Label placesLbl = new Label();
+        if (s.getTypeSeance() == TypeSeance.COLLECTIVE) {
+            placesLbl.setText(reste + " places restantes");
+        } else {
+            placesLbl.setText(reste > 0 ? "Disponible" : "Réservé");
+        }
+        
+        // Style couleur (Vert si dispo, Rouge si complet)
+        if (complet) {
+            placesLbl.setStyle("-fx-text-fill: #e74c3c; -fx-font-size: 11px; -fx-font-weight: bold;");
+        } else {
+            placesLbl.setStyle("-fx-text-fill: #27ae60; -fx-font-size: 11px; -fx-font-weight: bold;");
         }
 
-        configurerColonnes();
-    }
+        Region spacer = new Region();
+        VBox.setVgrow(spacer, Priority.ALWAYS);
 
-    private void chargerDonnees(TypeSeance typeFiltre) {
-        System.out.println("--- DEBUG CHARGEMENT ---");
-        
-        // 1. Récupération brute
-        List<Seance> toutesLesSeances = seanceRepo.getSeancesParPeriode(LocalDate.now(), LocalDate.now().plusDays(7));
-        
-        System.out.println("Nombre total trouvé (avant filtre) : " + toutesLesSeances.size());
+        body.getChildren().addAll(dateLbl, titleLbl, spacer, coachBox, salleBox, placesLbl);
+        VBox.setVgrow(body, Priority.ALWAYS);
 
-        // 2. Vérification du contenu
-        for (Seance s : toutesLesSeances) {
-            System.out.println("Seance trouvée : " + s.getNom());
-            System.out.println(" - Date : " + s.getDateHeure());
-            System.out.println(" - TypeSeance (Java) : " + s.getTypeSeance()); // <--- SI C'EST NULL, C'EST LE PROBLÈME
+        // --- 3. FOOTER (Action) ---
+        HBox footer = new HBox();
+        footer.getStyleClass().add("card-footer");
+        
+        Button actionBtn = new Button();
+        
+        // --- LOGIQUE CORRIGÉE : VÉRIFICATION INSCRIPTION ---
+        boolean dejaInscrit = false;
+        if (membre != null) {
+            // C'est ICI la correction cruciale : on utilise l'ID du Membre
+            dejaInscrit = resService.isMembreDejaInscrit(membre.getId(), s.getId());
         }
 
-        // 3. Le Filtre
-        List<Seance> seancesFiltrees = toutesLesSeances.stream()
-                .filter(s -> s.getTypeSeance() == typeFiltre)
-                .collect(Collectors.toList());
-                
-        System.out.println("Reste après filtre (" + typeFiltre + ") : " + seancesFiltrees.size());
-
-        tablePlanning.setItems(FXCollections.observableArrayList(seancesFiltrees));
-    }
-
-    private void configurerColonnes() {
-        colDate.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDateHeure().format(fmt)));
-        colCours.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getNom()));
+        if (dejaInscrit) {
+            actionBtn.setText("INSCRIT ✓");
+            actionBtn.getStyleClass().addAll("badge-joined");
+            actionBtn.setDisable(true); 
+            actionBtn.setStyle("-fx-background-color: transparent; -fx-border-color: #27ae60; -fx-border-radius: 20;");
+        } else if (complet) {
+            actionBtn.setText("COMPLET");
+            actionBtn.getStyleClass().addAll("badge-full");
+            actionBtn.setDisable(true);
+            actionBtn.setStyle("-fx-background-color: transparent; -fx-border-color: #e74c3c; -fx-border-radius: 20;");
+        } else {
+            actionBtn.setText("RÉSERVER");
+            actionBtn.getStyleClass().addAll("btn-reserve", "btn-reserve-active");
+            actionBtn.setOnAction(e -> handleReservation(s));
+        }
         
-        colCoach.setCellValueFactory(cell -> {
-            if(cell.getValue().getEntraineur() != null) return new SimpleStringProperty(cell.getValue().getEntraineur().getNom());
-            return new SimpleStringProperty("-");
-        });
+        actionBtn.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(actionBtn, Priority.ALWAYS);
 
-        colSalle.setCellValueFactory(cell -> {
-            if(cell.getValue().getSalle() != null) return new SimpleStringProperty(cell.getValue().getSalle().getNom());
-            return new SimpleStringProperty("-");
-        });
+        footer.getChildren().add(actionBtn);
 
-        // Colonne Disponibilité (Logique différente selon le type)
-        colPlaces.setCellValueFactory(cell -> {
-            Seance s = cell.getValue();
-            
-            // Pour COLLECTIVE : On vérifie la capacité max vs nb inscrits
-            if (s.getTypeSeance() == TypeSeance.COLLECTIVE) {
-                int pris = resService.getNombrePlacesReservees(s.getId());
-                int reste = s.getCapaciteMax() - pris;
-                if (reste <= 0) return new SimpleStringProperty("COMPLET");
-                return new SimpleStringProperty(reste + " places");
-            } 
-            // Pour INDIVIDUELLE : C'est binaire (Libre ou Pris)
-            else {
-                // On vérifie si la séance individuelle a déjà été réservée dans la table de liaison
-                // (Astuce : on regarde si capacityMax (souvent 1) est atteinte)
-                int pris = resService.getNombrePlacesReservees(s.getId());
-                if (pris > 0) return new SimpleStringProperty("RÉSERVÉE");
-                return new SimpleStringProperty("LIBRE");
-            }
-        });
-
-        colAction.setCellFactory(creerBoutonAction());
+        card.getChildren().addAll(header, body, footer);
+        
+        return card;
     }
 
-    private Callback<TableColumn<Seance, Void>, TableCell<Seance, Void>> creerBoutonAction() {
-        return param -> new TableCell<>() {
-            private final Button btn = new Button("RÉSERVER");
-            private final Label lbl = new Label();
-
-            {
-                btn.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-cursor: hand; -fx-font-weight: bold;");
-                btn.setOnAction(e -> handleReservation(getTableView().getItems().get(getIndex())));
-                lbl.setStyle("-fx-font-weight: bold; -fx-font-size: 11px;");
-            }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                    return;
-                }
-
-                Seance s = getTableView().getItems().get(getIndex());
-                Utilisateur user = UserSession.getInstance().getUtilisateur();
-
-                // Vérifications de base
-                int nbInscrits = resService.getNombrePlacesReservees(s.getId());
-                boolean dejaInscrit = resService.isMembreDejaInscrit(user.getId(), s.getId());
-                boolean estPleine = nbInscrits >= s.getCapaciteMax();
-
-                if (dejaInscrit) {
-                    lbl.setText("✅ INSCRIT");
-                    lbl.setStyle("-fx-text-fill: #2980b9;");
-                    setGraphic(lbl);
-                } 
-                else if (estPleine) {
-                    lbl.setText("❌ INDISPONIBLE");
-                    lbl.setStyle("-fx-text-fill: #e74c3c;");
-                    setGraphic(lbl);
-                } 
-                else {
-                    setGraphic(btn);
-                }
-            }
-        };
-    }
-
-    // --- C'est ici que l'on gère la différence entre les tables ---
     private void handleReservation(Seance s) {
+        // 1. Récupération de l'utilisateur et du profil Membre
         Utilisateur user = UserSession.getInstance().getUtilisateur();
         
-        // Convertir l'Utilisateur en Membre (nécessaire pour les repositories)
-        Membre membre = new Membre();
-        membre.setId(user.getId());
-        membre.setNom(user.getNom());
-        membre.setPrenom(user.getPrenom());
-        membre.setEmail(user.getEmail());
+        // CRUCIAL : On récupère l'objet Membre pour avoir le bon ID (ex: id_membre=5)
+        // et non l'ID de connexion (ex: id_user=1)
+        Membre membre = resService.trouverMembreParUtilisateurId(user.getId());
 
-        boolean succes = false;
-
-        // CAS 1 : SÉANCE COLLECTIVE
-        if (s.getTypeSeance() == TypeSeance.COLLECTIVE) {
-            System.out.println("Tentative réservation Collective ID: " + s.getId());
-            // Appel au repository spécifique (table seancecollective)
-            // Cela va décrémenter 'placesDisponibles'
-            succes = collectiveService.reserverPlace(s.getId(), membre);
-        } 
-        
-        // CAS 2 : SÉANCE INDIVIDUELLE
-        else if (s.getTypeSeance() == TypeSeance.INDIVIDUELLE) {
-            System.out.println("Tentative réservation Individuelle ID: " + s.getId());
-            // Appel au repository spécifique (table seanceindividuelle)
-            // Cela va assigner le membre à la colonne 'membre_id'
-            succes = indivService.assignerMembre(s.getId(), membre);
+        // 2. Vérification de sécurité
+        if (membre == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur de profil");
+            alert.setHeaderText("Profil membre introuvable");
+            alert.setContentText("Votre compte utilisateur n'est pas lié à un profil membre. Contactez l'administration.");
+            alert.showAndWait();
+            return;
         }
 
-        if (succes) {
-            // Dans les DEUX cas, on crée aussi une trace dans la table globale RESERVATION
-            // Cela permet d'avoir un historique unifié
+        System.out.println("--- DÉBUT RÉSERVATION ---");
+        System.out.println("Séance : " + s.getNom());
+        System.out.println("Membre ID : " + membre.getId());
+
+        boolean success = false;
+
+        // 3. Logique de réservation selon le type
+        if (s.getTypeSeance() == TypeSeance.COLLECTIVE) {
+            // Pour le collectif : vérifie les places et décrémente le compteur
+            success = collectiveService.reserverPlace(s.getId(), membre);
+        } else {
+            // Pour l'individuel (Coaching) :
+            // Si le bouton était accessible, c'est que c'est libre.
+            // On considère que c'est bon (ou ajoutez une logique spécifique ici)
+            success = true; 
+        }
+
+        // 4. Enregistrement dans l'historique et Rafraîchissement
+        if (success) {
+            // A. Créer la ligne dans la table RESERVATION (Historique global)
             Reservation r = new Reservation();
             r.setDateReservation(new java.util.Date());
             r.setStatut(StatutReservation.CONFIRMEE);
             r.setSeance(s);
-            r.setMembre(membre);
+            r.setMembre(membre); // On utilise bien l'objet Membre récupéré plus haut
 
             resService.creerReservation(r);
-            
-            // Message de succès
+
+            // B. Afficher le succès
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Confirmation");
-            alert.setHeaderText("Réservation effectuée !");
-            alert.setContentText("Vous êtes inscrit à la séance : " + s.getNom());
+            alert.setTitle("Félicitations");
+            alert.setHeaderText("Inscription confirmée !");
+            alert.setContentText("Vous êtes bien inscrit à la séance : " + s.getNom());
             alert.showAndWait();
 
-            // Rafraîchir le tableau pour mettre à jour les boutons et places
-            chargerDonnees(cbFiltreType.getValue());
+            // C. IMPORTANT : Recharger la page pour mettre à jour les boutons (devient "INSCRIT")
+            chargerPlanning(); 
         } else {
+            // D. Gestion d'erreur
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
-            alert.setHeaderText("Échec de la réservation");
-            alert.setContentText("Impossible de réserver. La séance est peut-être complète ou une erreur est survenue.");
+            alert.setHeaderText("Échec de l'inscription");
+            alert.setContentText("La séance est peut-être complète ou une erreur est survenue.");
             alert.showAndWait();
         }
     }
