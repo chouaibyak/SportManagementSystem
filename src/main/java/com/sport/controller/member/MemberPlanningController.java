@@ -119,7 +119,6 @@ public class MemberPlanningController {
         titleLbl.getStyleClass().add("activity-title");
         titleLbl.setWrapText(true);
 
-        // Coach info
         HBox coachBox = new HBox(5);
         SVGPath coachIcon = new SVGPath();
         coachIcon.setContent("M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z");
@@ -129,7 +128,6 @@ public class MemberPlanningController {
         coachBox.getChildren().addAll(coachIcon, coachLbl);
         coachBox.setAlignment(Pos.CENTER_LEFT);
 
-        // Salle info
         HBox salleBox = new HBox(5);
         SVGPath salleIcon = new SVGPath();
         salleIcon.setContent("M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z");
@@ -139,20 +137,51 @@ public class MemberPlanningController {
         salleBox.getChildren().addAll(salleIcon, salleLbl);
         salleBox.setAlignment(Pos.CENTER_LEFT);
 
-        // Disponibilité (Calcul pour savoir si complet)
-        int pris = resService.getNombrePlacesReservees(s.getId());
-        int reste = s.getCapaciteMax() - pris;
-        boolean complet = reste <= 0;
+        // --- GESTION INTELLIGENTE DE LA DISPONIBILITÉ ---
+        boolean complet = false;
+        boolean dejaInscrit = false;
+        String texteDispo = "";
 
-        Label placesLbl = new Label();
         if (s.getTypeSeance() == TypeSeance.COLLECTIVE) {
-            placesLbl.setText(reste + " places restantes");
+            // === LOGIQUE COLLECTIVE ===
+            int pris = resService.getNombrePlacesReservees(s.getId());
+            int reste = s.getCapaciteMax() - pris;
+            complet = reste <= 0;
+            texteDispo = reste + " places restantes";
+            
+            if (membre != null) {
+                dejaInscrit = resService.isMembreDejaInscrit(membre.getId(), s.getId());
+            }
+
         } else {
-            placesLbl.setText(reste > 0 ? "Disponible" : "Réservé");
+            // === LOGIQUE INDIVIDUELLE (COACHING) ===
+            // On vérifie qui est inscrit sur ce créneau (0 = personne)
+            int membreIdInscrit = indivService.getMembreInscrit(s.getId());
+            
+            if (membreIdInscrit == 0) {
+                // Créneau libre
+                complet = false;
+                dejaInscrit = false;
+                texteDispo = "Créneau Disponible";
+            } else {
+                // Créneau pris
+                if (membre != null && membreIdInscrit == membre.getId()) {
+                    // C'est MOI
+                    dejaInscrit = true;
+                    complet = true; // Complet pour les autres
+                    texteDispo = "Votre Séance";
+                } else {
+                    // C'est QUELQU'UN D'AUTRE
+                    dejaInscrit = false;
+                    complet = true;
+                    texteDispo = "Déjà Réservé";
+                }
+            }
         }
-        
-        // Style couleur (Vert si dispo, Rouge si complet)
-        if (complet) {
+
+        // Affichage du label de disponibilité
+        Label placesLbl = new Label(texteDispo);
+        if (complet && !dejaInscrit) {
             placesLbl.setStyle("-fx-text-fill: #e74c3c; -fx-font-size: 11px; -fx-font-weight: bold;");
         } else {
             placesLbl.setStyle("-fx-text-fill: #27ae60; -fx-font-size: 11px; -fx-font-weight: bold;");
@@ -160,22 +189,16 @@ public class MemberPlanningController {
 
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
-
         body.getChildren().addAll(dateLbl, titleLbl, spacer, coachBox, salleBox, placesLbl);
         VBox.setVgrow(body, Priority.ALWAYS);
+
 
         // --- 3. FOOTER (Action) ---
         HBox footer = new HBox();
         footer.getStyleClass().add("card-footer");
-        
         Button actionBtn = new Button();
-        
-        // --- LOGIQUE CORRIGÉE : VÉRIFICATION INSCRIPTION ---
-        boolean dejaInscrit = false;
-        if (membre != null) {
-            // C'est ICI la correction cruciale : on utilise l'ID du Membre
-            dejaInscrit = resService.isMembreDejaInscrit(membre.getId(), s.getId());
-        }
+        actionBtn.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(actionBtn, Priority.ALWAYS);
 
         if (dejaInscrit) {
             actionBtn.setText("INSCRIT ✓");
@@ -183,7 +206,7 @@ public class MemberPlanningController {
             actionBtn.setDisable(true); 
             actionBtn.setStyle("-fx-background-color: transparent; -fx-border-color: #27ae60; -fx-border-radius: 20;");
         } else if (complet) {
-            actionBtn.setText("COMPLET");
+            actionBtn.setText(s.getTypeSeance() == TypeSeance.COLLECTIVE ? "COMPLET" : "RÉSERVÉ");
             actionBtn.getStyleClass().addAll("badge-full");
             actionBtn.setDisable(true);
             actionBtn.setStyle("-fx-background-color: transparent; -fx-border-color: #e74c3c; -fx-border-radius: 20;");
@@ -192,79 +215,67 @@ public class MemberPlanningController {
             actionBtn.getStyleClass().addAll("btn-reserve", "btn-reserve-active");
             actionBtn.setOnAction(e -> handleReservation(s));
         }
-        
-        actionBtn.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(actionBtn, Priority.ALWAYS);
 
         footer.getChildren().add(actionBtn);
-
         card.getChildren().addAll(header, body, footer);
         
         return card;
     }
 
     private void handleReservation(Seance s) {
-        // 1. Récupération de l'utilisateur et du profil Membre
+        // 1. Récupération User & Membre
         Utilisateur user = UserSession.getInstance().getUtilisateur();
-        
-        // CRUCIAL : On récupère l'objet Membre pour avoir le bon ID (ex: id_membre=5)
-        // et non l'ID de connexion (ex: id_user=1)
         Membre membre = resService.trouverMembreParUtilisateurId(user.getId());
 
-        // 2. Vérification de sécurité
         if (membre == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur de profil");
             alert.setHeaderText("Profil membre introuvable");
-            alert.setContentText("Votre compte utilisateur n'est pas lié à un profil membre. Contactez l'administration.");
+            alert.setContentText("Votre compte utilisateur n'est pas lié à un profil membre.");
             alert.showAndWait();
             return;
         }
 
-        System.out.println("--- DÉBUT RÉSERVATION ---");
-        System.out.println("Séance : " + s.getNom());
-        System.out.println("Membre ID : " + membre.getId());
-
         boolean success = false;
 
-        // 3. Logique de réservation selon le type
+        // 2. Logique selon le type de séance
         if (s.getTypeSeance() == TypeSeance.COLLECTIVE) {
-            // Pour le collectif : vérifie les places et décrémente le compteur
+            // Logique Collective : Table de liaison
             success = collectiveService.reserverPlace(s.getId(), membre);
         } else {
-            // Pour l'individuel (Coaching) :
-            // Si le bouton était accessible, c'est que c'est libre.
-            // On considère que c'est bon (ou ajoutez une logique spécifique ici)
-            success = true; 
+            // === LOGIQUE INDIVIDUELLE (COACHING) ===
+            // On appelle le service pour faire l'UPDATE dans la table seanceindividuelle
+            // Cela mettra notre ID à la place de NULL
+            success = indivService.reserverSession(s.getId(), membre);
         }
 
-        // 4. Enregistrement dans l'historique et Rafraîchissement
+        // 3. Résultat
         if (success) {
-            // A. Créer la ligne dans la table RESERVATION (Historique global)
+            // A. Créer l'historique dans la table RESERVATION
             Reservation r = new Reservation();
             r.setDateReservation(new java.util.Date());
             r.setStatut(StatutReservation.CONFIRMEE);
             r.setSeance(s);
-            r.setMembre(membre); // On utilise bien l'objet Membre récupéré plus haut
-
+            r.setMembre(membre);
             resService.creerReservation(r);
 
-            // B. Afficher le succès
+            // B. Message succès
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Félicitations");
-            alert.setHeaderText("Inscription confirmée !");
+            alert.setHeaderText("Réservation confirmée !");
             alert.setContentText("Vous êtes bien inscrit à la séance : " + s.getNom());
             alert.showAndWait();
 
-            // C. IMPORTANT : Recharger la page pour mettre à jour les boutons (devient "INSCRIT")
+            // C. Rafraîchir l'affichage
             chargerPlanning(); 
         } else {
-            // D. Gestion d'erreur
+            // D. Erreur
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur");
-            alert.setHeaderText("Échec de l'inscription");
-            alert.setContentText("La séance est peut-être complète ou une erreur est survenue.");
+            alert.setTitle("Oups");
+            alert.setHeaderText("Impossible de réserver");
+            alert.setContentText("Ce créneau vient peut-être d'être pris par quelqu'un d'autre.");
             alert.showAndWait();
+            chargerPlanning(); // On rafraîchit quand même pour voir le nouvel état
         }
     }
 }

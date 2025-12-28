@@ -16,6 +16,44 @@ import com.sport.utils.DBConnection;
 
 public class SeanceIndividuelleRepository {
 
+    // 1. Vérifier si un créneau individuel est libre (ou qui l'a réservé)
+    // Retourne l'ID du membre inscrit, ou 0 si c'est libre
+    public int getMembreInscrit(int seanceId) {
+        String sql = "SELECT membre_id FROM seanceindividuelle WHERE seance_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, seanceId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                // getInt renvoie 0 si la valeur SQL est NULL
+                return rs.getInt("membre_id"); 
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; // -1 pour indiquer une erreur ou séance introuvable
+    }
+
+    // 2. Réserver le créneau (UPDATE)
+    // On s'assure que membre_id est NULL pour éviter d'écraser quelqu'un d'autre
+    public boolean reserverSession(int seanceId, int membreId) {
+        String sql = "UPDATE seanceindividuelle SET membre_id = ? WHERE seance_id = ? AND membre_id IS NULL";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, membreId);
+            stmt.setInt(2, seanceId);
+            
+            int rows = stmt.executeUpdate();
+            return rows > 0; // Si 1 ligne modifiée, c'est gagné. Si 0, c'était déjà pris.
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     // GET ALL
     public List<SeanceIndividuelle> getAll() {
         List<SeanceIndividuelle> list = new ArrayList<>();
