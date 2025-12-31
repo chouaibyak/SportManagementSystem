@@ -68,11 +68,7 @@ public class MemberLayoutController {
         setButtonActive(btnProfil);
     }
 
-    @FXML
-    private void afficherParametres(ActionEvent event) {
-    chargerVue("/fxml/member/member_settings.fxml"); // Nom plus générique
-    setButtonActive(btnParametres);
-}
+
 
     // --- LOGIQUE DE CHANGEMENT DE VUE ---
 
