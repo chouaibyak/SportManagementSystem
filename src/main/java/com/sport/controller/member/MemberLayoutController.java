@@ -24,7 +24,6 @@ public class MemberLayoutController {
     @FXML private Button btnSeances;
     @FXML private Button btnPerformance;
     @FXML private Button btnProfil;
-    @FXML private Button btnParametres;
 
     @FXML
     public void initialize() {
@@ -117,7 +116,6 @@ public class MemberLayoutController {
         btnSeances.getStyleClass().remove("nav-button-active");
         btnPerformance.getStyleClass().remove("nav-button-active");
         btnProfil.getStyleClass().remove("nav-button-active");
-        btnParametres.getStyleClass().remove("nav-button-active"); 
     }
 
     // --- DECONNEXION ---

@@ -63,7 +63,6 @@ com\sport\service\PerformanceService.class
 com\sport\model\Membre.class
 com\sport\utils\UserSession.class
 com\sport\model\TypeSalle.class
-com\sport\controller\member\MemberSettingsController.class
 com\sport\model\SeanceIndividuelle.class
 com\sport\service\CourseService.class
 com\sport\repository\RapportRepository.class
