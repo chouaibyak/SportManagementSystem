@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.sport.controller.coach.SuiviPerformanceController"
+            prefWidth="900" prefHeight="600"
+            style="-fx-background-color:#f4f6f7;">
+
+    <!-- ===== LISTE MEMBRES ===== -->
+    <left>
+        <VBox spacing="10" prefWidth="250" style="-fx-padding:15;">
+            <Label text="Membres"
+                   style="-fx-font-size:16; -fx-font-weight:bold;" />
+
+            <TableView fx:id="tableMembres">
+                <columns>
+                    <TableColumn fx:id="colNom" text="Nom" prefWidth="120"/>
+                    <TableColumn fx:id="colPrenom" text="Prénom" prefWidth="120"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </left>
+
+    <!-- ===== PERFORMANCES ===== -->
+    <center>
+        <VBox spacing="10" style="-fx-padding:15;">
+
+            <Label text="Historique des performances"
+                   style="-fx-font-size:16; -fx-font-weight:bold;" />
+
+            <TableView fx:id="tablePerformances" prefHeight="240">
+                <columns>
+                    <TableColumn fx:id="colDate" text="Date" prefWidth="100"/>
+                    <TableColumn fx:id="colPoids" text="Poids" prefWidth="80"/>
+                    <TableColumn fx:id="colImc" text="IMC" prefWidth="80"/>
+                    <TableColumn fx:id="colTourTaille" text="Tour taille" prefWidth="100"/>
+                    <TableColumn fx:id="colForce" text="Force" prefWidth="80"/>
+                    <TableColumn fx:id="colEndurance" text="Endurance" prefWidth="100"/>
+                </columns>
+            </TableView>
+
+            <!-- ===== AJOUT PERFORMANCE ===== -->
+            <Label text="Nouvelle performance"
+                   style="-fx-font-size:14; -fx-font-weight:bold;" />
+
+            <GridPane hgap="10" vgap="10">
+
+                <Label text="Poids :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtPoids" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <Label text="IMC :" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+                <TextField fx:id="txtImc" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+
+                <Label text="Tour taille :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtTourTaille" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <Label text="Force :" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+                <TextField fx:id="txtForce" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+
+                <Label text="Endurance :" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtEndurance" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            </GridPane>
+
+            <Button text="Enregistrer performance"
+                    onAction="#enregistrerPerformance"
+                    style="-fx-background-color:#2ecc71; -fx-text-fill:white;"/>
+        </VBox>
+    </center>
+
+</BorderPane>

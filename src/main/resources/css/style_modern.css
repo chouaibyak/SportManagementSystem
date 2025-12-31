@@ -1,0 +1,134 @@
+/* ================= PAGE BACKGROUND ================= */
+.seances-root {
+    -fx-background-color: linear-gradient(to bottom right, #0f172a, #1e293b, #020617);
+    -fx-padding: 25;
+    -fx-font-family: "Inter", "Segoe UI", sans-serif;
+}
+
+
+/* ================= TITLE ================= */
+.title-label {
+    -fx-font-size: 34px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #f3f4f6;
+    -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.3), 6, 0, 0, 3);
+}
+
+/* ================= TOP BUTTONS ================= */
+.top-buttons {
+    -fx-alignment: center-left;
+}
+
+.button.btn-primary {
+    -fx-background-color: linear-gradient(to right, #6366f1, #4f46e5);
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-background-radius: 20;
+    -fx-padding: 12 28;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 2);
+}
+
+.button.btn-primary:hover {
+    -fx-background-color: linear-gradient(to right, #818cf8, #6366f1);
+    -fx-scale-x: 1.08;
+    -fx-scale-y: 1.08;
+}
+
+/* ================= TABLE ================= */
+.table-view {
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-background-radius: 25;
+    -fx-border-radius: 25;
+    -fx-border-color: rgba(255,255,255,0.2);
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.25), 8, 0, 0, 4);
+}
+
+/* Table header */
+.table-view .column-header-background {
+    -fx-background-color: linear-gradient(to right, #f8fafc, #e0e7ff);
+    -fx-background-radius: 25 25 0 0;
+    -fx-padding: 6 0; 
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #1f2937;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+}
+
+/* Table rows */
+.table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #e5e7eb transparent;
+    -fx-border-width: 1;
+    -fx-padding: 2 0; 
+}
+
+.table-row-cell:hover {
+    -fx-background-color: rgba(99,102,241,0.15);
+}
+
+.table-row-cell:selected {
+    -fx-background-color: rgba(99,102,241,0.3);
+}
+
+/* Table cells */
+.table-cell {
+    -fx-padding: 6 8; 
+    -fx-text-fill: #111827;
+    -fx-font-size: 12px; 
+}
+
+/* Buttons in table */
+.table-cell .button {
+    -fx-background-color: #f9fafb;
+    -fx-background-radius: 999;
+    -fx-padding: 3 10; 
+    -fx-font-size: 11px; 
+    -fx-font-weight: 700;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.15), 3, 0, 0, 1);
+}
+
+.table-cell .button.edit { 
+    -fx-text-fill: #4f46e5;
+}
+.table-cell .button.delete { 
+    -fx-text-fill: #dc2626;
+}
+.table-cell .button.view { 
+    -fx-text-fill: #059669;
+}
+
+.table-cell .button:hover {
+    -fx-scale-x: 1.12;
+    -fx-scale-y: 1.12;
+    -fx-background-color: #e0e7ff;
+}
+
+
+/* ================= FILTRE COMBOBOX ================= */
+.combo-box {
+    -fx-background-radius: 20;
+    -fx-padding: 5 10;
+    -fx-font-size: 13px;
+    
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.25), 5, 0, 0, 2);
+}
+
+.combo-box .list-cell {
+    -fx-background-color: white;
+    -fx-text-fill: #1f2937;
+}
+
+.combo-box .list-cell:hover {
+    -fx-background-color: rgba(99,102,241,0.15);
+}
+
+.combo-box:hover {
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}

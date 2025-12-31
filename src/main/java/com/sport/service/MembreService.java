@@ -40,4 +40,9 @@ public class MembreService {
     public void supprimerMembre(int id) {
         membreRepository.supprimerMembre(id);
     }
+
+      // Méthode publique pour récupérer tous les membres
+    public List<Membre> getAllMembres() {
+        return membreRepository.listerMembres(); // <-- ici on appelle listerMembres()
+    }
 }

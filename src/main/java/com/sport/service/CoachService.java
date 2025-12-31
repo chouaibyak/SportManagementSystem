@@ -5,6 +5,7 @@ import com.sport.model.Membre;
 import com.sport.model.Performance;
 import com.sport.model.Seance;
 import com.sport.model.SeanceCollective;
+import com.sport.model.SeanceIndividuelle;
 import com.sport.repository.CoachRepository;
 import com.sport.repository.PerformanceRepository;
 import com.sport.repository.SeanceCollectiveRepository;
@@ -13,8 +14,11 @@ import com.sport.repository.SeanceRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CoachService {
@@ -195,5 +199,34 @@ public boolean verifierDisponibiliteSalle(Coach coach, Seance seance) {
                 .min(Comparator.comparing(Seance::getDateHeure))
                 .orElse(null);
     }
+
+
+
+
+    public List<Membre> getMembresParCoach(Coach coach) {
+    Set<Membre> membres = new HashSet<>();
+
+    // Membres des séances collectives
+    List<SeanceCollective> seancesCollectives = seanceCollectiveRepository.getAll().stream()
+            .filter(s -> s.getEntraineur().getId() == coach.getId())
+            .collect(Collectors.toList());
+
+    for (SeanceCollective s : seancesCollectives) {
+        membres.addAll(s.getListeMembers());
+    }
+
+    // Membres des séances individuelles
+    List<SeanceIndividuelle> seancesIndividuelles = seanceIndividuelleRepository.getAll().stream()
+            .filter(s -> s.getEntraineur().getId() == coach.getId())
+            .collect(Collectors.toList());
+
+    for (SeanceIndividuelle s : seancesIndividuelles) {
+        if (s.getMembre() != null) {
+            membres.add(s.getMembre());
+        }
+    }
+
+    return new ArrayList<>(membres); // conversion en liste
+}
 
 }
