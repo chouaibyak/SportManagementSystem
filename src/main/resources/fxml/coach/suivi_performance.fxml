@@ -1,74 +1,142 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.geometry.Insets?>
 
-<BorderPane xmlns="http://javafx.com/javafx/21"
+
+<ScrollPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.sport.controller.coach.SuiviPerformanceController"
-            prefWidth="900" prefHeight="600"
-            style="-fx-background-color:#f4f6f7;">
+            fx:controller="com.sport.controller.coach.CoachPerformanceController"
+            fitToWidth="true"
+            styleClass="scroll-root"
+            stylesheets="@/css/style_modern.css">
 
-    <!-- ===== LISTE MEMBRES ===== -->
-    <left>
-        <VBox spacing="10" prefWidth="250" style="-fx-padding:15;">
-            <Label text="Membres"
-                   style="-fx-font-size:16; -fx-font-weight:bold;" />
+    <content>
+        <VBox spacing="25" styleClass="coach-performance-root">
+            
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
 
-            <TableView fx:id="tableMembres">
-                <columns>
-                    <TableColumn fx:id="colNom" text="Nom" prefWidth="120"/>
-                    <TableColumn fx:id="colPrenom" text="Prénom" prefWidth="120"/>
-                </columns>
-            </TableView>
+            <!-- ===== Membres ===== -->
+            <VBox spacing="5">
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Liste des Membres" style="-fx-font-size:18; -fx-font-weight:bold; -fx-text-fill:#000000;"/>
+                </HBox>
+                <Label text="Sélectionnez un membre pour voir son historique de performances." 
+                       style="-fx-font-size:13; -fx-text-fill:#1e293b; -fx-padding:0 0 10 0;"/>
+            </VBox>
+            
+            <TableView fx:id="tableMembres" prefHeight="160">
+    <columns>
+        <TableColumn fx:id="colNom" text="Nom" prefWidth="150"/>
+        <TableColumn fx:id="colPrenom" text="Prénom" prefWidth="150"/>
+    </columns>
+</TableView>
+
+
+            <!-- ===== Performances ===== -->
+            <VBox spacing="5">
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Historique des Performances" style="-fx-font-size:18; -fx-font-weight:bold; -fx-text-fill:#000000;"/>
+                </HBox>
+                <Label text="Visualisez toutes les performances enregistrées pour le membre sélectionné." 
+                       style="-fx-font-size:13; -fx-text-fill:#1e293b; -fx-padding:0 0 10 0;"/>
+            </VBox>
+        
+<TableView fx:id="tablePerformances" prefHeight="160">
+    <columns>
+        <TableColumn fx:id="colDate" text="Date" prefWidth="100"/>
+        <TableColumn fx:id="colPoids" text="Poids (kg)" prefWidth="90"/>
+        <TableColumn fx:id="colImc" text="IMC" prefWidth="70"/>
+        <TableColumn fx:id="colTourTaille" text="Tour Taille (cm)" prefWidth="130"/>
+        <TableColumn fx:id="colForce" text="Force" prefWidth="80"/>
+        <TableColumn fx:id="colEndurance" text="Endurance" prefWidth="90"/>
+    </columns>
+</TableView>
+
+<!-- ===== Graphiques ===== -->
+<VBox spacing="5">
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Graphiques"
+               style="-fx-font-size:18; -fx-font-weight:bold; -fx-text-fill:#000000;"/>
+    </HBox>
+    <Label text="Suivez l'évolution des performances avec ces graphiques."
+           style="-fx-font-size:13; -fx-text-fill:#1e293b; -fx-padding:0 0 10 0;"/>
+</VBox>
+
+<HBox spacing="20">
+    <!-- Poids -->
+    <LineChart fx:id="chartPoids" prefWidth="300" prefHeight="220">
+        <xAxis>
+            <CategoryAxis label="Date"/>
+        </xAxis>
+        <yAxis>
+            <NumberAxis label="Poids (kg)"/>
+        </yAxis>
+    </LineChart>
+
+    <!-- IMC -->
+    <LineChart fx:id="chartImc" prefWidth="300" prefHeight="220">
+        <xAxis>
+            <CategoryAxis label="Date"/>
+        </xAxis>
+        <yAxis>
+            <NumberAxis label="IMC"/>
+        </yAxis>
+    </LineChart>
+
+    <!-- Tour de taille -->
+    <LineChart fx:id="chartTourTaille" prefWidth="300" prefHeight="220">
+        <xAxis>
+            <CategoryAxis label="Date"/>
+        </xAxis>
+        <yAxis>
+            <NumberAxis label="Tour Taille (cm)"/>
+        </yAxis>
+    </LineChart>
+</HBox>
+
+
+            <!-- ===== Formulaire Ajout Performance ===== -->
+            <VBox spacing="5">
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Ajouter une Performance" style="-fx-font-size:18; -fx-font-weight:bold; -fx-text-fill:#000000;"/>
+                </HBox>
+                <Label text="Entrez les nouvelles données de performance pour le membre sélectionné." 
+                       style="-fx-font-size:13; -fx-text-fill:#1e293b; -fx-padding:0 0 10 0;"/>
+            </VBox>
+            <HBox spacing="15">
+                <VBox spacing="8">
+                    <Label text="Poids (kg)"/>
+                    <TextField fx:id="txtPoids"/>
+                </VBox>
+                <VBox spacing="8">
+                    <Label text="Tour Taille (cm)"/>
+                    <TextField fx:id="txtTourTaille"/>
+                </VBox>
+                <VBox spacing="8">
+                    <Label text="Force"/>
+                    <TextField fx:id="txtForce"/>
+                </VBox>
+                <VBox spacing="8">
+                    <Label text="Endurance"/>
+                    <TextField fx:id="txtEndurance"/>
+                </VBox>
+                <VBox spacing="8">
+                    <Label text="IMC"/>
+                    <TextField fx:id="txtIMC"/>
+                </VBox>
+                <VBox spacing="8" alignment="bottom_center">
+                    <Button text="Enregistrer" onAction="#enregistrerPerformance"/>
+                </VBox>
+            </HBox>
+
         </VBox>
-    </left>
-
-    <!-- ===== PERFORMANCES ===== -->
-    <center>
-        <VBox spacing="10" style="-fx-padding:15;">
-
-            <Label text="Historique des performances"
-                   style="-fx-font-size:16; -fx-font-weight:bold;" />
-
-            <TableView fx:id="tablePerformances" prefHeight="240">
-                <columns>
-                    <TableColumn fx:id="colDate" text="Date" prefWidth="100"/>
-                    <TableColumn fx:id="colPoids" text="Poids" prefWidth="80"/>
-                    <TableColumn fx:id="colImc" text="IMC" prefWidth="80"/>
-                    <TableColumn fx:id="colTourTaille" text="Tour taille" prefWidth="100"/>
-                    <TableColumn fx:id="colForce" text="Force" prefWidth="80"/>
-                    <TableColumn fx:id="colEndurance" text="Endurance" prefWidth="100"/>
-                </columns>
-            </TableView>
-
-            <!-- ===== AJOUT PERFORMANCE ===== -->
-            <Label text="Nouvelle performance"
-                   style="-fx-font-size:14; -fx-font-weight:bold;" />
-
-            <GridPane hgap="10" vgap="10">
-
-                <Label text="Poids :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                <TextField fx:id="txtPoids" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-
-                <Label text="IMC :" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
-                <TextField fx:id="txtImc" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
-
-                <Label text="Tour taille :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                <TextField fx:id="txtTourTaille" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-
-                <Label text="Force :" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
-                <TextField fx:id="txtForce" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
-
-                <Label text="Endurance :" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                <TextField fx:id="txtEndurance" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-
-            </GridPane>
-
-            <Button text="Enregistrer performance"
-                    onAction="#enregistrerPerformance"
-                    style="-fx-background-color:#2ecc71; -fx-text-fill:white;"/>
-        </VBox>
-    </center>
-
-</BorderPane>
+    </content>
+</ScrollPane>

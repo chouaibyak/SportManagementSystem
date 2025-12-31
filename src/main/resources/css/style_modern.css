@@ -132,3 +132,102 @@
     -fx-scale-x: 1.03;
     -fx-scale-y: 1.03;
 }
+
+
+
+
+/* ================= PAGE BACKGROUND ================= */
+.coach-performance-root {
+    -fx-background-color: linear-gradient(to bottom right, #f8fafc, #e0f2fe);
+    -fx-padding: 25;
+    -fx-font-family: "Segoe UI", "Inter", sans-serif;
+}
+
+/* ================= TITRES ================= */
+.coach-performance-root Label {
+    -fx-text-fill: #1e293b;
+    -fx-font-weight: 600;
+}
+
+/* ================= TABLES ================= */
+.coach-performance-root .table-view {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: rgba(0,0,0,0.1);
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+
+.coach-performance-root .table-view .column-header-background {
+    -fx-background-color: linear-gradient(to right, #e0f2fe, #1d526e);
+    -fx-background-radius: 15 15 0 0;
+}
+
+.coach-performance-root .table-view .column-header .label {
+    -fx-text-fill: #1e293b;
+    -fx-font-weight: 700;
+}
+
+.coach-performance-root .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent rgba(0,0,0,0.05) transparent;
+    -fx-border-width: 1;
+}
+
+.coach-performance-root .table-row-cell:hover {
+    -fx-background-color: rgba(59,130,246,0.1);
+}
+
+.coach-performance-root .table-row-cell:selected {
+    -fx-background-color: rgba(59,130,246,0.2);
+}
+
+/* ================= BUTTONS ================= */
+.coach-performance-root Button {
+    -fx-background-color: linear-gradient(to right, #3b82f6, #60a5fa);
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-background-radius: 20;
+    -fx-padding: 8 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.1), 3, 0, 0, 1);
+}
+
+.coach-performance-root Button:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-background-color: linear-gradient(to right, #60a5fa, #3b82f6);
+}
+
+/* ================= LINECHART ================= */
+.coach-performance-root LineChart {
+    -fx-background-color: rgba(255,255,255,0.8);
+    -fx-background-radius: 15;
+    -fx-padding: 10;
+}
+
+.coach-performance-root .chart-legend {
+    -fx-text-fill: #1e293b;
+}
+
+/* ================= TEXTFIELDS ================= */
+.coach-performance-root TextField {
+    -fx-background-color: rgba(255,255,255,0.9);
+    -fx-text-fill: #1e293b;
+    -fx-prompt-text-fill: rgba(30,30,60,0.5);
+    -fx-background-radius: 10;
+    -fx-padding: 5 10;
+    -fx-border-radius: 10;
+    -fx-border-color: rgba(0,0,0,0.1);
+}
+
+.coach-performance-root TextField:focused {
+    -fx-border-color: #3b82f6;
+    -fx-effect: dropshadow(two-pass-box, rgba(59,130,246,0.4), 3, 0, 0, 0);
+}
+
+/* ================= HBOX & VBox spacing ================= */
+.coach-performance-root HBox, .coach-performance-root VBox {
+    -fx-spacing: 10;
+}
