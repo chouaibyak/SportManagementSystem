@@ -54,6 +54,12 @@
                     </HBox>
                     <Separator style="-fx-background-color:#E0E6ED;"/>
                     <FlowPane fx:id="flowSpecialites" hgap="10" vgap="10"/>
+                    <!-- AJOUTER UNE SPÉCIALITÉ -->
+<HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding:10 0 0 0;">
+    <TextField fx:id="txtNouvelleSpecialite" promptText="➕ Ajouter une spécialité" HBox.hgrow="ALWAYS"/>
+    <Button fx:id="btnAjouterSpecialite" text="✓ Ajouter" styleClass="btn-add"/>
+</HBox>
+
                 </VBox>
 
                 <!-- CERTIFICATIONS -->

@@ -229,4 +229,24 @@ public boolean verifierDisponibiliteSalle(Coach coach, Seance seance) {
     return new ArrayList<>(membres); // conversion en liste
 }
 
+
+    public void ajouterSpecialite(Coach coach, String specialite) {
+        if (coach != null && specialite != null && !specialite.isBlank()) {
+            coachRepository.ajouterSpecialite(coach.getId(), specialite);
+
+            // Mise à jour liste locale
+            coach.getSpecialites().add(specialite);
+        }
+    }
+
+    public void supprimerSpecialite(Coach coach, String specialite) {
+        if (coach != null && specialite != null && !specialite.isBlank()) {
+            coachRepository.supprimerSpecialite(coach.getId(), specialite);
+
+            // Mise à jour liste locale
+            coach.getSpecialites().remove(specialite);
+        }
+    }
+
+
 }
