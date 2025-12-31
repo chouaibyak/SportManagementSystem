@@ -27,8 +27,6 @@ public class CoachDashboardController {
     @FXML private Label lblSeancesTerminees;
     @FXML private BarChart<String, Number> barChart;
     @FXML private VBox notificationsBox;
-    @FXML private Button btnRefresh;
-    @FXML private Button btnGestionSeances;
 
     private Coach coach;
     private SeanceCollectiveRepository seanceRepo;
@@ -41,13 +39,8 @@ public class CoachDashboardController {
             seanceRepo = new SeanceCollectiveRepository();
             chargerStats();
 
-            // Action du bouton refresh
-            btnRefresh.setOnAction(e -> refreshDashboard());
 
-            // Action du bouton gestion des séances
-            btnGestionSeances.setOnAction(e -> {
-                System.out.println("Ouvrir gestion des séances");
-            });
+          
         }
     }
 

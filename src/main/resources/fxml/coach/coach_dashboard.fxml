@@ -13,37 +13,64 @@
       style="-fx-background-color: #f4f6f7; -fx-padding: 20;"
       stylesheets="@style.css">
 
-    <Label text="Tableau de bord" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
-
-    <!-- Cartes statistiques -->
-    <HBox spacing="20">
-        <VBox styleClass="dashboard-card">
-            <Label text="Séances aujourd'hui" styleClass="card-title"/>
-            <Label fx:id="lblSeances" text="0" styleClass="card-value"/>
+    <!-- HEADER -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="📊" style="-fx-font-size: 30;"/>
+        <VBox>
+            <Label text="Tableau de bord"
+                   style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+            <Label text="Vue d'ensemble de votre activité"
+                   style="-fx-text-fill: #6b7280;"/>
         </VBox>
-
-        <VBox styleClass="dashboard-card">
-            <Label text="Membres suivis" styleClass="card-title"/>
-            <Label fx:id="lblMembres" text="0" styleClass="card-value"/>
-        </VBox>
-
-        <VBox styleClass="dashboard-card">
-            <Label text="Prochaine séance" styleClass="card-title"/>
-            <Label fx:id="lblProchaine" text="Aucune" styleClass="card-value"/>
-        </VBox>
-
-        <VBox styleClass="dashboard-card">
-            <Label text="Séances terminées aujourd'hui" styleClass="card-title"/>
-            <Label fx:id="lblSeancesTerminees" text="0" styleClass="card-value"/>
-        </VBox>
-
-       
     </HBox>
 
-    <!-- Graphique -->
+    <!-- CARTES STATISTIQUES -->
+    <HBox spacing="20">
+
+        <VBox styleClass="dashboard-card">
+            <Label text="🎯 Séances aujourd'hui" styleClass="card-title"/>
+            <Label fx:id="lblSeances" text="0" styleClass="card-value"/>
+            <Label text="Séances actives aujourd'hui"
+                   style="-fx-text-fill: #6b7280;"/>
+        </VBox>
+
+        <VBox styleClass="dashboard-card">
+            <Label text="👥 Membres suivis" styleClass="card-title"/>
+            <Label fx:id="lblMembres" text="0" styleClass="card-value"/>
+            <Label text="Membres actuellement suivis"
+                   style="-fx-text-fill: #6b7280;"/>
+        </VBox>
+
+        <VBox styleClass="dashboard-card">
+            <Label text="⏰ Prochaine séance" styleClass="card-title"/>
+            <Label fx:id="lblProchaine" text="Aucune" styleClass="card-value"/>
+            <Label text="Séance à venir"
+                   style="-fx-text-fill: #6b7280;"/>
+        </VBox>
+
+        <VBox styleClass="dashboard-card">
+            <Label text="✅ Séances terminées" styleClass="card-title"/>
+            <Label fx:id="lblSeancesTerminees" text="0" styleClass="card-value"/>
+            <Label text="Séances complétées aujourd'hui"
+                   style="-fx-text-fill: #6b7280;"/>
+        </VBox>
+
+    </HBox>
+
+    <!-- GRAPHIQUE -->
     <VBox spacing="10" styleClass="dashboard-card">
-        <Label text="Séances par jour (7 derniers jours)" styleClass="card-title"/>
-        <BarChart fx:id="barChart" title="Séances" prefHeight="250" prefWidth="600">
+        <HBox spacing="8" alignment="CENTER_LEFT">
+            <Label text="📈" style="-fx-font-size: 22;"/>
+            <VBox>
+                <Label text="Activité de la semaine" styleClass="card-title"/>
+                <Label text="Séances par jour (7 derniers jours)"
+                       style="-fx-text-fill: #6b7280;"/>
+            </VBox>
+        </HBox>
+
+        <BarChart fx:id="barChart"
+                  prefHeight="250"
+                  legendVisible="false">
             <xAxis>
                 <CategoryAxis label="Jour"/>
             </xAxis>
@@ -53,16 +80,18 @@
         </BarChart>
     </VBox>
 
-    <!-- Notifications -->
+    <!-- NOTIFICATIONS -->
     <VBox spacing="10" styleClass="dashboard-card">
-        <Label text="Notifications (prochaines séances dans l'heure)" styleClass="card-title"/>
+        <HBox spacing="8" alignment="CENTER_LEFT">
+            <Label text="🔔" style="-fx-font-size: 22;"/>
+            <VBox>
+                <Label text="Notifications" styleClass="card-title"/>
+                <Label text="Séances prévues dans l'heure"
+                       style="-fx-text-fill: #6b7280;"/>
+            </VBox>
+        </HBox>
+
         <VBox fx:id="notificationsBox" spacing="5"/>
     </VBox>
-
-    <!-- Boutons d'action -->
-    <HBox spacing="10">
-        <Button fx:id="btnRefresh" text="Rafraîchir"/>
-        <Button fx:id="btnGestionSeances" text="Gestion Séances"/>
-    </HBox>
 
 </VBox>

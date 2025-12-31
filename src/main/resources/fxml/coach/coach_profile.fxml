@@ -5,17 +5,18 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Text?>
 
 <ScrollPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.sport.controller.coach.CoachProfilController"
             fitToWidth="true"
-            stylesheets="@style.css"
+            stylesheets="@/css/style.css"
             style="-fx-background-color:#F0F2F5;">
 
     <VBox spacing="25" style="-fx-padding:20;">
 
-        <!-- HEADER -->
+        <!-- HEADER AVEC ICÔNE -->
         <HBox spacing="20" alignment="CENTER_LEFT" styleClass="card">
             <StackPane>
                 <ImageView fx:id="imgProfile" fitWidth="100" fitHeight="100" preserveRatio="true">
@@ -26,8 +27,14 @@
                 <Button fx:id="btnChangerPhoto" text="📷" styleClass="btn-soft" layoutX="70" layoutY="70"/>
             </StackPane>
             <VBox spacing="5">
-                <Label fx:id="lblNom" text="Nom Complet" style="-fx-font-size:20; -fx-font-weight:bold; -fx-text-fill:#2C3E50;"/>
-                <Label fx:id="lblEmail" text="email@example.com" style="-fx-font-size:14; -fx-text-fill:#7F8C8D;"/>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <Label text="👤" style="-fx-font-size:22;"/>
+                    <Label fx:id="lblNom" text="Nom Complet" style="-fx-font-size:20; -fx-font-weight:bold; -fx-text-fill:#2C3E50;"/>
+                </HBox>
+                <HBox spacing="6" alignment="CENTER_LEFT">
+                    <Label text="📧" style="-fx-font-size:14;"/>
+                    <Label fx:id="lblEmail" text="email@example.com" style="-fx-font-size:14; -fx-text-fill:#7F8C8D;"/>
+                </HBox>
             </VBox>
         </HBox>
 
@@ -36,18 +43,34 @@
             <!-- COLONNE GAUCHE -->
             <VBox spacing="25" prefWidth="300">
 
+                <!-- SPÉCIALITÉS -->
                 <VBox spacing="15" styleClass="card">
-                    <Label text="Spécialités" style="-fx-font-weight:bold; -fx-text-fill:#2C3E50;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="⭐" style="-fx-font-size:20;"/>
+                        <VBox spacing="3">
+                            <Label text="Spécialités" style="-fx-font-weight:bold; -fx-font-size:16; -fx-text-fill:#2C3E50;"/>
+                            <Label text="Domaines d'expertise" style="-fx-font-size:11; -fx-text-fill:#7F8C8D;"/>
+                        </VBox>
+                    </HBox>
+                    <Separator style="-fx-background-color:#E0E6ED;"/>
                     <FlowPane fx:id="flowSpecialites" hgap="10" vgap="10"/>
                 </VBox>
 
+                <!-- CERTIFICATIONS -->
                 <VBox spacing="15" styleClass="card">
-                    <Label text="Certifications" style="-fx-font-weight:bold; -fx-text-fill:#2C3E50;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="🏆" style="-fx-font-size:20;"/>
+                        <VBox spacing="3">
+                            <Label text="Certifications" style="-fx-font-weight:bold; -fx-font-size:16; -fx-text-fill:#2C3E50;"/>
+                            <Label text="Diplômes et qualifications" style="-fx-font-size:11; -fx-text-fill:#7F8C8D;"/>
+                        </VBox>
+                    </HBox>
+                    <Separator style="-fx-background-color:#E0E6ED;"/>
                     <FlowPane fx:id="flowCertifications" hgap="10" vgap="10"/>
                     
-                    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding:5 0 0 0;">
-                        <TextField fx:id="txtNouvelleCertif" promptText="Nouvelle certification" HBox.hgrow="ALWAYS"/>
-                        <Button fx:id="btnAjouterCertif" text="Ajouter" styleClass="btn-add"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding:10 0 0 0;">
+                        <TextField fx:id="txtNouvelleCertif" promptText="➕ Ajouter une certification" HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="btnAjouterCertif" text="✓ Ajouter" styleClass="btn-add"/>
                     </HBox>
                 </VBox>
 
@@ -56,9 +79,17 @@
             <!-- COLONNE DROITE -->
             <VBox spacing="25" HBox.hgrow="ALWAYS">
 
-                <!-- Infos personnelles -->
+                <!-- INFOS PERSONNELLES -->
                 <VBox spacing="20" styleClass="card">
-                    <Label text="Informations Personnelles" style="-fx-font-size:18; -fx-font-weight:bold; -fx-text-fill:#2C3E50;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="📋" style="-fx-font-size:22;"/>
+                        <VBox spacing="3">
+                            <Label text="Informations Personnelles" style="-fx-font-size:18; -fx-font-weight:bold; -fx-text-fill:#2C3E50;"/>
+                            <Label text="Gérez vos données personnelles" style="-fx-font-size:12; -fx-text-fill:#7F8C8D;"/>
+                        </VBox>
+                    </HBox>
+                    <Separator style="-fx-background-color:#E0E6ED;"/>
+                    
                     <GridPane hgap="20" vgap="15">
                         <columnConstraints>
                             <ColumnConstraints percentWidth="50"/>
@@ -66,44 +97,93 @@
                         </columnConstraints>
 
                         <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                            <Label text="Nom" style="-fx-font-weight:bold;"/>
+                            <HBox spacing="5">
+                                <Label text="👨" style="-fx-font-size:12;"/>
+                                <Label text="Nom" style="-fx-font-weight:bold; -fx-font-size:13;"/>
+                            </HBox>
                             <TextField fx:id="txtNom" disable="true"/>
                         </VBox>
+                        
                         <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                            <Label text="Prénom" style="-fx-font-weight:bold;"/>
+                            <HBox spacing="5">
+                                <Label text="✨" style="-fx-font-size:12;"/>
+                                <Label text="Prénom" style="-fx-font-weight:bold; -fx-font-size:13;"/>
+                            </HBox>
                             <TextField fx:id="txtPrenom" disable="true"/>
                         </VBox>
+                        
                         <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                            <Label text="Téléphone" style="-fx-font-weight:bold;"/>
+                            <HBox spacing="5">
+                                <Label text="📱" style="-fx-font-size:12;"/>
+                                <Label text="Téléphone" style="-fx-font-weight:bold; -fx-font-size:13;"/>
+                            </HBox>
                             <TextField fx:id="txtTelephone" disable="true"/>
                         </VBox>
+                        
                         <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                            <Label text="Adresse" style="-fx-font-weight:bold;"/>
+                            <HBox spacing="5">
+                                <Label text="🏠" style="-fx-font-size:12;"/>
+                                <Label text="Adresse" style="-fx-font-weight:bold; -fx-font-size:13;"/>
+                            </HBox>
                             <TextField fx:id="txtAdresse" disable="true"/>
                         </VBox>
                     </GridPane>
 
-                    <HBox spacing="10" alignment="CENTER_RIGHT">
-                        <Button fx:id="btnModifier" text="Modifier" styleClass="btn-soft"/>
-                        <Button fx:id="btnAnnuler" text="Annuler" styleClass="btn-soft" visible="false" managed="false"/>
+                    <HBox spacing="10" alignment="CENTER_RIGHT" style="-fx-padding:10 0 0 0;">
+                        <Button fx:id="btnModifier" text="✏️ Modifier" styleClass="btn-soft"/>
+                        <Button fx:id="btnAnnuler" text="✖️ Annuler" styleClass="btn-soft" visible="false" managed="false"/>
                     </HBox>
                 </VBox>
 
-                <!-- Bouton pour afficher le form mot de passe -->
-                <Button fx:id="btnAfficherMdp" text="Changer le mot de passe" styleClass="btn-soft"/>
+                <!-- BOUTON POUR AFFICHER LE FORM MOT DE PASSE -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Button fx:id="btnAfficherMdp" text="🔒 Changer le mot de passe" styleClass="btn-soft" prefWidth="250"/>
+                </HBox>
 
-                <!-- Formulaire mot de passe (caché par défaut) -->
+                <!-- FORMULAIRE MOT DE PASSE (CACHÉ PAR DÉFAUT) -->
                 <VBox fx:id="vboxMdp" spacing="15" styleClass="card" visible="false" managed="false">
-                    <Label text="Sécurité - Changer le mot de passe" style="-fx-font-size:16; -fx-font-weight:bold; -fx-text-fill:#2C3E50;"/>
-                    <Separator/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="🔐" style="-fx-font-size:22;"/>
+                        <VBox spacing="3">
+                            <Label text="Sécurité - Changer le mot de passe" style="-fx-font-size:16; -fx-font-weight:bold; -fx-text-fill:#2C3E50;"/>
+                            <Label text="Protégez votre compte avec un mot de passe fort" style="-fx-font-size:11; -fx-text-fill:#7F8C8D;"/>
+                        </VBox>
+                    </HBox>
+                    <Separator style="-fx-background-color:#E0E6ED;"/>
+                    
                     <VBox spacing="15" maxWidth="400">
-                        <Label text="Ancien mot de passe"/>
-                        <PasswordField fx:id="txtAncienMdp" promptText="••••••••"/>
-                        <Label text="Nouveau mot de passe"/>
-                        <PasswordField fx:id="txtNouveauMdp" promptText="••••••••"/>
-                        <Label text="Confirmer le nouveau mot de passe"/>
-                        <PasswordField fx:id="txtConfirmMdp" promptText="••••••••"/>
-                        <Button fx:id="btnChangerMdp" text="Valider" styleClass="btn-soft" prefWidth="250"/>
+                        <VBox spacing="5">
+                            <HBox spacing="5">
+                                <Label text="🔑" style="-fx-font-size:12;"/>
+                                <Label text="Ancien mot de passe" style="-fx-font-weight:bold; -fx-font-size:13;"/>
+                            </HBox>
+                            <PasswordField fx:id="txtAncienMdp" promptText="••••••••"/>
+                        </VBox>
+                        
+                        <VBox spacing="5">
+                            <HBox spacing="5">
+                                <Label text="🆕" style="-fx-font-size:12;"/>
+                                <Label text="Nouveau mot de passe" style="-fx-font-weight:bold; -fx-font-size:13;"/>
+                            </HBox>
+                            <PasswordField fx:id="txtNouveauMdp" promptText="••••••••"/>
+                        </VBox>
+                        
+                        <VBox spacing="5">
+                            <HBox spacing="5">
+                                <Label text="✓" style="-fx-font-size:12;"/>
+                                <Label text="Confirmer le nouveau mot de passe" style="-fx-font-weight:bold; -fx-font-size:13;"/>
+                            </HBox>
+                            <PasswordField fx:id="txtConfirmMdp" promptText="••••••••"/>
+                        </VBox>
+                        
+                        <HBox spacing="5" style="-fx-background-color:#FFF3CD; -fx-padding:10; -fx-background-radius:8; -fx-border-color:#FFC107; -fx-border-radius:8; -fx-border-width:1;">
+                            <Label text="⚠️" style="-fx-font-size:14;"/>
+                            <Label text="Utilisez au moins 8 caractères avec des lettres et des chiffres" 
+                                   style="-fx-font-size:11; -fx-text-fill:#856404; -fx-wrap-text:true;" 
+                                   wrapText="true" maxWidth="350"/>
+                        </HBox>
+                        
+                        <Button fx:id="btnChangerMdp" text="💾 Valider le changement" styleClass="btn-soft" prefWidth="250"/>
                     </VBox>
                 </VBox>
 
