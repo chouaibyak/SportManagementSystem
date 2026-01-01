@@ -94,6 +94,44 @@ public class ReservationRepository {
         return list;
     }
 
+    // Dans ReservationRepository.java
+
+    public Membre trouverMembreParUtilisateurId(int utilisateurId) {
+        // CORRECTION : On fait une jointure (JOIN) pour récupérer le nom/prenom depuis la table utilisateur
+        String sql = "SELECT m.id_utilisateur, u.nom, u.prenom, u.email, u.telephone " +
+                     "FROM membre m " +
+                     "JOIN utilisateur u ON m.id_utilisateur = u.id " +
+                     "WHERE m.id_utilisateur = ?";
+                     
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, utilisateurId);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                Membre m = new Membre();
+                // Ici, l'ID du membre est bien 'id_utilisateur'
+                m.setId(rs.getInt("id_utilisateur")); 
+                
+                // Maintenant on peut récupérer le nom et prénom car on a fait le JOIN
+                m.setNom(rs.getString("nom"));
+                m.setPrenom(rs.getString("prenom"));
+                m.setEmail(rs.getString("email"));
+                
+                // Vous pouvez aussi mapper les infos spécifiques au membre si besoin
+                // m.setObjectif(rs.getString("objectifSportif"));
+
+                System.out.println("Membre trouvé : " + m.getNom() + " (ID: " + m.getId() + ")");
+                return m;
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur SQL dans trouverMembreParUtilisateurId : " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     // --- READ : Trouver par ID ---
     public Reservation trouverReservationParId(int id) {
         String sql = "SELECT * FROM RESERVATION WHERE id = ?";

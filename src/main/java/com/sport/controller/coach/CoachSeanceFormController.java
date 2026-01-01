@@ -14,6 +14,8 @@ import javafx.stage.Stage;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class CoachSeanceFormController {
 

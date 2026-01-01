@@ -17,6 +17,14 @@ public class SeanceIndividuelleService {
         this.repository = repository;
     }
 
+    public int getMembreInscrit(int seanceId) {
+        return repository.getMembreInscrit(seanceId);
+    }
+
+    public boolean reserverSession(int seanceId, Membre membre) {
+        return repository.reserverSession(seanceId, membre.getId());
+    }
+
     // Ajouter une séance
     public void ajouterSeance(SeanceIndividuelle seance) {
         repository.ajouter(seance);

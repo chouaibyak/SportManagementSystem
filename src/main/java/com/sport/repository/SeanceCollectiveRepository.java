@@ -72,8 +72,60 @@ public class SeanceCollectiveRepository {
     }
 
     // GET BY ID
-    public SeanceCollective getById(int seanceId) {
-        return getAll().stream().filter(s -> s.getId() == seanceId).findFirst().orElse(null);
+    // Dans SeanceCollectiveRepository.java
+
+    public SeanceCollective getById(int id) {
+        SeanceCollective sc = null;
+        String query = "SELECT s.id, s.nom, s.capaciteMax, s.dateHeure, s.type AS typeCours, s.typeSeance, s.duree, s.salle_id, s.entraineur_id, " +
+                    "sc.placesDisponibles " +
+                    "FROM seance s " +
+                    "JOIN seancecollective sc ON s.id = sc.seance_id " +
+                    "WHERE s.id = ?"; // <--- On filtre directement ici
+
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, id);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    sc = new SeanceCollective();
+                    sc.setId(rs.getInt("id"));
+                    sc.setNom(rs.getString("nom"));
+                    sc.setCapaciteMax(rs.getInt("capaciteMax"));
+                    sc.setDateHeure(rs.getTimestamp("dateHeure").toLocalDateTime());
+                    sc.setDuree(rs.getInt("duree"));
+                    
+                    // Gestion sécurisée des Enums
+                    try {
+                        sc.setTypeCours(TypeCours.valueOf(rs.getString("typeCours")));
+                        sc.setTypeSeance(TypeSeance.valueOf(rs.getString("typeSeance")));
+                    } catch (Exception e) {
+                        System.err.println("Erreur conversion Enum pour ID " + id);
+                    }
+                    
+                    sc.setPlacesDisponibles(rs.getInt("placesDisponibles"));
+
+                    // Objets partiels pour éviter NullPointerException
+                    Salle salle = new Salle();
+                    salle.setId(rs.getInt("salle_id"));
+                    sc.setSalle(salle);
+
+                    Coach coach = new Coach();
+                    coach.setId(rs.getInt("entraineur_id"));
+                    sc.setEntraineur(coach);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur SQL dans getById : " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        if (sc == null) {
+            System.err.println("ATTENTION: Aucune séance collective trouvée avec l'ID " + id + " dans la BDD.");
+        }
+        
+        return sc;
     }
 
     // AJOUTER
@@ -188,66 +240,65 @@ public class SeanceCollectiveRepository {
         return false;
     }
 
-    // RESERVER PLACE
+    //reserver place
     public boolean reserverPlace(int idSeance, Membre membre) {
-        SeanceCollective sc = getById(idSeance);
-        if (sc == null || sc.getPlacesDisponibles() <= 0) return false;
+        Connection conn = null;
+        PreparedStatement stmtUpdate = null;
+        PreparedStatement stmtInsert = null;
 
-        String insertSQL = "INSERT INTO seancecollective_membre (seance_id, membre_id) VALUES (?, ?)";
-        String updatePlacesSQL = """
-            UPDATE seancecollective sc
-            SET placesDisponibles = sc.capaciteMax - (
-                SELECT COUNT(*) 
-                FROM seancecollective_membre 
-                WHERE seance_id = ?
-            )
-            WHERE seance_id = ?;
-        """;
+        System.out.println("--- DÉBUT RÉSERVATION ---");
+        System.out.println("Seance ID: " + idSeance);
+        System.out.println("Membre ID: " + membre.getId());
 
-        try (Connection conn = DBConnection.getConnection()) {
-            conn.setAutoCommit(false);
-
-            try (PreparedStatement stmtInsert = conn.prepareStatement(insertSQL);
-                 PreparedStatement stmtUpdate = conn.prepareStatement(updatePlacesSQL)) {
-
-                stmtInsert.setInt(1, idSeance);
-                stmtInsert.setInt(2, membre.getId());
-                stmtInsert.executeUpdate();
-
-                stmtUpdate.setInt(1, idSeance);
-                stmtUpdate.setInt(2, idSeance);
-                stmtUpdate.executeUpdate();
-
-                conn.commit();
-
-                // Mise à jour en mémoire
-                sc.setPlacesDisponibles(sc.getPlacesDisponibles() - 1);
-
-                // Notification au coach
-                NotificationRepository notifRepo = new NotificationRepository();
-                Notification notif = new Notification();
-                notif.setDestinataireId(sc.getEntraineur().getId());
-                notif.setMessage("Le membre " + membre.getNom() + " " + membre.getPrenom() +
-                        " a réservé votre séance : " + sc.getNom() +
-                        " le " + sc.getDateHeure());
-                notif.setType("RESERVATION");
-               notif.setPriorite(PrioriteNotification.NORMALE);
-                notif.setDateEnvoi(LocalDateTime.now());
-                notifRepo.ajouter(notif);
-
-                return true;
-            } catch (SQLException ex) {
-                conn.rollback();
-                ex.printStackTrace();
-                return false;
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        // Vérification ID Membre
+        if (membre.getId() == 0) {
+            System.err.println("ERREUR: L'ID du membre est 0 ! Vérifiez UserSession.");
             return false;
         }
-    }
 
+        String sqlUpdatePlaces = "UPDATE seancecollective SET placesDisponibles = placesDisponibles - 1 WHERE seance_id = ? AND placesDisponibles > 0";
+        String sqlInsertLink = "INSERT INTO seancecollective_membre (seance_id, membre_id) VALUES (?, ?)";
+
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false); 
+
+            // 1. Décrémenter place
+            stmtUpdate = conn.prepareStatement(sqlUpdatePlaces);
+            stmtUpdate.setInt(1, idSeance);
+            int rowsUpdated = stmtUpdate.executeUpdate();
+            System.out.println("Places mises à jour : " + rowsUpdated);
+
+            if (rowsUpdated == 0) {
+                System.err.println("ERREUR: Plus de places disponibles ou ID séance incorrect.");
+                conn.rollback();
+                return false; 
+            }
+
+            // 2. Lier membre
+            stmtInsert = conn.prepareStatement(sqlInsertLink);
+            stmtInsert.setInt(1, idSeance);
+            stmtInsert.setInt(2, membre.getId());
+            stmtInsert.executeUpdate();
+            System.out.println("Membre ajouté à la table de liaison.");
+
+            conn.commit();
+            System.out.println("--- SUCCÈS RÉSERVATION ---");
+            return true;
+
+        } catch (SQLException e) {
+            System.err.println("!!! ERREUR SQL CRITIQUE !!!");
+            e.printStackTrace(); // REGARDEZ CETTE LIGNE DANS LA CONSOLE
+            if (conn != null) {
+                try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
+            return false;
+        } finally {
+            try { if (stmtUpdate != null) stmtUpdate.close(); } catch (Exception e) {}
+            try { if (stmtInsert != null) stmtInsert.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.setAutoCommit(true); conn.close(); } catch (Exception e) {}
+        }
+    }
     // ANNULER RESERVATION
     public boolean annulerReservation(int idSeance, Membre membre) {
         String deleteSQL = "DELETE FROM seancecollective_membre WHERE seance_id = ? AND membre_id = ?";

@@ -99,7 +99,10 @@ public class MemberSeancesController {
             private final Button btn = new Button("Annuler");
 
             {
-                btn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 10px;");
+                // --- MODIFICATION ICI : On utilise la classe CSS ---
+                btn.getStyleClass().add("btn-cancel-table"); 
+                // On retire le setStyle(...) en dur
+                
                 btn.setOnAction(event -> {
                     Reservation reservation = getTableView().getItems().get(getIndex());
                     handleAnnulation(reservation);
@@ -113,8 +116,7 @@ public class MemberSeancesController {
                     setGraphic(null);
                 } else {
                     Reservation r = getTableView().getItems().get(getIndex());
-                    // On n'affiche le bouton que si le statut n'est pas déjà annulé
-                    if (!r.getStatut().toString().equals("ANNULEE")) {
+                    if (!"ANNULEE".equals(r.getStatut().toString())) {
                         setGraphic(btn);
                     } else {
                         setGraphic(null);
