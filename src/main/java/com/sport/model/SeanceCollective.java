@@ -14,21 +14,28 @@ public class SeanceCollective extends Seance {
                             LocalDateTime dateHeure, Coach entraineur,
                             TypeCours type, int duree, int placesDisponibles) {
         super(id, nom, capaciteMax, salle, dateHeure, entraineur, type, duree);
-        this.typeSeance = TypeSeance.COLLECTIVE; // ✅
+        this.typeSeance = TypeSeance.COLLECTIVE; // 
         this.placesDisponibles = placesDisponibles;
         this.listeMembers = new ArrayList<>();
     }
     public SeanceCollective() {
         super();
-        this.typeSeance = TypeSeance.COLLECTIVE; // ✅
+        this.typeSeance = TypeSeance.COLLECTIVE; // 
         this.listeMembers = new ArrayList<>();
     }
 
   
     // Getters et setters
-    public int getPlacesDisponibles() {
-        return placesDisponibles;
+    
+       public int getPlacesDisponibles() {
+    if (listeMembers != null) {
+        return capaciteMax - listeMembers.size();
+    } else {
+        return capaciteMax;
     }
+}
+
+    
 
     public void setPlacesDisponibles(int placesDisponibles) {
         this.placesDisponibles = placesDisponibles;

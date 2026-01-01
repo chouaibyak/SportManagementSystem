@@ -149,9 +149,8 @@ public class SalleRepository {
     }
 
     // Vérifier la disponibilité d'une salle
-    public boolean verifierDisponibiliteSalle(int salleId, LocalDateTime dateHeure) {
+   public boolean verifierDisponibiliteSalle(int salleId, LocalDateTime dateHeure) {
     String sql = "SELECT COUNT(*) FROM seance WHERE salle_id = ? AND dateHeure = ?";
-
     try (Connection conn = DBConnection.getConnection();
          PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -165,5 +164,6 @@ public class SalleRepository {
         e.printStackTrace();
     }
     return false;
-    }
-    }
+}
+
+}

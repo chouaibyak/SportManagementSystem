@@ -9,6 +9,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import java.io.File;
 
 public class CoachProfilController {
 
@@ -23,6 +25,9 @@ public class CoachProfilController {
     @FXML private TextField txtTelephone;
     @FXML private TextField txtAdresse;
     @FXML private FlowPane flowSpecialites;
+   
+@FXML private TextField txtNouvelleSpecialite;
+@FXML private Button btnAjouterSpecialite;
     @FXML private FlowPane flowCertifications;
     @FXML private Button btnModifier;
     @FXML private Button btnAnnuler;
@@ -89,8 +94,49 @@ public class CoachProfilController {
                 txtNouvelleCertif.clear();
             }
         });
-    }
 
+   // Afficher les spécialités
+    afficherSpecialites();
+
+    // Ajouter une spécialité
+    btnAjouterSpecialite.setOnAction(e -> {
+        String nouvelle = txtNouvelleSpecialite.getText().trim();
+        if (!nouvelle.isEmpty() && !coach.getSpecialites().contains(nouvelle)) {
+            coach.getSpecialites().add(nouvelle); // Ajout local
+            coachRepo.modifierCoach(coach);       // Ajout en DB
+            afficherSpecialites();
+            txtNouvelleSpecialite.clear();
+        }
+    });
+}
+
+
+
+    
+
+
+    private void afficherSpecialites() {
+    flowSpecialites.getChildren().clear();
+    if (coach.getSpecialites() != null) {
+        for (String spec : coach.getSpecialites()) {
+            Label tag = new Label(spec);
+            tag.setStyle("-fx-background-color:#4FC3F7; -fx-text-fill:white; -fx-padding:4 10; -fx-background-radius:15; -fx-font-size:12;");
+
+            // Bouton suppression pour chaque spécialité
+            Button btnSuppr = new Button("✖");
+            btnSuppr.setStyle("-fx-background-color:transparent; -fx-text-fill:white; -fx-font-size:10;");
+            btnSuppr.setOnAction(e -> {
+                coach.getSpecialites().remove(spec); // Supprime localement
+                coachRepo.modifierCoach(coach);      // Met à jour en DB
+                afficherSpecialites();               // Actualise UI
+            });
+
+            VBox container = new VBox(tag, btnSuppr);
+            container.setSpacing(2);
+            flowSpecialites.getChildren().add(container);
+        }
+    }
+}
     // =============================
     // AFFICHAGE DES INFOS
     // =============================
@@ -149,10 +195,27 @@ public class CoachProfilController {
     // =============================
     // CHANGER PHOTO
     // =============================
-    private void handleChangerPhoto() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Fonctionnalité de changement de photo non implémentée.");
-        alert.showAndWait();
+   private void handleChangerPhoto() {
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Choisir une photo de profil");
+    fileChooser.getExtensionFilters().addAll(
+        new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg")
+    );
+    File selectedFile = fileChooser.showOpenDialog(imgProfile.getScene().getWindow());
+    
+    if (selectedFile != null) {
+        try {
+            Image image = new Image(selectedFile.toURI().toString());
+            imgProfile.setImage(image);
+
+          ;
+
+        } catch (Exception ex) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Impossible de charger l'image !");
+            alert.showAndWait();
+        }
     }
+}
 
     // =============================
     // CHANGER MOT DE PASSE

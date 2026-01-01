@@ -194,5 +194,40 @@ public class MembreRepository {
 
         return m;
     }
+
+
+
+    public List<Membre> trouverParSeanceCollective(int seanceId) {
+    List<Membre> membres = new ArrayList<>();
+    String sql = "SELECT u.* " +
+                 "FROM seancecollective_membre scm " +
+                 "JOIN membre m ON scm.membre_id = m.id_utilisateur " +
+                 "JOIN utilisateur u ON m.id_utilisateur = u.id " +
+                 "WHERE scm.seance_id = ?";
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setInt(1, seanceId);
+        try (ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Membre m = new Membre();
+                m.setId(rs.getInt("id"));
+                m.setNom(rs.getString("nom"));
+                m.setPrenom(rs.getString("prenom"));
+                m.setEmail(rs.getString("email"));
+                m.setTelephone(rs.getString("telephone"));
+                m.setAdresse(rs.getString("adresse"));
+                m.setDateNaissance(rs.getString("dateNaissance"));
+                membres.add(m);
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return membres;
+}
+
 }
 

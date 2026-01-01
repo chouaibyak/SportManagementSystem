@@ -126,9 +126,9 @@ public class AdministrateurService {
         return salleRepository.listerSallesParType(type);
     }
 
-    public boolean verifierDisponibiliteSalle(int salleId, LocalDateTime dateHeure) {
-        return salleRepository.verifierDisponibiliteSalle(salleId, dateHeure);
-    }
+   public boolean verifierDisponibiliteSalle(int salleId, LocalDateTime dateHeure) {
+    return salleRepository.verifierDisponibiliteSalle(salleId, dateHeure);
+}
 
     // =========================
     // RAPPORTS

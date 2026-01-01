@@ -14,6 +14,7 @@ import java.util.List;
 import com.sport.model.Coach;
 import com.sport.model.Salle;
 import com.sport.model.Seance;
+import com.sport.model.TypeCours;
 import com.sport.model.TypeSeance;
 import com.sport.utils.DBConnection;
 
@@ -131,6 +132,29 @@ public class SeanceRepository {
                 seance.setCapaciteMax(rs.getInt("capaciteMax"));
                 seance.setDateHeure(rs.getTimestamp("dateHeure").toLocalDateTime());
                 seance.setDuree(rs.getInt("duree"));
+
+                String typeSeanceStr = rs.getString("typeSeance");
+        if (typeSeanceStr != null) {
+            try {
+                seance.setTypeSeance(TypeSeance.valueOf(typeSeanceStr.toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                System.err.println("TypeSeance inconnu : " + typeSeanceStr);
+            }
+        }
+
+        // 2. CORRECTION DE VOTRE ERREUR ICI (TypeCours)
+        String typeCoursStr = rs.getString("type"); 
+        if (typeCoursStr != null && !typeCoursStr.trim().isEmpty()) {
+            try {
+                // On essaie de convertir
+                seance.setTypeCours(TypeCours.valueOf(typeCoursStr.toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                // Si la valeur en BDD n'existe pas dans l'Enum, on ne plante pas !
+                System.err.println("⚠️ ATTENTION : Type de cours inconnu en BDD -> " + typeCoursStr);
+                // Optionnel : Mettre une valeur par défaut si vous voulez
+                // seance.setTypeCours(TypeCours.MUSCULATION); 
+            }
+        }
                 
                 // Remplissage Salle
                 Salle salle = new Salle();

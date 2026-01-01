@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.sport.controller.coach.CoachSeanceDetailsController"
+      spacing="25"
+      style="-fx-padding:30; -fx-background-color: #f4f6f8;">
+
+    <!-- Titre principal -->
+    <Label text="Détails de la séance"
+           style="-fx-font-size:26; -fx-font-weight:bold; -fx-text-fill:#1e293b;"/>
+
+
+<Label text="Voici toutes les informations importantes sur la séance sélectionnée."
+       style="-fx-font-size:14; -fx-text-fill:#475569; -fx-padding:5 0 0 0;"/>
+
+    <!-- Infos générales -->
+    <VBox spacing="15" style="-fx-background-color:white; -fx-padding:20; -fx-border-radius:12; -fx-background-radius:12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10,0,0,2);">
+        <Label text="Informations générales"
+               style="-fx-font-size:18; -fx-font-weight:bold; -fx-text-fill:#0f172a;"/>
+        <GridPane hgap="15" vgap="12">
+            <Label text="Nom :" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight:bold;"/>
+            <Label fx:id="lblNom" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <Label text="Type de séance :" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight:bold;"/>
+            <Label fx:id="lblType" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <Label text="Salle :" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight:bold;"/>
+            <Label fx:id="lblSalle" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <Label text="Date :" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-weight:bold;"/>
+            <Label fx:id="lblDate" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+            <Label text="Heure :" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-weight:bold;"/>
+            <Label fx:id="lblHeure" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+            <Label text="Durée :" GridPane.rowIndex="5" GridPane.columnIndex="0" style="-fx-font-weight:bold;"/>
+            <Label fx:id="lblDuree" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+            <Label text="Coach :" GridPane.rowIndex="6" GridPane.columnIndex="0" style="-fx-font-weight:bold;"/>
+            <Label fx:id="lblCoach" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+            <Label text="Type de cours :" GridPane.rowIndex="7" GridPane.columnIndex="0" style="-fx-font-weight:bold;"/>
+            <Label fx:id="lblTypeCours" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+        </GridPane>
+    </VBox>
+
+    <!-- Séance collective -->
+    <VBox fx:id="vboxCollective" spacing="15" style="-fx-background-color:#e0f7fa; -fx-padding:20; -fx-border-radius:12; -fx-background-radius:12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8,0,0,2);">
+        <Label text="Séance Collective" style="-fx-font-size:18; -fx-font-weight:bold; -fx-text-fill:#006064;"/>
+        <GridPane hgap="15" vgap="12">
+            <Label text="Capacité max :" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight:bold;"/>
+            <Label fx:id="lblCapacite" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <Label text="Places disponibles :" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight:bold;"/>
+            <Label fx:id="lblPlaces" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        </GridPane>
+    </VBox>
+
+    <!-- Séance individuelle -->
+    <VBox fx:id="vboxIndividuelle" spacing="15" style="-fx-background-color:#fff3e0; -fx-padding:20; -fx-border-radius:12; -fx-background-radius:12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8,0,0,2);">
+        <Label text="Séance Individuelle" style="-fx-font-size:18; -fx-font-weight:bold; -fx-text-fill:#ef6c00;"/>
+        <GridPane hgap="15" vgap="12">
+            <Label text="Membre :" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight:bold;"/>
+            <Label fx:id="lblMembre" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <Label text="Tarif :" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight:bold;"/>
+            <Label fx:id="lblTarif" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <Label text="Notes :" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight:bold;"/>
+            <Label fx:id="lblNotes" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        </GridPane>
+    </VBox>
+
+    <!-- Bouton Fermer -->
+    <HBox alignment="CENTER">
+        <Button fx:id="btnFermer"
+                text="Fermer"
+                style="-fx-background-color:#0d6efd; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:14; -fx-padding:10 25; -fx-background-radius:8;"
+                onAction="#fermer"
+                onMouseEntered="#hoverFermer"
+                onMouseExited="#exitFermer"/>
+    </HBox>
+
+</VBox>

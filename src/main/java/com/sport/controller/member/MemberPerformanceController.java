@@ -374,7 +374,6 @@ public class MemberPerformanceController {
         seriesFin.getData().add(new XYChart.Data<>("Endurance", derniere.getEndurance()));
 
         chartComparaison.getData().clear();
-        chartComparaison.getData().addAll(seriesDebut, seriesFin);
     }
 
     private void afficherMessageAucuneDonnee() {
