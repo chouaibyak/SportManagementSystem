@@ -1,16 +1,17 @@
 package com.sport.controller.coach;
 
 import com.sport.model.*;
-import com.sport.repository.SalleRepository;
-import com.sport.repository.SeanceCollectiveRepository;
-import com.sport.repository.SeanceIndividuelleRepository;
+import com.sport.service.SeanceCollectiveService;
+import com.sport.service.SeanceIndividuelleService;
+import com.sport.service.SalleService;
 import com.sport.utils.UserSession;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -19,9 +20,9 @@ import java.util.List;
 public class CoachSeanceFormController {
 
     @FXML private TextField txtNom;
-    @FXML private ComboBox<String> cbType;           // Collective / Individuelle
-    @FXML private ComboBox<TypeCours> cbTypeCours;   // YOGA, MUSCULATION, CARDIO, PILATES
-    @FXML private ComboBox<Salle> cbSalle;           // Salle disponible
+    @FXML private ComboBox<String> cbType;
+    @FXML private ComboBox<TypeCours> cbTypeCours;
+    @FXML private ComboBox<Salle> cbSalle;
     @FXML private DatePicker dpDate;
     @FXML private Spinner<Integer> spHeure;
     @FXML private Spinner<Integer> spMinute;
@@ -32,15 +33,12 @@ public class CoachSeanceFormController {
     @FXML private Button btnCancel;
 
     private Coach coach;
-    private Seance seance; // null = ajout | not null = modification
+    private Seance seance;
 
-    private final SeanceCollectiveRepository collectiveRepo = new SeanceCollectiveRepository();
-    private final SeanceIndividuelleRepository indivRepo = new SeanceIndividuelleRepository();
-    private final SalleRepository salleRepo = new SalleRepository();
+    private final SeanceCollectiveService collectiveService = new SeanceCollectiveService(new com.sport.repository.SeanceCollectiveRepository());
+    private final SeanceIndividuelleService indivService = new SeanceIndividuelleService(new com.sport.repository.SeanceIndividuelleRepository());
+    private final SalleService salleService = new SalleService(new com.sport.repository.SalleRepository());
 
-    // =============================
-    // INITIALIZE
-    // =============================
     @FXML
     public void initialize() {
 
@@ -48,11 +46,11 @@ public class CoachSeanceFormController {
         Utilisateur user = UserSession.getInstance().getUtilisateur();
         if (user instanceof Coach) coach = (Coach) user;
 
-        // Type séance
+        // Types de séance
         cbType.setItems(FXCollections.observableArrayList("Collective", "Individuelle"));
         cbType.getSelectionModel().selectFirst();
 
-        // Type de cours
+        // Types de cours
         cbTypeCours.setItems(FXCollections.observableArrayList(TypeCours.values()));
         cbTypeCours.getSelectionModel().selectFirst();
 
@@ -62,30 +60,23 @@ public class CoachSeanceFormController {
         spDuree.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(30, 180, 60));
         spMaxMembres.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 10));
 
-        // Activer / désactiver max membres selon type
-        cbType.valueProperty().addListener((obs, oldV, newV) -> spMaxMembres.setDisable(!"Collective".equals(newV)));
+        // Activer/désactiver max membres selon type
+        cbType.valueProperty().addListener((obs, o, n) ->
+                spMaxMembres.setDisable(!"Collective".equals(n))
+        );
 
-        // Charger les salles disponibles
-        chargerSallesDisponibles();
+        // Lister salles depuis le service
+        cbSalle.setItems(FXCollections.observableArrayList(salleService.getToutesLesSalles()));
 
-        // Personnalisation affichage salle
-        cbSalle.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(Salle item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : item.getNom());
-            }
-        });
-        cbSalle.setButtonCell(cbSalle.getCellFactory().call(null));
-
-        // Boutons
+        // Actions boutons
         btnSave.setOnAction(e -> enregistrer());
         btnCancel.setOnAction(e -> fermerFenetre());
     }
 
-    // =============================
-    // MODE MODIFICATION
-    // =============================
+    public Seance getSeanceCreeeOuModifiee() {
+        return seance;
+    }
+
     public void setSeance(Seance s) {
         this.seance = s;
 
@@ -94,130 +85,57 @@ public class CoachSeanceFormController {
         spHeure.getValueFactory().setValue(s.getDateHeure().getHour());
         spMinute.getValueFactory().setValue(s.getDateHeure().getMinute());
         spDuree.getValueFactory().setValue(s.getDuree());
+        cbTypeCours.setValue(s.getTypeCours());
+        cbSalle.setValue(s.getSalle());
 
-        if (s.getTypeCours() != null) cbTypeCours.setValue(s.getTypeCours());
-
-        // Interdire changement type en modification
         cbType.setDisable(true);
 
         if (s instanceof SeanceCollective sc) {
             cbType.setValue("Collective");
             spMaxMembres.getValueFactory().setValue(sc.getCapaciteMax());
-            spMaxMembres.setDisable(false);
-            cbSalle.setValue(sc.getSalle());
         } else {
             cbType.setValue("Individuelle");
             spMaxMembres.setDisable(true);
-            cbSalle.setValue(s.getSalle());
         }
     }
 
-    // =============================
-    // SAVE
-    // =============================
     private void enregistrer() {
+        LocalDateTime dateHeure = LocalDateTime.of(
+                dpDate.getValue(),
+                LocalTime.of(spHeure.getValue(), spMinute.getValue())
+        );
 
-        if (txtNom.getText().isEmpty() || dpDate.getValue() == null || cbTypeCours.getValue() == null || cbSalle.getValue() == null) {
-            showAlert("Erreur", "Veuillez remplir tous les champs obligatoires.");
-            return;
-        }
-
-        LocalDate date = dpDate.getValue();
-        LocalTime time = LocalTime.of(spHeure.getValue(), spMinute.getValue());
-        LocalDateTime dateHeure = LocalDateTime.of(date, time);
-
-        // Vérifier disponibilité salle
-        Salle salleChoisie = cbSalle.getValue();
-
-        // --- CORRECTION ICI ---
-        // On formate la date en String car votre Repository attend une String
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String dateStr = dateHeure.format(formatter); 
-
-        boolean dispo = salleRepo.verifierDisponibiliteSalle(salleChoisie.getId(), dateStr);
-        // ----------------------
-
-        if (!dispo && seance == null) {
-            showAlert("Erreur", "La salle sélectionnée n'est pas disponible à cette date et heure.");
-            return;
-        }
-
-        String nom = txtNom.getText();
-        int duree = spDuree.getValue();
-        TypeCours typeCours = cbTypeCours.getValue();
-
-        // =============================
-        // AJOUT
-        // =============================
         if (seance == null) {
             if ("Collective".equals(cbType.getValue())) {
                 SeanceCollective sc = new SeanceCollective();
-                sc.setNom(nom);
+                sc.setNom(txtNom.getText());
                 sc.setDateHeure(dateHeure);
-                sc.setDuree(duree);
-                sc.setEntraineur(coach);
+                sc.setDuree(spDuree.getValue());
                 sc.setCapaciteMax(spMaxMembres.getValue());
                 sc.setPlacesDisponibles(spMaxMembres.getValue());
-                sc.setTypeCours(typeCours);
+                sc.setTypeCours(cbTypeCours.getValue());
+                sc.setSalle(cbSalle.getValue());
+                sc.setEntraineur(coach);
                 sc.setTypeSeance(TypeSeance.COLLECTIVE);
-                sc.setSalle(salleChoisie);
-
-                collectiveRepo.ajouter(sc);
+                collectiveService.ajouterSeance(sc);
+                seance = sc;
             } else {
                 SeanceIndividuelle si = new SeanceIndividuelle();
-                si.setNom(nom);
+                si.setNom(txtNom.getText());
                 si.setDateHeure(dateHeure);
-                si.setDuree(duree);
+                si.setDuree(spDuree.getValue());
+                si.setTypeCours(cbTypeCours.getValue());
+                si.setSalle(cbSalle.getValue());
                 si.setEntraineur(coach);
-                si.setTypeCours(typeCours);
                 si.setTypeSeance(TypeSeance.INDIVIDUELLE);
-                si.setSalle(salleChoisie);
-
-                indivRepo.ajouter(si);
-            }
-        } else { 
-            // =============================
-            // MODIFICATION
-            // =============================
-            seance.setNom(nom);
-            seance.setDateHeure(dateHeure);
-            seance.setDuree(duree);
-            seance.setTypeCours(typeCours);
-            seance.setSalle(salleChoisie);
-
-            if (seance instanceof SeanceCollective sc) {
-                sc.setCapaciteMax(spMaxMembres.getValue());
-                collectiveRepo.update(sc);
-            } else {
-                indivRepo.update((SeanceIndividuelle) seance);
+                indivService.ajouterSeance(si);
+                seance = si;
             }
         }
-
         fermerFenetre();
     }
 
-    // =============================
-    // CHARGER SALLES DISPONIBLES
-    // =============================
-    private void chargerSallesDisponibles() {
-        List<Salle> salles = salleRepo.listerSalles();
-        cbSalle.setItems(FXCollections.observableArrayList(salles));
-    }
-
-    // =============================
-    // UTILS
-    // =============================
     private void fermerFenetre() {
-        Stage stage = (Stage) btnCancel.getScene().getWindow();
-        stage.close();
-    }
-
-    private void showAlert(String title, String msg) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(msg);
-        alert.showAndWait();
+        ((Stage) btnCancel.getScene().getWindow()).close();
     }
 }
-

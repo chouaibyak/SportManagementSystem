@@ -7,10 +7,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.sport.model.Membre;
+import com.sport.model.Notification;
+import com.sport.model.PrioriteNotification;
 import com.sport.model.Reservation;
 import com.sport.model.Salle;
 import com.sport.model.Seance;
@@ -360,5 +363,56 @@ public boolean estDejaInscrit(int membreId, int seanceId) {
     } catch (SQLException e) { e.printStackTrace(); }
     return false;
 }
+public boolean reserverEtNotifier(Reservation reservation) {
+    // 1️⃣ Ajouter la réservation
+    ajouterReservation(reservation);
+
+    // 2️⃣ Vérifier que la séance et le membre existent
+    Seance seance = reservation.getSeance();
+    if (seance == null) return false;
+
+    Membre membre = reservation.getMembre();
+    if (membre == null) return false;
+
+    //  Créer et envoyer la notification
+    NotificationRepository notifRepo = new NotificationRepository();
+    Notification notif = new Notification();
+    notif.setDestinataireId(seance.getEntraineur().getId()); // ID coach
+    notif.setReservationId(reservation.getId());              // <-- important
+    notif.setMessage("Le membre " + membre.getNom() + " " + membre.getPrenom() +
+                     " a réservé votre séance : " + seance.getNom() +
+                     " le " + seance.getDateHeure());
+    notif.setType("RESERVATION");
+    notif.setPriorite(PrioriteNotification.HAUTE);
+    notif.setDateEnvoi(LocalDateTime.now());
+    notifRepo.ajouter(notif);
+
+    return true;
+}
+
+   // --- Annuler réservation et notifier ---
+    public boolean annulerReservationEtNotifier(Reservation reservation) {
+        if (reservation == null || reservation.getSeance() == null || reservation.getMembre() == null)
+            return false;
+
+        // On change le statut en ANNULÉE
+        reservation.setStatut(StatutReservation.ANNULEE);
+        modifierReservation(reservation);
+
+        // Créer la notification
+        Notification notif = new Notification();
+        notif.setDestinataireId(reservation.getSeance().getEntraineur().getId());
+        notif.setMessage("Le membre " + reservation.getMembre().getNom() + " " +
+                reservation.getMembre().getPrenom() + " a annulé sa réservation pour la séance : " +
+                reservation.getSeance().getNom() + " le " + reservation.getSeance().getDateHeure());
+        notif.setType("ANNULATION");
+        notif.setPriorite(PrioriteNotification.NORMALE);
+        notif.setDateEnvoi(LocalDateTime.now());
+
+        NotificationRepository notifRepo = new NotificationRepository();
+        notifRepo.ajouter(notif);
+
+        return true;
+    }
 
 }

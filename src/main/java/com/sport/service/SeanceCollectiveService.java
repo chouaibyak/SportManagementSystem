@@ -3,6 +3,7 @@ package com.sport.service;
 import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import com.sport.model.Membre;
@@ -24,12 +25,10 @@ public class SeanceCollectiveService {
         repository.ajouter(seance);
     }
 
-    // Obtenir toutes les séances collectives
     public List<SeanceCollective> getAll() {
         return repository.getAll();
     }
 
-    // Obtenir par ID
     public SeanceCollective getById(int id) {
         return repository.getById(id);
     }
@@ -39,7 +38,6 @@ public class SeanceCollectiveService {
         return repository.update(seance);
     }
 
-    // Supprimer
     public boolean delete(int id) {
         return repository.delete(id);
     }
@@ -93,6 +91,7 @@ public class SeanceCollectiveService {
         System.out.println("Notification envoyée pour la séance " + idSeance);
     }
 
+    // --- Méthodes pour dashboard coach ---
 
     // --- MÉTHODES POUR DASHBOARD COACH (Statistiques) ---
 

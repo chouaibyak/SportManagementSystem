@@ -5,13 +5,13 @@ import java.time.LocalDateTime;
 public class SeanceIndividuelle extends Seance {
 
     private Membre membre;
-    private double tarif;
+    private Double tarif;
     private String notesCoach;
 
     // Constructeur
     public SeanceIndividuelle(int id, String nom, int capaciteMax, Salle salle, LocalDateTime dateHeure,
                               Coach entraineur, TypeCours type, int duree,
-                              Membre membre, double tarif, String notesCoach) {
+                              Membre membre, Double tarif, String notesCoach) {
         super(id, nom, capaciteMax, salle, dateHeure, entraineur, type, duree);
         this.membre = membre;
         this.tarif = tarif;
@@ -34,11 +34,11 @@ public class SeanceIndividuelle extends Seance {
         this.membre = membre;
     }
 
-    public double getTarif() {
+    public Double getTarif() {
         return tarif;
     }
 
-    public void setTarif(double tarif) {
+    public void setTarif(Double tarif) {
         this.tarif = tarif;
     }
 

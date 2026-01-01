@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.sport.controller.coach.CoachSeanceIndivDetailsController"
+           styleClass="bg-root"
+           stylesheets="@/css/seance_indiv_detail.css">
+
+    <VBox spacing="20" styleClass="glass-card">
+
+        <!-- Title -->
+        <Label text="Séance individuelle"
+               styleClass="title"/>
+
+        <!-- Membre Card -->
+        <VBox spacing="6" styleClass="section">
+            <Label text="👤 Membre" styleClass="section-title"/>
+            <Label fx:id="lblNom" styleClass="text-main"/>
+            <Label fx:id="lblEmail" styleClass="text-muted"/>
+
+            <!-- Bouton Assigner Membre (visible seulement si aucun membre) -->
+            <Button fx:id="btnAssignerMembre"
+                    text="👤 Assigner Membre"
+                    onAction="#assignerMembre"
+                    styleClass="btn-primary"
+                    visible="false"/>
+        </VBox>
+
+        <!-- Feedback -->
+        <VBox spacing="8" styleClass="section">
+            <Label text="📝 Feedback du coach" styleClass="section-title"/>
+            <TextArea fx:id="txtFeedback"
+                      promptText="Écrire un feedback professionnel..."
+                      styleClass="feedback-area"/>
+        </VBox>
+
+        <!-- Tarif -->
+        <VBox spacing="6" styleClass="section">
+            <Label text="💰 Tarif" styleClass="section-title"/>
+            <TextField fx:id="txtTarif"
+                       promptText="Entrer le tarif..."
+                       styleClass="text-input"/>
+        </VBox>
+
+        <!-- Buttons -->
+        <HBox spacing="12" styleClass="actions">
+            <Button fx:id="btnClose"
+                    text="✖ Fermer"
+                    onAction="#fermer"
+                    styleClass="btn-secondary"/>
+            <Button fx:id="btnSave"
+                    text="💾 Enregistrer"
+                    onAction="#enregistrer"
+                    styleClass="btn-primary"/>
+        </HBox>
+
+    </VBox>
+</StackPane>
