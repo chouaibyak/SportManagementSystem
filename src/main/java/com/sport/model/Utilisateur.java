@@ -114,5 +114,21 @@ public abstract class Utilisateur {
     public String getNomComplet() {
         return getNom() + " " + getPrenom(); // getNom() and getPrenom() are from Utilisateur
     }
+    public void setNomComplet(String nomComplet) {
+        if (nomComplet == null || nomComplet.trim().isEmpty()) {
+            return;
+        }
+
+        String[] parts = nomComplet.trim().split("\\s+", 2);
+
+        this.setNom(parts[0]);
+
+        if (parts.length > 1) {
+            this.setPrenom(parts[1]);
+        } else {
+            this.setPrenom("");
+        }
+    }
+
 }
 

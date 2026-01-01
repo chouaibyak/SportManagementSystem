@@ -7,6 +7,7 @@ import com.sport.model.Abonnement;
 import com.sport.model.Membre;
 import com.sport.model.StatutAbonnement;
 import com.sport.model.TypeAbonnement;
+import com.sport.repository.AbonnementRepository;
 import com.sport.service.AbonnementService;
 
 import javafx.collections.FXCollections;
@@ -29,13 +30,12 @@ public class AddAbonnementFormController {
     @FXML
     private DatePicker dateDebutPicker;
     @FXML
-    private DatePicker dateFinPicker;
-    @FXML
     private CheckBox autoCheckBox;
     @FXML
     private TextField montantField;
 
     private AbonnementService abonnementService = new AbonnementService();
+    private AbonnementRepository abonnementRepository = new AbonnementRepository();
 
     public void setMembres(List<Membre> membres) {
         memberComboBox.setItems(FXCollections.observableArrayList(membres));
@@ -45,45 +45,79 @@ public class AddAbonnementFormController {
     public void initialize() {
         typeComboBox.setItems(FXCollections.observableArrayList(TypeAbonnement.values()));
         statutComboBox.setItems(FXCollections.observableArrayList(StatutAbonnement.values()));
+        statutComboBox.getSelectionModel().select(StatutAbonnement.ACTIF);
+
+        // Show member full name in ComboBox
+        memberComboBox.setConverter(new javafx.util.StringConverter<>() {
+            @Override
+            public String toString(Membre membre) {
+                return membre != null ? membre.getNomComplet() : "";
+            }
+
+            @Override
+            public Membre fromString(String string) {
+                return null; // Not needed
+            }
+        });
+
+        // Auto-calc montant when type changes
+        // When type changes, recalc montant automatically
+        typeComboBox.valueProperty().addListener((obs, oldType, newType) -> {
+            if (newType != null) {
+                montantField.setText(String.valueOf(abonnementRepository.calculerMontant(newType)));
+            } else {
+                montantField.setText("");
+            }
+        });
+       
     }
 
     @FXML
     private void onAdd() {
-        try {
-            Membre membre = memberComboBox.getSelectionModel().getSelectedItem();
-            TypeAbonnement type = typeComboBox.getSelectionModel().getSelectedItem();
-            StatutAbonnement statut = statutComboBox.getSelectionModel().getSelectedItem();
-            LocalDate dateDebut = dateDebutPicker.getValue();
-            LocalDate dateFin = dateFinPicker.getValue();
-            boolean auto = autoCheckBox.isSelected();
-            double montant = Double.parseDouble(montantField.getText());
+        Membre membre = memberComboBox.getValue();
+        TypeAbonnement type = typeComboBox.getValue();
+        StatutAbonnement statut = statutComboBox.getValue();
+        LocalDate dateDebut = dateDebutPicker.getValue();
 
-            if (membre == null || type == null || statut == null || dateDebut == null || dateFin == null) {
-                new Alert(Alert.AlertType.WARNING, "Veuillez remplir tous les champs").show();
-                return;
+        if (membre == null || type == null || statut == null || dateDebut == null) {
+            new Alert(Alert.AlertType.WARNING, "Veuillez remplir tous les champs").show();
+            return;
+        }
+
+        // Automatically calculate end date
+        LocalDate dateFin = dateDebut.plusMonths(
+            switch (type) {
+                case MENSUEL -> 1;
+                case TRIMESTRIEL -> 3;
+                case ANNUEL -> 12;
             }
-
+        );
+         Membre selected = memberComboBox.getSelectionModel().getSelectedItem();
+           if (selected == null) {
+        System.out.println("Veuillez sélectionner un membre !");
+        return;
+    }
+         
+        try {
             Abonnement ab = new Abonnement();
-            ab.setMembre(membre);
+            // ab.setMembre(membre);
+            ab.setMembre(selected); // THIS IS CRUCIAL
             ab.setTypeAbonnement(type);
             ab.setStatutAbonnement(statut);
-            ab.setAutorenouvellement(auto);
-            ab.setMontant(montant);
+            ab.setAutorenouvellement(autoCheckBox.isSelected());
+            ab.setMontant(abonnementRepository.calculerMontant(type));
             ab.setDateDebut(java.sql.Date.valueOf(dateDebut));
             ab.setDateFin(java.sql.Date.valueOf(dateFin));
 
             abonnementService.souscrireAbonnement(ab);
 
-           // new Alert(Alert.AlertType.INFORMATION, "Abonnement ajouté avec succès !").show();
-
-            // Close window
             Stage stage = (Stage) memberComboBox.getScene().getWindow();
             stage.close();
 
-        } catch (NumberFormatException e) {
-            new Alert(Alert.AlertType.ERROR, "Montant invalide").show();
         } catch (Exception e) {
-            new Alert(Alert.AlertType.ERROR, "Erreur lors de l'ajout : " + e.getMessage()).show();
+           // new Alert(Alert.AlertType.ERROR,
+           //         "Erreur lors de l'ajout de l'abonnement\n" + e.getMessage()).show();
+                     e.printStackTrace();
         }
     }
 
@@ -92,4 +126,6 @@ public class AddAbonnementFormController {
         Stage stage = (Stage) memberComboBox.getScene().getWindow();
         stage.close();
     }
+
+    
 }

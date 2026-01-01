@@ -5,27 +5,61 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.sport.model.Abonnement;
+import com.sport.model.Membre;
 import com.sport.model.StatutAbonnement;
+import com.sport.model.TypeAbonnement;
 import com.sport.utils.DBConnection;
 
 public class AbonnementRepository {
 
-    // ➤ CREATE (Correction : Ajout de membre_id)
+    /* ===================== CREATE ===================== */
     public void ajouterAbonnement(Abonnement abonnement) {
-        String sql = "INSERT INTO abonnement (membre_id, type, statut, autorenouvellement) VALUES (?, ?, ?, ?)";
+
+        // 1️⃣ Calculer le montant automatiquement
+        double montant = calculerMontant(abonnement.getTypeAbonnement());
+        abonnement.setMontant(montant);
+
+        // 2️⃣ Convertir java.util.Date -> LocalDate
+       java.util.Date utilDateDebut = abonnement.getDateDebut();
+
+        LocalDate dateDebut = new java.sql.Date(utilDateDebut.getTime())
+                .toLocalDate();
+
+
+        // 3️⃣ Calculer dateFin 
+        LocalDate dateFin;
+        switch (abonnement.getTypeAbonnement()) {
+            case MENSUEL -> dateFin = dateDebut.plusMonths(1);
+            case TRIMESTRIEL -> dateFin = dateDebut.plusMonths(3);
+            case ANNUEL -> dateFin = dateDebut.plusYears(1);
+            default -> dateFin = dateDebut;
+        }
+
+        // 4️⃣ Convertir LocalDate -> java.sql.Date
+        java.sql.Date sqlDateDebut = java.sql.Date.valueOf(dateDebut);
+        java.sql.Date sqlDateFin = java.sql.Date.valueOf(dateFin);
+
+        String sql = """
+            INSERT INTO abonnement
+            (member_fullname, type, statut, date_debut, date_fin, autorenouvellement, montant)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """;
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            // IMPORTANT : On lie l'abonnement au membre
-            stmt.setInt(1, abonnement.getMembre().getId());
+            stmt.setString(1, abonnement.getMembre().getNomComplet());
             stmt.setString(2, abonnement.getTypeAbonnement().name());
             stmt.setString(3, abonnement.getStatutAbonnement().name());
-            stmt.setBoolean(4, abonnement.isAutorenouvellement());
+            stmt.setDate(4, sqlDateDebut);
+            stmt.setDate(5, sqlDateFin);
+            stmt.setBoolean(6, abonnement.isAutorenouvellement());
+            stmt.setDouble(7, montant);
 
             stmt.executeUpdate();
 
@@ -33,14 +67,19 @@ public class AbonnementRepository {
             if (rs.next()) {
                 abonnement.setId(rs.getInt(1));
             }
-            System.out.println("Abonnement ajouté avec succès !");
+
+            System.out.println("✅ Abonnement "
+                    + abonnement.getTypeAbonnement()
+                    + " créé pour "
+                    + abonnement.getMembre().getNomComplet());
+            System.out.println("📅 Date de fin : " + dateFin);
 
         } catch (SQLException e) {
-            System.out.println("Erreur ajout abonnement : " + e.getMessage());
+            System.out.println("❌ Erreur ajout abonnement : " + e.getMessage());
         }
     }
 
-    // ➤ READ (Tout)
+    /* ===================== READ ALL ===================== */
     public List<Abonnement> listerTout() {
         List<Abonnement> list = new ArrayList<>();
         String sql = "SELECT * FROM abonnement";
@@ -54,13 +93,13 @@ public class AbonnementRepository {
             }
 
         } catch (SQLException e) {
-            System.out.println("Erreur liste abonnements : " + e.getMessage());
+            System.out.println("❌ Erreur liste abonnements : " + e.getMessage());
         }
 
         return list;
     }
 
-    // ➤ READ (Par ID)
+    /* ===================== READ BY ID ===================== */
     public Abonnement trouverParId(int id) {
         String sql = "SELECT * FROM abonnement WHERE id = ?";
 
@@ -75,13 +114,13 @@ public class AbonnementRepository {
             }
 
         } catch (SQLException e) {
-            System.out.println("Erreur recherche abonnement : " + e.getMessage());
+            System.out.println("❌ Erreur recherche abonnement : " + e.getMessage());
         }
 
         return null;
     }
 
-    // ➤ READ (Par Statut)
+    /* ===================== READ BY STATUS ===================== */
     public List<Abonnement> trouverParStatut(StatutAbonnement statut) {
         List<Abonnement> list = new ArrayList<>();
         String sql = "SELECT * FROM abonnement WHERE statut = ?";
@@ -97,15 +136,19 @@ public class AbonnementRepository {
             }
 
         } catch (SQLException e) {
-            System.out.println("Erreur recherche par statut : " + e.getMessage());
+            System.out.println("❌ Erreur recherche par statut : " + e.getMessage());
         }
 
         return list;
     }
 
-    // ➤ UPDATE
+    /* ===================== UPDATE ===================== */
     public void modifierAbonnement(Abonnement ab) {
-        String sql = "UPDATE abonnement SET type = ?, statut = ?, autorenouvellement = ? WHERE id = ?";
+        String sql = """
+            UPDATE abonnement
+            SET type = ?, statut = ?, autorenouvellement = ?
+            WHERE id = ?
+        """;
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -116,14 +159,14 @@ public class AbonnementRepository {
             stmt.setInt(4, ab.getId());
 
             stmt.executeUpdate();
-            System.out.println("Abonnement modifié !");
+            System.out.println("✅ Abonnement modifié");
 
         } catch (SQLException e) {
-            System.out.println("Erreur modification abonnement : " + e.getMessage());
+            System.out.println("❌ Erreur modification abonnement : " + e.getMessage());
         }
     }
 
-    // ➤ DELETE
+    /* ===================== DELETE ===================== */
     public void supprimerAbonnement(int id) {
         String sql = "DELETE FROM abonnement WHERE id = ?";
 
@@ -132,28 +175,40 @@ public class AbonnementRepository {
 
             stmt.setInt(1, id);
             stmt.executeUpdate();
-            System.out.println("Abonnement supprimé !");
+            System.out.println("🗑️ Abonnement supprimé");
 
         } catch (SQLException e) {
-            System.out.println("Erreur suppression abonnement : " + e.getMessage());
+            System.out.println("❌ Erreur suppression abonnement : " + e.getMessage());
         }
     }
 
-    // ➤ MAPPING (Correction : Récupération de l'ID membre)
+    /* ===================== MAPPING ===================== */
     private Abonnement mapResultSetToAbonnement(ResultSet rs) throws SQLException {
+
         Abonnement ab = new Abonnement();
         ab.setId(rs.getInt("id"));
 
-        // On crée un membre "vide" avec juste l'ID pour faire le lien
-        com.sport.model.Membre m = new com.sport.model.Membre();
-        m.setId(rs.getInt("membre_id"));
-        ab.setMembre(m);
+        Membre membre = new Membre();
+        membre.setNomComplet(rs.getString("member_fullname"));
+        ab.setMembre(membre);
 
-        try { ab.setTypeAbonnement(com.sport.model.TypeAbonnement.valueOf(rs.getString("type"))); } catch (Exception e) {}
-        try { ab.setStatutAbonnement(com.sport.model.StatutAbonnement.valueOf(rs.getString("statut"))); } catch (Exception e) {}
-        
+        ab.setTypeAbonnement(TypeAbonnement.valueOf(rs.getString("type")));
+        ab.setStatutAbonnement(StatutAbonnement.valueOf(rs.getString("statut")));
         ab.setAutorenouvellement(rs.getBoolean("autorenouvellement"));
+        ab.setMontant(rs.getDouble("montant"));
+
+        ab.setDateDebut(rs.getDate("date_debut"));
+        ab.setDateFin(rs.getDate("date_fin"));
 
         return ab;
+    }
+
+    /* ===================== BUSINESS ===================== */
+    public double calculerMontant(TypeAbonnement type) {
+        return switch (type) {
+            case MENSUEL -> 300.00;
+            case TRIMESTRIEL -> 800.00;
+            case ANNUEL -> 2500.00;
+        };
     }
 }

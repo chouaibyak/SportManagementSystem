@@ -1,18 +1,18 @@
 package com.sport;
 
+import java.util.List;
+
 import com.sport.model.Salle;
 import com.sport.model.TypeSalle;
 import com.sport.repository.SalleRepository;
 import com.sport.service.SalleService;
-
-import java.util.List;
 
 public class TestSalleApp {
 
     public static void main(String[] args) {
 
         SalleRepository salleRepository = new SalleRepository();
-        SalleService salleService = new SalleService(salleRepository);
+        SalleService salleService = new SalleService();
 
         // ➤ AJOUTER DES SALLES
         Salle salle1 = new Salle("Salle Cardio", 20, TypeSalle.CARDIO);

@@ -38,10 +38,8 @@
         <DatePicker fx:id="dateDebutPicker"/>
     </HBox>
 
-    <HBox spacing="10">
-        <Label text="Date fin:" prefWidth="120"/>
-        <DatePicker fx:id="dateFinPicker"/>
-    </HBox>
+    <!-- date fin will be calculated automatically
+      -->
 
     <!-- Auto-renouvellement -->
     <HBox spacing="10">
@@ -49,11 +47,10 @@
         <CheckBox fx:id="autoCheckBox"/>
     </HBox>
 
-    <!-- Montant -->
-    <HBox spacing="10">
-        <Label text="Montant:" prefWidth="120"/>
-        <TextField fx:id="montantField" prefWidth="250"/>
-    </HBox>
+    <!-- Montant will be calculated automatically -->
+    <TextField fx:id="montantField" editable="false"/>
+
+     
 
     <!-- Buttons -->
     <HBox spacing="15">
