@@ -142,6 +142,28 @@ public class MemberPlanningController {
         salleBox.getChildren().addAll(salleIcon, salleLbl);
         salleBox.setAlignment(Pos.CENTER_LEFT);
 
+        // --- AJOUT : AFFICHAGE DE LA NOTE DU COACH (Seulement pour Individuelle) ---
+        if (s instanceof SeanceIndividuelle) {
+            SeanceIndividuelle si = (SeanceIndividuelle) s;
+            if (si.getNotesCoach() != null && !si.getNotesCoach().isEmpty()) {
+                HBox noteBox = new HBox(5);
+                SVGPath noteIcon = new SVGPath();
+                // Icône de petit crayon/note
+                noteIcon.setContent("M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z");
+                noteIcon.setScaleX(0.6); noteIcon.setScaleY(0.6); 
+                noteIcon.setStyle("-fx-fill: #3498db;"); // Bleu pour différencier
+                
+                Label noteLbl = new Label(si.getNotesCoach());
+                noteLbl.setStyle("-fx-text-fill: #2980b9; -fx-font-style: italic; -fx-font-size: 11px;");
+                noteLbl.setWrapText(true);
+                noteLbl.setMaxWidth(180); // Pour éviter que la note ne déforme la carte
+
+                noteBox.getChildren().addAll(noteIcon, noteLbl);
+                noteBox.setAlignment(Pos.CENTER_LEFT);
+                body.getChildren().add(noteBox);
+            }
+        }
+
         // --- GESTION INTELLIGENTE DE LA DISPONIBILITÉ ---
         boolean complet = false;
         boolean dejaInscrit = false;

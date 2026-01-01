@@ -443,6 +443,77 @@
     -fx-effect: dropshadow(three-pass-box, rgba(231, 76, 60, 0.4), 5, 0, 0, 2);
 }
 
+/* --- TABLEAU ÉPURÉ ET ALIGNÉ --- */
+.modern-table {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-color: #e2e8f0; /* Bordure très fine */
+    -fx-border-radius: 10;
+    -fx-padding: 0;
+}
+
+/* Supprimer la barre de fond bleue/grise des entêtes */
+.modern-table .column-header-background {
+    -fx-background-color: #f8fafc; /* Gris très clair, presque blanc */
+    -fx-background-radius: 10 10 0 0;
+    -fx-border-color: transparent transparent #e2e8f0 transparent; /* Ligne de séparation basse */
+}
+
+/* Style des titres de colonnes */
+.modern-table .column-header {
+    -fx-background-color: transparent;
+    -fx-size: 50px;
+}
+
+.modern-table .column-header .label {
+    -fx-text-fill: #64748b; /* Couleur ardoise douce */
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Alignement et style des cellules */
+.modern-table .table-cell {
+    -fx-border-color: transparent;
+    -fx-padding: 0 15 0 15; /* Espacement intérieur pour l'alignement */
+    -fx-alignment: CENTER_LEFT;
+    -fx-text-fill: #1e293b;
+    -fx-font-size: 13px;
+}
+
+/* Style des lignes */
+.modern-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #f1f5f9 transparent;
+    -fx-cell-size: 60px;
+}
+
+/* Effet au survol d'une ligne */
+.modern-table .table-row-cell:hover {
+    -fx-background-color: #f8fafc;
+}
+
+/* Supprimer les bordures de focus bleues par défaut de JavaFX */
+.modern-table:focused {
+    -fx-background-insets: 0;
+}
+
+/* Cacher les lignes vides en bas du tableau */
+.modern-table .table-row-cell:empty {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/* Style spécifique pour ton bouton Annuler pour qu'il soit bien au centre de sa cellule */
+.btn-cancel-table {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #ef4444;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 6 15;
+    -fx-cursor: hand;
+}
+
 /*  **********************************/
 /*           end memeber         */
 /*************************************/

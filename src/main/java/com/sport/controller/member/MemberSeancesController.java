@@ -20,6 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.util.Callback;
 
 import java.time.format.DateTimeFormatter;
@@ -33,6 +34,7 @@ public class MemberSeancesController {
     @FXML private TableColumn<Reservation, String> colDuree;
     @FXML private TableColumn<Reservation, String> colStatut;
     @FXML private TableColumn<Reservation, Void> colAction;
+    @FXML private TextField txtSearch;
 
     private ReservationService reservationService = new ReservationService();
     private SeanceCollectiveService collectiveService = new SeanceCollectiveService(new SeanceCollectiveRepository());

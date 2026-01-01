@@ -14,6 +14,8 @@ import java.util.List;
 import com.sport.model.Coach;
 import com.sport.model.Salle;
 import com.sport.model.Seance;
+import com.sport.model.SeanceCollective;
+import com.sport.model.SeanceIndividuelle;
 import com.sport.model.TypeCours;
 import com.sport.model.TypeSeance;
 import com.sport.utils.DBConnection;
@@ -104,72 +106,61 @@ public class SeanceRepository {
    // Dans SeanceRepository.java
     public List<Seance> getSeancesParPeriode(LocalDate debut, LocalDate fin) {
         List<Seance> seances = new ArrayList<>();
-
-        // Remplacer JOIN par LEFT JOIN pour ne pas perdre de données si un coach/salle manque
-        String sql = "SELECT s.*, " +
-                    "sa.id as salle_id_r, sa.nom as nom_salle, sa.capacite as cap_salle, " +
-                    "u.nom as nom_coach, u.prenom as prenom_coach " +
-                    "FROM seance s " + // Vérifiez que le nom de la table est en minuscules ou majuscules selon votre BDD
+        
+        // On sélectionne s.* (table seance) ET si.notesCoach (table seanceindividuelle)
+        String sql = "SELECT s.*, sa.nom as nom_salle, u.nom as nom_coach, u.prenom as prenom_coach, " +
+                    "si.notesCoach " + // <-- On récupère la note ici
+                    "FROM seance s " +
                     "LEFT JOIN salle sa ON s.salle_id = sa.id " +
                     "LEFT JOIN coach c ON s.entraineur_id = c.id_utilisateur " + 
                     "LEFT JOIN utilisateur u ON c.id_utilisateur = u.id " +
+                    "LEFT JOIN seanceindividuelle si ON s.id = si.seance_id " + // <-- Jointure vers la table des notes
                     "WHERE s.dateHeure >= ? AND s.dateHeure < ?";
-
-        LocalDateTime start = debut.atStartOfDay();
-        LocalDateTime endExclusive = fin.plusDays(1).atStartOfDay();
 
         try (Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setTimestamp(1, Timestamp.valueOf(start));
-            stmt.setTimestamp(2, Timestamp.valueOf(endExclusive));
+            stmt.setTimestamp(1, Timestamp.valueOf(debut.atStartOfDay()));
+            stmt.setTimestamp(2, Timestamp.valueOf(fin.plusDays(1).atStartOfDay()));
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Seance seance = new Seance();
+                    String typeStr = rs.getString("typeSeance");
+                    Seance seance;
+
+                    // Si c'est une séance INDIVIDUELLE, on crée l'objet spécifique pour stocker la note
+                    if ("INDIVIDUELLE".equalsIgnoreCase(typeStr)) {
+                        SeanceIndividuelle si = new SeanceIndividuelle();
+                        si.setNotesCoach(rs.getString("notesCoach")); // <-- On met la note dans l'objet
+                        seance = si;
+                    } else {
+                        seance = new SeanceCollective();
+                    }
+
+                    // Remplissage des champs communs
                     seance.setId(rs.getInt("id"));
                     seance.setNom(rs.getString("nom"));
-                    seance.setCapaciteMax(rs.getInt("capaciteMax"));
                     seance.setDateHeure(rs.getTimestamp("dateHeure").toLocalDateTime());
+                    seance.setTypeSeance(TypeSeance.valueOf(typeStr.toUpperCase()));
+                    seance.setCapaciteMax(rs.getInt("capaciteMax"));
                     seance.setDuree(rs.getInt("duree"));
 
-                    // IMPORTANT : Vérifier la valeur exacte dans la BDD
-                    String typeSeanceStr = rs.getString("typeSeance");
-                    if (typeSeanceStr != null) {
-                        seance.setTypeSeance(TypeSeance.valueOf(typeSeanceStr.toUpperCase()));
-                    }
+                    // Salle et Coach
+                    Salle salle = new Salle();
+                    salle.setNom(rs.getString("nom_salle"));
+                    seance.setSalle(salle);
 
-                    String typeCoursStr = rs.getString("type"); 
-                    if (typeCoursStr != null) {
-                        seance.setTypeCours(TypeCours.valueOf(typeCoursStr.toUpperCase()));
-                    }
-                    
-                    // Remplissage Salle (Vérification si NULL)
-                    if (rs.getInt("salle_id_r") != 0) {
-                        Salle salle = new Salle();
-                        salle.setId(rs.getInt("salle_id_r"));
-                        salle.setNom(rs.getString("nom_salle"));
-                        seance.setSalle(salle);
-                    }
-
-                    // Remplissage Coach (Vérification si NULL)
-                    if (rs.getInt("entraineur_id") != 0) {
-                        Coach coach = new Coach();
-                        coach.setId(rs.getInt("entraineur_id"));
-                        coach.setNom(rs.getString("nom_coach"));
-                        coach.setPrenom(rs.getString("prenom_coach"));
-                        seance.setEntraineur(coach);
-                    }
+                    Coach coach = new Coach();
+                    coach.setNom(rs.getString("nom_coach"));
+                    coach.setPrenom(rs.getString("prenom_coach"));
+                    seance.setEntraineur(coach);
 
                     seances.add(seance);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        } catch (SQLException e) { e.printStackTrace(); }
         return seances;
     }
-
 
     // Vérifier disponibilité
     // On change le paramètre String -> LocalDateTime
