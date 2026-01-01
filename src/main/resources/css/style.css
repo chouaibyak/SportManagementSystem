@@ -316,6 +316,133 @@
     -fx-font-weight: bold;
 }
 
+/* =====================================================
+   MODERN TABLE VIEW - BLUE & GREEN THEME
+   ===================================================== */
+
+/* 1. Le Conteneur du Tableau */
+.table-view {
+    -fx-background-color: transparent; /* Fond transparent pour se fondre */
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 10, 0, 0, 4); /* Ombre douce */
+    -fx-padding: 0;
+}
+
+.table-view .viewport {
+    -fx-background-color: white; /* Fond blanc propre */
+    -fx-background-radius: 12;
+}
+
+/* 2. L'En-tête (Header) - Dégradé Bleu/Vert dynamique */
+.table-view .column-header-background {
+    -fx-background-color: linear-gradient(to right, #1e3c72, #2a5298, #27ae60); /* Bleu profond vers Vert */
+    -fx-background-radius: 12 12 0 0;
+    -fx-padding: 5 0 0 0; /* Un peu d'espace */
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-size: 45px; /* Hauteur de l'en-tête */
+    -fx-border-color: transparent;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Supprimer la ligne de séparation dans l'en-tête */
+.table-view .column-header .filler {
+    -fx-background-color: transparent;
+}
+
+/* 3. Les Lignes (Rows) */
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #ecf0f1 transparent; /* Ligne de séparation subtile */
+    -fx-border-width: 0 0 1 0;
+    -fx-cell-size: 50px; /* Lignes plus hautes pour aérer */
+    -fx-transition: all 0.2s ease;
+}
+
+/* Texte des cellules */
+.table-cell {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0 0 0 15; /* Padding gauche */
+    -fx-border-color: transparent;
+}
+
+/* Effet Hover (Survol de la ligne) - Touche de vert menthe très clair */
+.table-row-cell:hover {
+    -fx-background-color: #e8f8f5; /* Vert menthe très pâle */
+    -fx-translate-x: 5px; /* Petit décalage dynamique vers la droite */
+    -fx-effect: dropshadow(three-pass-box, rgba(39, 174, 96, 0.1), 5, 0, 0, 0);
+    -fx-cursor: hand;
+}
+
+/* Ligne sélectionnée */
+.table-view:focused .table-row-cell:selected, 
+.table-row-cell:selected {
+    -fx-background-color: #eaf2f8; /* Bleu très pâle */
+    -fx-table-cell-border-color: transparent;
+}
+
+/* Texte si le tableau est vide */
+.table-view .placeholder .label {
+    -fx-text-fill: #bdc3c7;
+    -fx-font-size: 16px;
+}
+
+/* 4. Scrollbar Moderne (Fine et discrète) */
+.table-view .scroll-bar:vertical,
+.table-view .scroll-bar:vertical .track,
+.table-view .scroll-bar:vertical .track-background,
+.table-view .scroll-bar:horizontal,
+.table-view .scroll-bar:horizontal .track,
+.table-view .scroll-bar:horizontal .track-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .scroll-bar:vertical .thumb {
+    -fx-background-color: #bdc3c7;
+    -fx-background-radius: 5em;
+    -fx-background-insets: 2;
+}
+
+.table-view .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #95a5a6;
+}
+
+/* =====================================================
+   BADGES & BOUTONS SPECIFIQUES AU TABLEAU
+   ===================================================== */
+
+/* Bouton Annuler stylisé */
+.btn-cancel-table {
+    -fx-background-color: #fff0f0; /* Fond rouge très pâle */
+    -fx-text-fill: #e74c3c;
+    -fx-border-color: #e74c3c;
+    -fx-border-radius: 15;
+    -fx-background-radius: 15;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 4 12;
+    -fx-cursor: hand;
+    -fx-transition: all 0.2s;
+}
+
+.btn-cancel-table:hover {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(231, 76, 60, 0.4), 5, 0, 0, 2);
+}
+
 /*  **********************************/
 /*           end memeber         */
 /*************************************/
