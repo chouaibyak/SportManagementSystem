@@ -1,6 +1,9 @@
 package com.sport.service;
 
 import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,6 +12,7 @@ import java.util.stream.Collectors;
 import com.sport.model.Membre;
 import com.sport.model.SeanceCollective;
 import com.sport.repository.SeanceCollectiveRepository;
+import com.sport.utils.DBConnection;
 
 public class SeanceCollectiveService {
 
@@ -73,14 +77,10 @@ public class SeanceCollectiveService {
     }
 
     // Annuler réservation (Logique simplifiée)
+    // Dans SeanceCollectiveService.java
     public boolean annulerReservation(int idSeance, Membre membre) {
-        SeanceCollective seance = repository.getById(idSeance);
-        if (seance == null) return false;
-
-        // Note: Idéalement, il faudrait aussi une méthode SQL spécifique 'annulerReservation' 
-        // dans le repository pour supprimer la ligne dans seancecollective_membre
-        seance.setPlacesDisponibles(seance.getPlacesDisponibles() + 1);
-        return repository.update(seance);
+        System.out.println("[SERVICE] Appel du repository pour libérer la séance " + idSeance);
+        return repository.annulerReservation(idSeance, membre);
     }
 
     // Placeholder pour notification
@@ -128,5 +128,25 @@ public class SeanceCollectiveService {
                 .flatMap(s -> s.getListeMembers().stream())
                 .distinct()
                 .count();
+    }
+
+    // À ajouter dans SeanceIndividuelleRepository.java
+    public boolean reserverSession(int idSeance, int idMembre) {
+        // On met à jour le membre_id dans la table seanceindividuelle
+        String sql = "UPDATE seanceindividuelle SET membre_id = ? WHERE seance_id = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, idMembre);
+            stmt.setInt(2, idSeance);
+            
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

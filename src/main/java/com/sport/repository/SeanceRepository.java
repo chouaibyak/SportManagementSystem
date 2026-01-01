@@ -101,90 +101,80 @@ public class SeanceRepository {
         }
     }
 
-   public List<Seance> getSeancesParPeriode(LocalDate debut, LocalDate fin) {
-    List<Seance> seances = new ArrayList<>();
+   // Dans SeanceRepository.java
+    public List<Seance> getSeancesParPeriode(LocalDate debut, LocalDate fin) {
+        List<Seance> seances = new ArrayList<>();
 
-    // CORRECTION : c.id_utilisateur au lieu de c.id
-    String sql = "SELECT s.*, " +
-                 "sa.id as salle_id_r, sa.nom as nom_salle, sa.capacite as cap_salle, " +
-                 "u.nom as nom_coach, u.prenom as prenom_coach " +
-                 "FROM SEANCE s " +
-                 "JOIN SALLE sa ON s.salle_id = sa.id " +
-                 "JOIN COACH c ON s.entraineur_id = c.id_utilisateur " +  // <--- C'EST ICI LA CORRECTION
-                 "JOIN UTILISATEUR u ON c.id_utilisateur = u.id " +
-                 "WHERE s.dateHeure >= ? AND s.dateHeure < ?";
+        // Remplacer JOIN par LEFT JOIN pour ne pas perdre de données si un coach/salle manque
+        String sql = "SELECT s.*, " +
+                    "sa.id as salle_id_r, sa.nom as nom_salle, sa.capacite as cap_salle, " +
+                    "u.nom as nom_coach, u.prenom as prenom_coach " +
+                    "FROM seance s " + // Vérifiez que le nom de la table est en minuscules ou majuscules selon votre BDD
+                    "LEFT JOIN salle sa ON s.salle_id = sa.id " +
+                    "LEFT JOIN coach c ON s.entraineur_id = c.id_utilisateur " + 
+                    "LEFT JOIN utilisateur u ON c.id_utilisateur = u.id " +
+                    "WHERE s.dateHeure >= ? AND s.dateHeure < ?";
 
-    LocalDateTime start = debut.atStartOfDay();
-    LocalDateTime endExclusive = fin.plusDays(1).atStartOfDay();
+        LocalDateTime start = debut.atStartOfDay();
+        LocalDateTime endExclusive = fin.plusDays(1).atStartOfDay();
 
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        stmt.setTimestamp(1, Timestamp.valueOf(start));
-        stmt.setTimestamp(2, Timestamp.valueOf(endExclusive));
+            stmt.setTimestamp(1, Timestamp.valueOf(start));
+            stmt.setTimestamp(2, Timestamp.valueOf(endExclusive));
 
-        try (ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                Seance seance = new Seance();
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Seance seance = new Seance();
+                    seance.setId(rs.getInt("id"));
+                    seance.setNom(rs.getString("nom"));
+                    seance.setCapaciteMax(rs.getInt("capaciteMax"));
+                    seance.setDateHeure(rs.getTimestamp("dateHeure").toLocalDateTime());
+                    seance.setDuree(rs.getInt("duree"));
 
-                seance.setId(rs.getInt("id"));
-                seance.setNom(rs.getString("nom"));
-                seance.setCapaciteMax(rs.getInt("capaciteMax"));
-                seance.setDateHeure(rs.getTimestamp("dateHeure").toLocalDateTime());
-                seance.setDuree(rs.getInt("duree"));
+                    // IMPORTANT : Vérifier la valeur exacte dans la BDD
+                    String typeSeanceStr = rs.getString("typeSeance");
+                    if (typeSeanceStr != null) {
+                        seance.setTypeSeance(TypeSeance.valueOf(typeSeanceStr.toUpperCase()));
+                    }
 
-                String typeSeanceStr = rs.getString("typeSeance");
-        if (typeSeanceStr != null) {
-            try {
-                seance.setTypeSeance(TypeSeance.valueOf(typeSeanceStr.toUpperCase()));
-            } catch (IllegalArgumentException e) {
-                System.err.println("TypeSeance inconnu : " + typeSeanceStr);
+                    String typeCoursStr = rs.getString("type"); 
+                    if (typeCoursStr != null) {
+                        seance.setTypeCours(TypeCours.valueOf(typeCoursStr.toUpperCase()));
+                    }
+                    
+                    // Remplissage Salle (Vérification si NULL)
+                    if (rs.getInt("salle_id_r") != 0) {
+                        Salle salle = new Salle();
+                        salle.setId(rs.getInt("salle_id_r"));
+                        salle.setNom(rs.getString("nom_salle"));
+                        seance.setSalle(salle);
+                    }
+
+                    // Remplissage Coach (Vérification si NULL)
+                    if (rs.getInt("entraineur_id") != 0) {
+                        Coach coach = new Coach();
+                        coach.setId(rs.getInt("entraineur_id"));
+                        coach.setNom(rs.getString("nom_coach"));
+                        coach.setPrenom(rs.getString("prenom_coach"));
+                        seance.setEntraineur(coach);
+                    }
+
+                    seances.add(seance);
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        // 2. CORRECTION DE VOTRE ERREUR ICI (TypeCours)
-        String typeCoursStr = rs.getString("type"); 
-        if (typeCoursStr != null && !typeCoursStr.trim().isEmpty()) {
-            try {
-                // On essaie de convertir
-                seance.setTypeCours(TypeCours.valueOf(typeCoursStr.toUpperCase()));
-            } catch (IllegalArgumentException e) {
-                // Si la valeur en BDD n'existe pas dans l'Enum, on ne plante pas !
-                System.err.println("⚠️ ATTENTION : Type de cours inconnu en BDD -> " + typeCoursStr);
-                // Optionnel : Mettre une valeur par défaut si vous voulez
-                // seance.setTypeCours(TypeCours.MUSCULATION); 
-            }
-        }
-                
-                // Remplissage Salle
-                Salle salle = new Salle();
-                salle.setId(rs.getInt("salle_id_r"));
-                salle.setNom(rs.getString("nom_salle"));
-                salle.setCapacite(rs.getInt("cap_salle"));
-                seance.setSalle(salle);
-
-                // Remplissage Coach
-                com.sport.model.Coach coach = new com.sport.model.Coach();
-                coach.setId(rs.getInt("entraineur_id"));
-                coach.setNom(rs.getString("nom_coach"));
-                coach.setPrenom(rs.getString("prenom_coach"));
-                seance.setEntraineur(coach);
-
-                seances.add(seance);
-            }
-        }
-    } catch (SQLException e) {
-        System.out.println("Erreur getSeancesParPeriode : " + e.getMessage());
+        return seances;
     }
 
-    return seances;
-}
 
-
-// Vérifier disponibilité
-// On change le paramètre String -> LocalDateTime
-public boolean verifierDisponibiliteSalle(Salle salle, java.time.LocalDateTime dateHeure) {
-        
+    // Vérifier disponibilité
+    // On change le paramètre String -> LocalDateTime
+    public boolean verifierDisponibiliteSalle(Salle salle, java.time.LocalDateTime dateHeure) {
+            
         String query = "SELECT COUNT(*) FROM seance WHERE salle_id = ? AND dateHeure = ?";
         
         try (Connection conn = DBConnection.getConnection();
@@ -206,44 +196,44 @@ public boolean verifierDisponibiliteSalle(Salle salle, java.time.LocalDateTime d
         return false;
     }
 
-// Récupérer toutes les séances d'un coach
-public List<Seance> getSeancesByCoach(int coachId) {
-    List<Seance> liste = new ArrayList<>();
-    String query = "SELECT * FROM seance WHERE entraineur_id = ?";
+    // Récupérer toutes les séances d'un coach
+    public List<Seance> getSeancesByCoach(int coachId) {
+        List<Seance> liste = new ArrayList<>();
+        String query = "SELECT * FROM seance WHERE entraineur_id = ?";
 
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query)) {
 
-        stmt.setInt(1, coachId);
-        ResultSet rs = stmt.executeQuery();
+            stmt.setInt(1, coachId);
+            ResultSet rs = stmt.executeQuery();
 
-        while (rs.next()) {
-            Seance s = new Seance();
-            s.setId(rs.getInt("id"));
-            s.setNom(rs.getString("nom"));
-            s.setCapaciteMax(rs.getInt("capaciteMax"));
-            s.setDuree(rs.getInt("duree"));
-            s.setDateHeure(rs.getTimestamp("dateHeure").toLocalDateTime());
+            while (rs.next()) {
+                Seance s = new Seance();
+                s.setId(rs.getInt("id"));
+                s.setNom(rs.getString("nom"));
+                s.setCapaciteMax(rs.getInt("capaciteMax"));
+                s.setDuree(rs.getInt("duree"));
+                s.setDateHeure(rs.getTimestamp("dateHeure").toLocalDateTime());
 
-            // Salle
-            Salle salle = new Salle();
-            salle.setId(rs.getInt("salle_id"));
-            s.setSalle(salle);
+                // Salle
+                Salle salle = new Salle();
+                salle.setId(rs.getInt("salle_id"));
+                s.setSalle(salle);
 
-            // Coach
-            Coach coach = new Coach();
-            coach.setId(rs.getInt("entraineur_id"));
-            s.setEntraineur(coach);
+                // Coach
+                Coach coach = new Coach();
+                coach.setId(rs.getInt("entraineur_id"));
+                s.setEntraineur(coach);
 
-            liste.add(s);
+                liste.add(s);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return liste;
     }
-
-    return liste;
-}
 
 
 }

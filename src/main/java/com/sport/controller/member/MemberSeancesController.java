@@ -6,9 +6,11 @@ import com.sport.model.Seance;
 import com.sport.model.TypeSeance;
 import com.sport.service.ReservationService;
 import com.sport.service.SeanceCollectiveService;
+import com.sport.service.SeanceIndividuelleService;
 import com.sport.utils.UserSession;
 import com.sport.model.Utilisateur;
 import com.sport.repository.SeanceCollectiveRepository;
+import com.sport.repository.SeanceIndividuelleRepository;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -35,6 +37,7 @@ public class MemberSeancesController {
     private ReservationService reservationService = new ReservationService();
     private SeanceCollectiveService collectiveService = new SeanceCollectiveService(new SeanceCollectiveRepository());
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    private SeanceIndividuelleService indivService = new SeanceIndividuelleService(new SeanceIndividuelleRepository());
 
     @FXML
     public void initialize() {
@@ -137,23 +140,36 @@ public class MemberSeancesController {
         }
     }
 
+    // Dans MemberSeancesController.java
     private void handleAnnulation(Reservation r) {
-        // 1. Libérer la place si c'est une séance collective
         Seance s = r.getSeance();
-        if (s != null && s.getTypeSeance() == TypeSeance.COLLECTIVE) {
-            // On recrée l'objet membre nécessaire
-            Membre m = new Membre();
-            m.setId(UserSession.getInstance().getUtilisateur().getId());
-            
-            // Appel à ton service qui fait +1 sur placesDisponibles
-            collectiveService.annulerReservation(s.getId(), m);
-        }
-
-        // 2. Mettre à jour le statut dans la table RESERVATION (Historique)
-        // Note : On ne supprime pas la ligne, on met "ANNULEE" pour garder une trace
-        reservationService.annulerReservation(r.getId());
+        Utilisateur user = UserSession.getInstance().getUtilisateur();
         
-        // 3. Rafraîchir
-        chargerDonnees();
+        if (s != null && user != null) {
+            // On récupère le profil membre (pour avoir l'ID 35 par exemple)
+            Membre membreConnecte = reservationService.trouverMembreParUtilisateurId(user.getId());
+
+            if (membreConnecte != null) {
+                System.out.println("ANNULATION - Séance ID: " + s.getId() + " | Type: " + s.getTypeSeance());
+
+                // 1. Libérer la place selon le type
+                if (s.getTypeSeance() == TypeSeance.COLLECTIVE) {
+                    collectiveService.annulerReservation(s.getId(), membreConnecte);
+                } 
+                else if (s.getTypeSeance() == TypeSeance.INDIVIDUELLE) {
+                    // LIBÉRATION DE LA SÉANCE INDIVIDUELLE
+                    // On passe 0 comme ID de membre pour que le repo mette NULL
+                    indivService.reserverSession(s.getId(), null); 
+                    System.out.println("-> Créneau individuel libéré (membre_id mis à NULL)");
+                }
+
+                // 2. SUPPRIMER l'historique de la table RESERVATION
+                // Indispensable pour que l'app ne croie plus que vous êtes inscrit
+                reservationService.supprimerReservation(r.getId());
+                
+                // 3. Rafraîchir l'affichage
+                chargerDonnees();
+            }
+        }
     }
-    }
+}

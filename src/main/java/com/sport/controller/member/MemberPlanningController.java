@@ -63,6 +63,10 @@ public class MemberPlanningController {
         // 2. Récupérer les séances
         List<Seance> toutesLesSeances = seanceRepo.getSeancesParPeriode(LocalDate.now(), LocalDate.now().plusDays(14));
 
+        //DEBUG
+        System.out.println("Nombre de séances récupérées : " + toutesLesSeances.size());
+
+
         // 3. Trier par date (la plus proche en premier)
         toutesLesSeances.sort(Comparator.comparing(Seance::getDateHeure));
 
@@ -73,6 +77,7 @@ public class MemberPlanningController {
             cardsContainer.getChildren().add(emptyLbl);
         } else {
             for (Seance s : toutesLesSeances) {
+                System.out.println("Séance : " + s.getNom() + " | Type : " + s.getTypeSeance());
                 // IMPORTANT : On passe la séance ET le membre connecté
                 cardsContainer.getChildren().add(creerCarteSession(s, membreConnecte));
             }
@@ -156,16 +161,16 @@ public class MemberPlanningController {
         } else {
             // === LOGIQUE INDIVIDUELLE (COACHING) ===
             // On vérifie qui est inscrit sur ce créneau (0 = personne)
-            int membreIdInscrit = indivService.getMembreInscrit(s.getId());
+            Membre membreIdInscrit = indivService.getMembreInscrit(s.getId());
             
-            if (membreIdInscrit == 0) {
+            if (membreIdInscrit == null) {
                 // Créneau libre
                 complet = false;
                 dejaInscrit = false;
                 texteDispo = "Créneau Disponible";
             } else {
                 // Créneau pris
-                if (membre != null && membreIdInscrit == membre.getId()) {
+                if (membre != null && membreIdInscrit.getId() == membre.getId()) {
                     // C'est MOI
                     dejaInscrit = true;
                     complet = true; // Complet pour les autres
