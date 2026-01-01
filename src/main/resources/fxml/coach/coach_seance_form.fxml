@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.*?>
@@ -7,7 +8,11 @@
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.sport.controller.coach.CoachSeanceFormController"
       spacing="15"
-      style="-fx-padding: 25; -fx-background-color: #ffffff; -fx-border-color: #dcdcdc; -fx-border-radius: 8; -fx-background-radius: 8;"
+      style="-fx-padding: 25;
+             -fx-background-color: #ffffff;
+             -fx-border-color: #dcdcdc;
+             -fx-border-radius: 8;
+             -fx-background-radius: 8;"
       stylesheets="@style.css">
 
     <!-- Titre -->
@@ -15,31 +20,31 @@
 
     <!-- Nom -->
     <VBox spacing="5">
-        <Label text="Nom de la séance:"/>
+        <Label text="Nom de la séance :"/>
         <TextField fx:id="txtNom" promptText="Entrez le nom de la séance"/>
     </VBox>
 
     <!-- Type de séance -->
     <VBox spacing="5">
-        <Label text="Type de séance:"/>
+        <Label text="Type de séance :"/>
         <ComboBox fx:id="cbType"/>
     </VBox>
 
     <!-- Type de cours -->
     <VBox spacing="5">
-        <Label text="Type de cours:"/>
+        <Label text="Type de cours :"/>
         <ComboBox fx:id="cbTypeCours"/>
     </VBox>
 
     <!-- Salle -->
     <VBox spacing="5">
-        <Label text="Salle disponible:"/>
+        <Label text="Salle disponible :"/>
         <ComboBox fx:id="cbSalle"/>
     </VBox>
 
     <!-- Date & Heure -->
     <VBox spacing="5">
-        <Label text="Date et Heure:"/>
+        <Label text="Date et heure :"/>
         <HBox spacing="5">
             <DatePicker fx:id="dpDate"/>
             <Spinner fx:id="spHeure" prefWidth="80"/>
@@ -49,13 +54,13 @@
 
     <!-- Durée -->
     <VBox spacing="5">
-        <Label text="Durée (minutes):"/>
+        <Label text="Durée (minutes) :"/>
         <Spinner fx:id="spDuree" prefWidth="100"/>
     </VBox>
 
-    <!-- Capacité max (si Collective) -->
+    <!-- Capacité max (collective uniquement) -->
     <VBox spacing="5">
-        <Label text="Capacité max (collective uniquement):"/>
+        <Label text="Capacité maximale (séance collective uniquement) :"/>
         <Spinner fx:id="spMaxMembres" prefWidth="120"/>
     </VBox>
 

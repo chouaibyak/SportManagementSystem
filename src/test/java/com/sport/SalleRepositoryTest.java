@@ -1,5 +1,6 @@
 package com.sport;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.sport.model.Salle;
@@ -38,8 +39,9 @@ public class SalleRepositoryTest {
         }
 
         // 5️⃣ CHECK AVAILABILITY (logic-only)
-        boolean disponible = repository.verifierDisponibiliteSalle(fetched.getId(), "2025-12-25 10:00:00");
-        System.out.println("✔ Salle disponible le 25/12/2025 10:00 = " + disponible);
+LocalDateTime date = LocalDateTime.of(2025, 12, 25, 10, 0); // année, mois, jour, heure, minute
+boolean disponible = repository.verifierDisponibiliteSalle(fetched.getId(), date);
+System.out.println("✔ Salle disponible le 25/12/2025 10:00 = " + disponible);        System.out.println("✔ Salle disponible le 25/12/2025 10:00 = " + disponible);
 
         // 6️⃣ DELETE
        // boolean deleted = repository.supprimerSalle(fetched.getId());

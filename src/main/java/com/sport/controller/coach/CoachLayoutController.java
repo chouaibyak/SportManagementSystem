@@ -20,6 +20,7 @@ public class CoachLayoutController {
     // Boutons de navigation
     @FXML private Button btnDashboard;
     @FXML private Button btnSeances;
+    @FXML private Button btnSuiviPerformance;  
     @FXML private Button btnProfil;
 
     @FXML
@@ -39,6 +40,14 @@ public class CoachLayoutController {
         chargerVue("/fxml/coach/coach_seances.fxml");
         setButtonActive(btnSeances);
     }
+
+@FXML
+private void afficherSuiviPerformance(ActionEvent event) {
+    chargerVue("/fxml/coach/suivi_performance.fxml");
+    setButtonActive(btnSuiviPerformance);
+}
+
+
 
     @FXML
     private void afficherProfil(ActionEvent event) {
@@ -71,11 +80,14 @@ public class CoachLayoutController {
         }
     }
 
-    private void resetButtonStyles() {
-        btnDashboard.getStyleClass().remove("nav-button-active");
-        btnSeances.getStyleClass().remove("nav-button-active");
-        btnProfil.getStyleClass().remove("nav-button-active");
-    }
+   private void resetButtonStyles() {
+    btnDashboard.getStyleClass().remove("nav-button-active");
+    btnSeances.getStyleClass().remove("nav-button-active");
+     btnSuiviPerformance.getStyleClass().remove("nav-button-active");  
+    btnProfil.getStyleClass().remove("nav-button-active");
+   // ajouté
+}
+
 
     // --- DECONNEXION ---
     @FXML

@@ -259,4 +259,31 @@ public void supprimerCoach(int id) {
     return coach;
 }
 
+
+
+public void ajouterSpecialite(int coachId, String specialite) {
+    String sql = "INSERT INTO COACH_SPECIALITE (coach_id, specialite) VALUES (?, ?)";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, coachId);
+        stmt.setString(2, specialite);
+        stmt.executeUpdate();
+    } catch (SQLException e) {
+        System.out.println("Erreur ajout spécialité : " + e.getMessage());
+    }
+}
+
+public void supprimerSpecialite(int coachId, String specialite) {
+    String sql = "DELETE FROM COACH_SPECIALITE WHERE coach_id = ? AND specialite = ?";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, coachId);
+        stmt.setString(2, specialite);
+        stmt.executeUpdate();
+    } catch (SQLException e) {
+        System.out.println("Erreur suppression spécialité : " + e.getMessage());
+    }
+}
+
+
 }
