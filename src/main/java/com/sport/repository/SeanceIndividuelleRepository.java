@@ -11,6 +11,7 @@ import java.util.List;
 import java.sql.Types;
 
 import com.sport.model.Coach;
+import com.sport.model.Membre;
 import com.sport.model.SeanceIndividuelle;
 import com.sport.model.TypeCours;
 import com.sport.model.TypeSeance;
@@ -18,56 +19,8 @@ import com.sport.utils.DBConnection;
 
 public class SeanceIndividuelleRepository {
 
-<<<<<<< HEAD
-    // 1. Vérifier si un créneau individuel est libre (ou qui l'a réservé)
-    // Retourne l'ID du membre inscrit, ou 0 si c'est libre
-    public int getMembreInscrit(int seanceId) {
-        String sql = "SELECT membre_id FROM seanceindividuelle WHERE seance_id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, seanceId);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                // getInt renvoie 0 si la valeur SQL est NULL
-                return rs.getInt("membre_id"); 
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1; // -1 pour indiquer une erreur ou séance introuvable
-    }
-
-    // 2. Réserver le créneau (UPDATE)
-    // On s'assure que membre_id est NULL pour éviter d'écraser quelqu'un d'autre
-    public boolean reserverSession(int seanceId, int membreId) {
-        String sql = "UPDATE seanceindividuelle SET membre_id = ? WHERE seance_id = ? AND membre_id IS NULL";
-        
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setInt(1, membreId);
-            stmt.setInt(2, seanceId);
-            
-            int rows = stmt.executeUpdate();
-            return rows > 0; // Si 1 ligne modifiée, c'est gagné. Si 0, c'était déjà pris.
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    // GET ALL
-    public List<SeanceIndividuelle> getAll() {
-        List<SeanceIndividuelle> list = new ArrayList<>();
-        String query = "SELECT s.id, s.nom, s.capaciteMax, s.dateHeure, s.type AS typeCours, s.typeSeance, s.duree, s.salle_id, s.entraineur_id, " +
-                       "si.membre_id, si.tarif, si.notesCoach " +
-                       "FROM seance s " +
-                       "JOIN seanceindividuelle si ON s.id = si.seance_id";
-=======
   // GET ALL
   public List<SeanceIndividuelle> getAll() {
->>>>>>> origin/main
 
     List<SeanceIndividuelle> list = new ArrayList<>();
 
@@ -150,15 +103,34 @@ public class SeanceIndividuelleRepository {
     return list;
 }
 
-
-
-
-
-
-
     // GET BY ID
     public SeanceIndividuelle getById(int seanceId) {
         return getAll().stream().filter(s -> s.getId() == seanceId).findFirst().orElse(null);
+    }
+
+    public Membre getMembreInscrit(int idSeance) {
+        // Correction : m.id_utilisateur au lieu de m.id
+        String sql = "SELECT m.*, u.nom, u.prenom FROM membre m " +
+                    "JOIN utilisateur u ON m.id_utilisateur = u.id " +
+                    "JOIN seanceindividuelle s ON s.membre_id = m.id_utilisateur " +
+                    "WHERE s.seance_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, idSeance);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Membre m = new Membre();
+                    m.setId(rs.getInt("id_utilisateur")); // ou "id" selon votre table Utilisateur
+                    m.setNom(rs.getString("nom"));
+                    m.setPrenom(rs.getString("prenom"));
+                    return m;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // ADD
@@ -312,5 +284,32 @@ public class SeanceIndividuelleRepository {
             e.printStackTrace();
         }
         return false;
+    }
+
+    // Méthode à ajouter impérativement pour corriger l'erreur
+    // Dans SeanceIndividuelleRepository.java
+    public boolean reserverSession(int seanceId, int membreId) {
+        // Si membreId est 0 ou moins, on considère qu'on veut libérer la place (NULL)
+        String sql = "UPDATE seanceindividuelle SET membre_id = ? WHERE seance_id = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            if (membreId <= 0) {
+                stmt.setNull(1, java.sql.Types.INTEGER); // Met NULL en BDD
+            } else {
+                stmt.setInt(1, membreId);
+            }
+            
+            stmt.setInt(2, seanceId);
+            
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;
+            
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la mise à jour de la séance individuelle : " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
 }

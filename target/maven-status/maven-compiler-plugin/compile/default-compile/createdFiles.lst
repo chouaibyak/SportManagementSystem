@@ -1,9 +1,13 @@
+com\sport\controller\coach\CoachSeanceDetailsController.class
+com\sport\controller\coach\CoachSeanceIndivDetailsController.class
 com\sport\model\TypeEquipement.class
 com\sport\repository\CoachRepository.class
+com\sport\controller\coach\CoachSeancesController$1.class
 com\sport\repository\SeanceIndividuelleRepository.class
 com\sport\model\TypeAbonnement.class
 com\sport\controller\common\RegisterMemberController.class
 com\sport\model\StatutReservation.class
+com\sport\service\RapportService.class
 com\sport\controller\member\MemberDashboardController.class
 com\sport\repository\MembreRepository.class
 com\sport\repository\SalleRepository.class
@@ -11,16 +15,21 @@ com\sport\controller\coach\CoachSeanceMembresController.class
 com\sport\model\Performance.class
 com\sport\controller\coach\CoachSeancesController.class
 com\sport\model\StatutAbonnement.class
+com\sport\controller\member\MemberSeancesController.class
 com\sport\service\SalleService.class
+com\sport\controller\member\MemberSeancesController$2.class
 com\sport\model\Seance.class
 com\sport\model\Abonnement$1.class
 com\sport\model\Equipement.class
 com\sport\service\EquipementService.class
 com\sport\service\MembreService.class
+com\sport\controller\common\RegisterCoachController.class
+com\sport\repository\NotificationRepository.class
 com\sport\model\SeanceCollective.class
 com\sport\repository\SeanceCollectiveRepository.class
 com\sport\model\HistoriqueActivite.class
 com\sport\model\TypeCours.class
+com\sport\controller\member\MemberSeancesController$1.class
 com\sport\repository\PerformanceRepository.class
 com\sport\service\ReservationService.class
 com\sport\model\Administrateur.class
@@ -37,53 +46,39 @@ com\sport\utils\DBConnection.class
 com\sport\repository\SeanceRepository.class
 com\sport\controller\coach\CoachLayoutController.class
 com\sport\service\HistoriqueActiviteService.class
+com\sport\model\Notification.class
 com\sport\controller\common\LoginController.class
 com\sport\controller\member\MemberPerformanceController$PerformanceDisplay.class
 com\sport\model\TypeObjectif.class
 com\sport\service\AbonnementService.class
-com\sport\controller\member\MemberSeancesController.class
 com\sport\model\TypeSeance.class
 com\sport\controller\coach\CoachProfilController.class
+com\sport\controller\coach\CoachPerformanceController.class
 com\sport\model\Salle.class
 com\sport\model\TypeRapport.class
 com\sport\App.class
 com\sport\controller\member\MemberProfileController.class
 com\sport\controller\member\MemberPerformanceController.class
-com\sport\controller\member\MemberSeancesController$2.class
 com\sport\model\Abonnement.class
 com\sport\controller\member\MemberLayoutController.class
 com\sport\controller\member\MemberPlanningController.class
 com\sport\service\AuthService.class
 com\sport\model\Coach.class
 com\sport\service\PerformanceService.class
-<<<<<<< HEAD
-com\sport\model\Seance.class
-com\sport\model\Abonnement$1.class
-com\sport\model\Equipement.class
-com\sport\service\EquipementService.class
-com\sport\service\MembreService.class
-com\sport\controller\common\RegisterCoachController.class
-=======
->>>>>>> origin/main
 com\sport\model\Membre.class
 com\sport\utils\UserSession.class
 com\sport\model\TypeSalle.class
+com\sport\model\PrioriteNotification.class
 com\sport\model\SeanceIndividuelle.class
 com\sport\service\CourseService.class
 com\sport\repository\RapportRepository.class
-com\sport\controller\member\MemberSeancesController$1.class
 com\sport\repository\EquipementRepository.class
-<<<<<<< HEAD
-com\sport\repository\PerformanceRepository.class
-=======
->>>>>>> origin/main
+com\sport\controller\coach\CoachSeancesController$2.class
 com\sport\service\RapportService$1.class
 com\sport\repository\AbonnementRepository.class
 com\sport\model\Utilisateur.class
-<<<<<<< HEAD
-com\sport\controller\coach\CoachSeanceFormController$1.class
 com\sport\repository\ReservationRepository.class
 com\sport\controller\coach\CoachDashboardController.class
-=======
->>>>>>> origin/main
 com\sport\model\Rapport.class
+com\sport\controller\coach\CoachDashboardController$1.class
+com\sport\service\AdministrateurService.class

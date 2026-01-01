@@ -17,12 +17,13 @@ public class SeanceIndividuelleService {
         this.repository = repository;
     }
 
-    public int getMembreInscrit(int seanceId) {
+    public Membre getMembreInscrit(int seanceId) {
         return repository.getMembreInscrit(seanceId);
     }
 
     public boolean reserverSession(int seanceId, Membre membre) {
-        return repository.reserverSession(seanceId, membre.getId());
+        int membreId = (membre != null) ? membre.getId() : 0;
+        return repository.reserverSession(seanceId, membreId);
     }
 
     // Ajouter une séance

@@ -4,7 +4,11 @@ import com.sport.model.Membre;
 import com.sport.model.Reservation;
 import com.sport.model.StatutReservation; // Assurez-vous d'avoir cet Enum
 import com.sport.repository.ReservationRepository;
+import com.sport.utils.DBConnection;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -76,6 +80,20 @@ public class ReservationService {
             System.out.println("Erreur : Réservation introuvable.");
         }
     }
+
+    public boolean supprimerReservation(int idReservation) {
+    String sql = "DELETE FROM reservation WHERE id = ?";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        
+        stmt.setInt(1, idReservation);
+        return stmt.executeUpdate() > 0;
+        
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
 
     
     public int getNombrePlacesReservees(int seanceId) {
