@@ -47,9 +47,18 @@ public class CoachSeanceFormController {
     private Coach coach;
     private Seance seance;
 
-    private final SeanceCollectiveService collectiveService = new SeanceCollectiveService(new SeanceCollectiveRepository());
-    private final SeanceIndividuelleService indivService = new SeanceIndividuelleService(new SeanceIndividuelleRepository());
-    private final SalleService salleService = new SalleService();
+    private final SeanceCollectiveRepository seanceCollective =
+            new SeanceCollectiveRepository();
+
+    private final SeanceIndividuelleRepository seanceIndividuelle =
+            new SeanceIndividuelleRepository();
+
+    private final SeanceCollectiveService collectiveService =
+            new SeanceCollectiveService(seanceCollective);
+    private final SeanceIndividuelleService indivService =
+            new SeanceIndividuelleService(seanceIndividuelle);
+    private final SalleService salleService =
+            new SalleService();
 
     @FXML
     public void initialize() {
@@ -60,32 +69,66 @@ public class CoachSeanceFormController {
             coach = (Coach) user;
         }
 
+        // Types de séance
         cbType.setItems(FXCollections.observableArrayList("Collective", "Individuelle"));
         cbType.getSelectionModel().selectFirst();
 
+        // Types de cours
         cbTypeCours.setItems(FXCollections.observableArrayList(TypeCours.values()));
         cbTypeCours.getSelectionModel().selectFirst();
 
+        // Spinners
         spHeure.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 10));
         spMinute.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
         spDuree.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(30, 180, 60));
         spMaxMembres.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 10));
 
+        // Activer/désactiver capacité selon type
         cbType.valueProperty().addListener((obs, o, n) ->
                 spMaxMembres.setDisable(!"Collective".equals(n))
         );
 
+        // Salles
         cbSalle.setItems(FXCollections.observableArrayList(
                 salleService.getToutesLesSalles()
         ));
 
+        // Boutons
         btnSave.setOnAction(e -> enregistrer());
         btnCancel.setOnAction(e -> fermerFenetre());
     }
 
+    /* ===============================
+       MODE ÉDITION
+       =============================== */
+    public void setSeance(Seance s) {
+        this.seance = s;
+
+        txtNom.setText(s.getNom());
+        dpDate.setValue(s.getDateHeure().toLocalDate());
+        spHeure.getValueFactory().setValue(s.getDateHeure().getHour());
+        spMinute.getValueFactory().setValue(s.getDateHeure().getMinute());
+        spDuree.getValueFactory().setValue(s.getDuree());
+        cbTypeCours.setValue(s.getTypeCours());
+        cbSalle.setValue(s.getSalle());
+
+        cbType.setDisable(true);
+
+        if (s instanceof SeanceCollective sc) {
+            cbType.setValue("Collective");
+            spMaxMembres.getValueFactory().setValue(sc.getCapaciteMax());
+        } else {
+            cbType.setValue("Individuelle");
+            spMaxMembres.setDisable(true);
+        }
+    }
+
+    /* ===============================
+       ENREGISTREMENT
+       =============================== */
     private void enregistrer() {
 
-        // 🔒 Validation
+        // Validation
         if (txtNom.getText().isEmpty()
                 || dpDate.getValue() == null
                 || cbTypeCours.getValue() == null
@@ -99,12 +142,7 @@ public class CoachSeanceFormController {
         LocalTime time = LocalTime.of(spHeure.getValue(), spMinute.getValue());
         LocalDateTime dateHeure = LocalDateTime.of(date, time);
 
-        // Vérifier disponibilité salle
-      /*   if (seance == null && !salleService.salleDisponible(cbSalle.getValue(), dateHeure)) {
-            showAlert("Erreur", "La salle n'est pas disponible à cette date et heure.");
-            return;
-        }
-            */
+        // AJOUT
         if (seance == null) {
 
             if ("Collective".equals(cbType.getValue())) {
@@ -140,6 +178,9 @@ public class CoachSeanceFormController {
         fermerFenetre();
     }
 
+    /* ===============================
+       UTILITAIRES
+       =============================== */
     private void showAlert(String titre, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(titre);
@@ -150,24 +191,5 @@ public class CoachSeanceFormController {
 
     private void fermerFenetre() {
         ((Stage) btnCancel.getScene().getWindow()).close();
-    }
-
-    public void setSeance(Seance s) {
-         this.seance = s; 
-         txtNom.setText(s.getNom()); 
-         dpDate.setValue(s.getDateHeure().toLocalDate()); 
-         spHeure.getValueFactory().setValue(s.getDateHeure().getHour());
-         spMinute.getValueFactory().setValue(s.getDateHeure().getMinute()); 
-         spDuree.getValueFactory().setValue(s.getDuree()); 
-         cbTypeCours.setValue(s.getTypeCours()); 
-         cbSalle.setValue(s.getSalle()); 
-         cbType.setDisable(true); 
-         if (s instanceof SeanceCollective sc) {
-             cbType.setValue("Collective"); 
-             spMaxMembres.getValueFactory().setValue(sc.getCapaciteMax()); 
-        } else { 
-             cbType.setValue("Individuelle"); 
-             spMaxMembres.setDisable(true); 
-        } 
     }
 }

@@ -1,0 +1,111 @@
+/* Background */
+.bg-root {
+    -fx-background-color: linear-gradient(
+        to bottom right,
+        #0f172a,
+        #1e293b,
+        #020617
+    );
+}
+
+/* Glass Card */
+.glass-card {
+    -fx-padding: 30;
+    -fx-max-width: 420;
+    -fx-background-radius: 20;
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-border-color: rgba(255,255,255,0.25);
+    -fx-border-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 30, 0.3, 0, 10);
+    -fx-transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+    -fx-background-color: rgba(255,255,255,0.15);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 35, 0.3, 0, 12);
+}
+
+/* Title */
+.title {
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 2, 0.1, 0, 1);
+}
+
+/* Sections */
+.section {
+    -fx-padding: 12;
+    -fx-background-radius: 14;
+    -fx-background-color: rgba(255,255,255,0.08);
+    -fx-transition: background-color 0.3s ease;
+}
+
+.section:hover {
+    -fx-background-color: rgba(255,255,255,0.12);
+}
+
+.section-title {
+    -fx-font-weight: bold;
+    -fx-text-fill: #e5e7eb;
+}
+
+.text-main {
+    -fx-text-fill: white;
+    -fx-font-size: 14;
+}
+
+.text-muted {
+    -fx-text-fill: #cbd5e1;
+    -fx-font-size: 13;
+}
+
+/* Feedback */
+.feedback-area {
+    -fx-background-radius: 10;
+    -fx-control-inner-background: rgba(255,255,255,0.15);
+    -fx-text-fill: rgb(3, 3, 3);
+    -fx-prompt-text-fill: #94a3b8;
+    -fx-focus-color: #22c55e;
+    -fx-faint-focus-color: transparent;
+}
+
+/* Scrollbar */
+.feedback-area .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+.feedback-area .thumb {
+    -fx-background-color: rgba(255,255,255,0.3);
+    -fx-background-radius: 8;
+}
+
+/* Buttons */
+.actions {
+    -fx-alignment: center-right;
+}
+
+.btn-primary {
+    -fx-background-color: linear-gradient(to right, #22c55e, #16a34a);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-padding: 8 18;
+    -fx-cursor: hand;
+    -fx-transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    -fx-background-color: linear-gradient(to right, #16a34a, #22c55e);
+}
+
+.btn-secondary {
+    -fx-background-color: rgba(255,255,255,0.15);
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-padding: 8 18;
+    -fx-cursor: hand;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: rgba(255,255,255,0.25);
+}

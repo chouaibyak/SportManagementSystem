@@ -204,6 +204,317 @@
     -fx-spacing: 5;
 }
 
+/* planning scance */
+.list-cell {
+    -fx-text-fill: white;
+}
+.combo-box .list-cell {
+    -fx-text-fill: black;
+}
+
+/* --- STYLE DES CARTES --- */
+.session-card {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
+    -fx-padding: 0; /* Le padding est géré en interne */
+    -fx-min-width: 260px;
+    -fx-max-width: 260px;
+    -fx-min-height: 320px;
+    -fx-cursor: hand;
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.session-card:hover {
+    -fx-translate-y: -5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 15, 0, 0, 8);
+}
+
+/* Bandeau coloré en haut de la carte */
+.card-header {
+    -fx-background-radius: 15 15 0 0;
+    -fx-padding: 15;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.header-collective {
+    -fx-background-color: linear-gradient(to right, #11998e, #38ef7d); /* Vert dégradé */
+}
+
+.header-individuelle {
+    -fx-background-color: linear-gradient(to right, #8e2de2, #4a00e0); /* Violet dégradé */
+}
+
+.type-label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-graphic-text-gap: 10;
+}
+
+/* Corps de la carte */
+.card-body {
+    -fx-padding: 20;
+    -fx-spacing: 10;
+}
+
+.activity-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.info-text {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 13px;
+    -fx-graphic-text-gap: 8;
+}
+
+/* Pied de carte (Bouton) */
+.card-footer {
+    -fx-padding: 0 20 20 20;
+    -fx-alignment: CENTER;
+}
+
+.btn-reserve {
+    -fx-background-color: #ecf0f1;
+    -fx-text-fill: #2c3e50;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 10 30;
+    -fx-cursor: hand;
+}
+
+.btn-reserve:hover {
+    -fx-background-color: #bdc3c7;
+}
+
+.btn-reserve-active {
+    -fx-background-color: #2c3e50;
+    -fx-text-fill: white;
+}
+
+.btn-reserve-active:hover {
+    -fx-background-color: #34495e;
+}
+
+/* Badges d'état */
+.badge-full {
+    -fx-background-color: #ffebee;
+    -fx-text-fill: #e74c3c;
+    -fx-background-radius: 5;
+    -fx-padding: 5 10;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.badge-joined {
+    -fx-background-color: #e8f8f5;
+    -fx-text-fill: #27ae60;
+    -fx-background-radius: 5;
+    -fx-padding: 5 10;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+/* =====================================================
+   MODERN TABLE VIEW - BLUE & GREEN THEME
+   ===================================================== */
+
+/* 1. Le Conteneur du Tableau */
+.table-view {
+    -fx-background-color: transparent; /* Fond transparent pour se fondre */
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 10, 0, 0, 4); /* Ombre douce */
+    -fx-padding: 0;
+}
+
+.table-view .viewport {
+    -fx-background-color: white; /* Fond blanc propre */
+    -fx-background-radius: 12;
+}
+
+/* 2. L'En-tête (Header) - Dégradé Bleu/Vert dynamique */
+.table-view .column-header-background {
+    -fx-background-color: linear-gradient(to right, #1e3c72, #2a5298, #27ae60); /* Bleu profond vers Vert */
+    -fx-background-radius: 12 12 0 0;
+    -fx-padding: 5 0 0 0; /* Un peu d'espace */
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-size: 45px; /* Hauteur de l'en-tête */
+    -fx-border-color: transparent;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill:  rgb(15, 4, 4); /* Texte blanc ####################*/
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Supprimer la ligne de séparation dans l'en-tête */
+.table-view .column-header .filler {
+    -fx-background-color: transparent;
+}
+
+/* 3. Les Lignes (Rows) */
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #ecf0f1 transparent; /* Ligne de séparation subtile */
+    -fx-border-width: 0 0 1 0;
+    -fx-cell-size: 50px; /* Lignes plus hautes pour aérer */
+    -fx-transition: all 0.2s ease;
+}
+
+/* Texte des cellules */
+.table-cell {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0 0 0 15; /* Padding gauche */
+    -fx-border-color: transparent;
+}
+
+/* Effet Hover (Survol de la ligne) - Touche de vert menthe très clair */
+.table-row-cell:hover {
+    -fx-background-color: #e8f8f5; /* Vert menthe très pâle */
+    -fx-translate-x: 5px; /* Petit décalage dynamique vers la droite */
+    -fx-effect: dropshadow(three-pass-box, rgba(39, 174, 96, 0.1), 5, 0, 0, 0);
+    -fx-cursor: hand;
+}
+
+/* Ligne sélectionnée */
+.table-view:focused .table-row-cell:selected, 
+.table-row-cell:selected {
+    -fx-background-color: #eaf2f8; /* Bleu très pâle */
+    -fx-table-cell-border-color: transparent;
+}
+
+/* Texte si le tableau est vide */
+.table-view .placeholder .label {
+    -fx-text-fill: #bdc3c7;
+    -fx-font-size: 16px;
+}
+
+/* 4. Scrollbar Moderne (Fine et discrète) */
+.table-view .scroll-bar:vertical,
+.table-view .scroll-bar:vertical .track,
+.table-view .scroll-bar:vertical .track-background,
+.table-view .scroll-bar:horizontal,
+.table-view .scroll-bar:horizontal .track,
+.table-view .scroll-bar:horizontal .track-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .scroll-bar:vertical .thumb {
+    -fx-background-color: #bdc3c7;
+    -fx-background-radius: 5em;
+    -fx-background-insets: 2;
+}
+
+.table-view .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #95a5a6;
+}
+
+/* =====================================================
+   BADGES & BOUTONS SPECIFIQUES AU TABLEAU
+   ===================================================== */
+
+/* Bouton Annuler stylisé */
+.btn-cancel-table {
+    -fx-background-color: #fff0f0; /* Fond rouge très pâle */
+    -fx-text-fill: #e74c3c;
+    -fx-border-color: #e74c3c;
+    -fx-border-radius: 15;
+    -fx-background-radius: 15;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 4 12;
+    -fx-cursor: hand;
+    -fx-transition: all 0.2s;
+}
+
+.btn-cancel-table:hover {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(231, 76, 60, 0.4), 5, 0, 0, 2);
+}
+
+/* --- TABLEAU ÉPURÉ ET ALIGNÉ --- */
+.modern-table {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-color: #e2e8f0; /* Bordure très fine */
+    -fx-border-radius: 10;
+    -fx-padding: 0;
+}
+
+/* Supprimer la barre de fond bleue/grise des entêtes */
+.modern-table .column-header-background {
+    -fx-background-color: #f8fafc; /* Gris très clair, presque blanc */
+    -fx-background-radius: 10 10 0 0;
+    -fx-border-color: transparent transparent #e2e8f0 transparent; /* Ligne de séparation basse */
+}
+
+/* Style des titres de colonnes */
+.modern-table .column-header {
+    -fx-background-color: transparent;
+    -fx-size: 50px;
+}
+
+.modern-table .column-header .label {
+    -fx-text-fill: #64748b; /* Couleur ardoise douce */
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Alignement et style des cellules */
+.modern-table .table-cell {
+    -fx-border-color: transparent;
+    -fx-padding: 0 15 0 15; /* Espacement intérieur pour l'alignement */
+    -fx-alignment: CENTER_LEFT;
+    -fx-text-fill: #1e293b;
+    -fx-font-size: 13px;
+}
+
+/* Style des lignes */
+.modern-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #f1f5f9 transparent;
+    -fx-cell-size: 60px;
+}
+
+/* Effet au survol d'une ligne */
+.modern-table .table-row-cell:hover {
+    -fx-background-color: #f8fafc;
+}
+
+/* Supprimer les bordures de focus bleues par défaut de JavaFX */
+.modern-table:focused {
+    -fx-background-insets: 0;
+}
+
+/* Cacher les lignes vides en bas du tableau */
+.modern-table .table-row-cell:empty {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/* Style spécifique pour ton bouton Annuler pour qu'il soit bien au centre de sa cellule */
+.btn-cancel-table {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #ef4444;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 6 15;
+    -fx-cursor: hand;
+}
+
 /*  **********************************/
 /*           end memeber         */
 /*************************************/
@@ -322,85 +633,275 @@
 /*          Fin de Coach_Dashboard        */
 /*************************************/
 
-/* --- TAGS --- */
 
 /* =====================================================
-   PROFILE COACH
+   COACH PROFILE - STYLE MODERNE
    ===================================================== */
 
-/* Cards avec hover */
+/* Background ScrollPane */
+.scroll-pane {
+    -fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2);
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .content {
+    -fx-background-color: transparent;
+}
+
+/* Cards modernes pour le profil */
 .card {
-    -fx-background-color: #FFFFFF;
-    -fx-background-radius: 15;
-    -fx-padding: 20;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10,0,0,2);
-    -fx-transition: all 0.3s ease-in-out;
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 5);
 }
 
 .card:hover {
-    -fx-translate-y: -3;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 12,0,0,4);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 25, 0, 0, 8);
 }
 
-/* Boutons doux */
-.btn-soft {
-    -fx-background-color: #262d49; /* bleu pastel */
-    -fx-text-fill: white;
-    -fx-background-radius: 12;
-    -fx-padding: 6 20 6 20;
+/* Profile Header */
+#imgProfile {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 15, 0, 0, 3);
+}
+
+#lblNom {
+    -fx-font-size: 24;
     -fx-font-weight: bold;
+    -fx-text-fill: #2C3E50;
+}
+
+#lblEmail {
+    -fx-font-size: 15;
+    -fx-text-fill: #7F8C8D;
+    -fx-opacity: 0.8;
+}
+
+#btnChangerPhoto {
+    -fx-background-color: #667eea;
+    -fx-text-fill: white;
+    -fx-background-radius: 50;
+    -fx-min-width: 35;
+    -fx-min-height: 35;
+    -fx-max-width: 35;
+    -fx-max-height: 35;
+    -fx-font-size: 16;
     -fx-cursor: hand;
-    -fx-transition: all 0.2s ease-in-out;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 2);
 }
 
-.btn-soft:hover {
-    -fx-background-color: #262d49;
+#btnChangerPhoto:hover {
+    -fx-background-color: #764ba2;
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
 }
 
-/* Bouton ajouter certification */
-.btn-add {
-    -fx-background-color: #df9a2c; /* orange doux */
+/* Tags Spécialités */
+#flowSpecialites .label {
+    -fx-background-color: linear-gradient(to right, #667eea, #764ba2);
     -fx-text-fill: white;
-    -fx-background-radius: 12;
+    -fx-background-radius: 20;
+    -fx-padding: 8 16 8 16;
+    -fx-font-size: 13;
+    -fx-font-weight: 600;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+    -fx-cursor: hand;
 }
 
-.btn-add:hover {
-    -fx-background-color: #d2c1a5;
+#flowSpecialites .label:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
 }
 
-/* Tags spécialités / certifications */
-.tag {
-    -fx-background-radius: 15;
-    -fx-padding: 4 12;
-    -fx-font-size: 12;
+/* Tags Certifications */
+#flowCertifications .label {
+    -fx-background-color: linear-gradient(to right, #f093fb, #f5576c);
     -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-padding: 8 16 8 16;
+    -fx-font-size: 13;
+    -fx-font-weight: 600;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+    -fx-cursor: hand;
 }
 
-.tag-specialite {
-    -fx-background-color: #4FC3F7; /* bleu pastel */
+#flowCertifications .label:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
 }
 
-.tag-certification {
-    -fx-background-color: #dd962c; /* orange doux */
-}
-
-
-
-.button-primary {
-    -fx-background-color: #1976D2;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
+/* TextField et PasswordField du profil */
+.card .text-field,
+.card .password-field {
+    -fx-background-color: #F8F9FA;
     -fx-background-radius: 10;
+    -fx-border-color: #E0E6ED;
+    -fx-border-radius: 10;
+    -fx-border-width: 2;
+    -fx-padding: 12 16 12 16;
+    -fx-font-size: 14;
+    -fx-text-fill: #2C3E50;
+}
+
+.card .text-field:focused,
+.card .password-field:focused {
+    -fx-background-color: white;
+    -fx-border-color: #667eea;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.3), 10, 0, 0, 0);
+}
+
+.card .text-field:disabled,
+.card .password-field:disabled {
+    -fx-opacity: 0.7;
+    -fx-background-color: #F0F2F5;
+}
+
+.card .text-field:hover,
+.card .password-field:hover {
+    -fx-border-color: #B0B8C0;
+}
+
+/* Boutons du profil */
+.btn-soft,
+#btnModifier,
+#btnChangerMdp,
+#btnAfficherMdp {
+    -fx-background-color: linear-gradient(to right, #667eea, #764ba2);
+    -fx-text-fill: white;
+    -fx-background-radius: 12;
+    -fx-padding: 12 24 12 24;
+    -fx-font-size: 14;
+    -fx-font-weight: 600;
     -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, 3);
 }
 
-.button-primary:hover {
-    -fx-background-color: #155a9c;
+.btn-soft:hover,
+#btnModifier:hover,
+#btnChangerMdp:hover,
+#btnAfficherMdp:hover {
+    -fx-background-color: linear-gradient(to right, #764ba2, #667eea);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
 }
 
-/* =====================================================
-     END PROFILE PAGE 
-   ===================================================== */
+.btn-soft:pressed,
+#btnModifier:pressed,
+#btnChangerMdp:pressed,
+#btnAfficherMdp:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* Bouton Annuler */
+#btnAnnuler {
+    -fx-background-color: #E8EAED;
+    -fx-text-fill: #5F6368;
+    -fx-background-radius: 12;
+    -fx-padding: 12 24 12 24;
+    -fx-font-size: 14;
+    -fx-font-weight: 600;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, 3);
+}
+
+#btnAnnuler:hover {
+    -fx-background-color: #DADCE0;
+}
+
+/* Bouton Ajouter */
+.btn-add,
+#btnAjouterCertif {
+    -fx-background-color: linear-gradient(to right, #11998e, #38ef7d);
+    -fx-text-fill: white;
+    -fx-padding: 10 20 10 20;
+    -fx-background-radius: 12;
+    -fx-font-size: 14;
+    -fx-font-weight: 600;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, 3);
+}
+
+.btn-add:hover,
+#btnAjouterCertif:hover {
+    -fx-background-color: linear-gradient(to right, #38ef7d, #11998e);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+/* Input nouvelle certification */
+#txtNouvelleCertif {
+    -fx-background-color: white;
+    -fx-border-color: #E0E6ED;
+    -fx-prompt-text-fill: #A0A0A0;
+}
+
+#txtNouvelleCertif:focused {
+    -fx-border-color: #11998e;
+}
+
+/* Section mot de passe */
+#vboxMdp {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 30;
+    -fx-effect: dropshadow(gaussian, rgba(245, 87, 108, 0.2), 20, 0, 0, 5);
+    -fx-border-color: #f5576c;
+    -fx-border-width: 2;
+    -fx-border-radius: 20;
+}
+
+#vboxMdp .label {
+    -fx-text-fill: #2C3E50;
+    -fx-font-weight: 600;
+}
+
+.separator {
+    -fx-background-color: #E0E6ED;
+}
+
+/* Largeur bouton mot de passe */
+#btnChangerMdp {
+    -fx-pref-width: 250;
+}
+
+/* Scrollbar personnalisée */
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: rgba(255, 255, 255, 0.4);
+    -fx-background-radius: 10;
+}
+
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.6);
+}
+
+.scroll-bar:vertical .increment-button,
+.scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/* Grid labels */
+.grid-pane .label {
+    -fx-font-size: 13;
+    -fx-text-fill: #5F6368;
+    -fx-font-weight: 600;
+}
+
+/*  **********************************/
+/*      Fin Coach Profile Style      */
+/************************************/
 
 
 /* =====================================================
@@ -420,6 +921,7 @@
     -fx-background-color: #e0e0e0;
     -fx-background-radius: 12;
 }
+
 
 
 /* =====================================================
@@ -495,3 +997,103 @@
     -fx-font-size: 24px;
     -fx-font-weight: bold;
 }
+
+
+
+
+
+
+/* VBox Cards principales - INTERACTIVES */
+.performance-card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 5);
+    -fx-cursor: hand;
+}
+
+.performance-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.4), 30, 0, 0, 10);
+    -fx-translate-y: -5;
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f8f9ff);
+}
+
+/* Container graphiques - INTERACTIFS */
+.chart-box {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-padding: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 15, 0, 0, 5);
+    -fx-cursor: hand;
+}
+
+.chart-box:hover {
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.3), 25, 0, 0, 10);
+    -fx-translate-y: -8;
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f8f9ff);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+/* TextField - INTERACTIFS */
+.input-field {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-color: #d0d5dd;
+    -fx-border-radius: 10;
+    -fx-border-width: 2;
+    -fx-padding: 12 16;
+}
+
+.input-field:focused {
+    -fx-border-color: #667eea;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.4), 15, 0, 0, 0);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.input-field:hover {
+    -fx-border-color: #9ca3af;
+    -fx-background-color: #fafbfc;
+}
+
+/* Bouton Enregistrer - INTERACTIF */
+.btn-enregistrer {
+    -fx-background-color: linear-gradient(to right, #667eea, #764ba2);
+    -fx-text-fill: white;
+    -fx-font-size: 15;
+    -fx-font-weight: bold;
+    -fx-padding: 15 40;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 15, 0, 0, 5);
+}
+
+.btn-enregistrer:hover {
+    -fx-background-color: linear-gradient(to right, #764ba2, #667eea);
+    -fx-scale-x: 1.08;
+    -fx-scale-y: 1.08;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.6), 25, 0, 0, 8);
+    -fx-rotate: -2;
+}
+
+.btn-enregistrer:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+    -fx-translate-y: 3;
+    -fx-rotate: 0;
+}
+
+/* Tables - Lignes interactives */
+.table-row-cell:hover {
+    -fx-background-color: rgba(102, 126, 234, 0.08);
+    -fx-cursor: hand;
+    -fx-translate-x: 5;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: linear-gradient(to right, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+    -fx-scale-x: 1.01;
+}
+
+

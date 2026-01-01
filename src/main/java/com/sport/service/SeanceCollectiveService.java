@@ -1,14 +1,18 @@
 package com.sport.service;
 
 import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.sport.model.Membre;
 import com.sport.model.SeanceCollective;
 import com.sport.repository.SeanceCollectiveRepository;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.stream.Collectors;
-
+import com.sport.utils.DBConnection;
 
 public class SeanceCollectiveService {
 
@@ -18,109 +22,131 @@ public class SeanceCollectiveService {
         this.repository = repository;
     }
 
+    // --- MÉTHODES CRUD DE BASE ---
+
     // Ajouter une séance
     public void ajouterSeance(SeanceCollective seance) {
         repository.ajouter(seance);
     }
 
-    // Obtenir toutes les séances collectives
     public List<SeanceCollective> getAll() {
         return repository.getAll();
     }
 
-    // Obtenir par ID
     public SeanceCollective getById(int id) {
         return repository.getById(id);
     }
 
-    // Modifier une séance
+    // Modifier une séance (Nom, date, etc.)
     public boolean update(SeanceCollective seance) {
         return repository.update(seance);
     }
 
-    // Supprimer
     public boolean delete(int id) {
         return repository.delete(id);
     }
 
-    // Réserver une place
+    // --- MÉTHODE CRITIQUE : RÉSERVATION ---
+
     public boolean reserverPlace(int idSeance, Membre membre) {
-
+        // 1. Vérification Métier : Est-ce que la séance existe ?
         SeanceCollective seance = repository.getById(idSeance);
-        if (seance == null) return false;
+        
+        if (seance == null) {
+            System.err.println("[Service] Erreur : Séance collective introuvable (ID: " + idSeance + ")");
+            return false;
+        }
 
-        if (seance.getPlacesDisponibles() <= 0) return false;
+        // 2. Vérification Métier : Reste-t-il de la place ?
+        if (seance.getPlacesDisponibles() <= 0) {
+            System.err.println("[Service] Erreur : Séance complète.");
+            return false;
+        }
 
-        // Ajouter membre
-        seance.getListeMembers().add(membre);
-
-        // Réduire places
-        seance.setPlacesDisponibles(seance.getPlacesDisponibles() - 1);
-
-        return repository.update(seance);
+        // 3. APPEL AU REPOSITORY (TRANSACTION SQL)
+        // C'est ici que la magie opère : on insère dans la table de liaison ET on décrémente le compteur
+        boolean succes = repository.reserverPlace(idSeance, membre);
+        
+        if (succes) {
+            System.out.println("[Service] Succès : Place réservée pour " + membre.getNom());
+        } else {
+            System.err.println("[Service] Echec : Erreur lors de la réservation SQL.");
+        }
+        
+        return succes;
     }
 
-    // Annuler réservation
+    // Annuler réservation (Logique simplifiée)
+    // Dans SeanceCollectiveService.java
     public boolean annulerReservation(int idSeance, Membre membre) {
-
-        SeanceCollective seance = repository.getById(idSeance);
-        if (seance == null) return false;
-
-        boolean removed = seance.getListeMembers().remove(membre);
-        if (!removed) return false;
-
-        // Libérer une place
-        seance.setPlacesDisponibles(seance.getPlacesDisponibles() + 1);
-
-        return repository.update(seance);
+        System.out.println("[SERVICE] Appel du repository pour libérer la séance " + idSeance);
+        return repository.annulerReservation(idSeance, membre);
     }
 
-    // Notifier les membres (placeholder)
+    // Placeholder pour notification
     public void notifierParticipants(int idSeance, String message) {
-
         SeanceCollective seance = repository.getById(idSeance);
         if (seance == null) return;
-
-        for (Membre membre : seance.getListeMembers()) {
-            System.out.println("[Notification] " + membre.getNom() + ": " + message);
-        }
+        // Logique d'envoi de mail ou notification ici...
+        System.out.println("Notification envoyée pour la séance " + idSeance);
     }
 
+    // --- Méthodes pour dashboard coach ---
 
-// --- MÉTHODES POUR DASHBOARD COACH ---
+    // --- MÉTHODES POUR DASHBOARD COACH (Statistiques) ---
 
-// Retourne toutes les séances du coach donné
-public List<SeanceCollective> getSeancesByCoach(int coachId) {
-    return getAll().stream()
-            .filter(s -> s.getEntraineur().getId() == coachId)
-            .collect(Collectors.toList());
-}
+    // Retourne toutes les séances du coach donné
+    public List<SeanceCollective> getSeancesByCoach(int coachId) {
+        return getAll().stream()
+                .filter(s -> s.getEntraineur().getId() == coachId)
+                .collect(Collectors.toList());
+    }
 
-// Nombre de séances aujourd'hui pour un coach
-public long getNbSeancesToday(int coachId) {
-    LocalDate today = LocalDate.now();
-    return getSeancesByCoach(coachId).stream()
-            .filter(s -> s.getDateHeure().toLocalDate().isEqual(today))
-            .count();
-}
+    // Nombre de séances aujourd'hui pour un coach
+    public long getNbSeancesToday(int coachId) {
+        LocalDate today = LocalDate.now();
+        return getSeancesByCoach(coachId).stream()
+                .filter(s -> s.getDateHeure().toLocalDate().isEqual(today))
+                .count();
+    }
 
-// Prochaine séance du coach
-public SeanceCollective getNextSeance(int coachId) {
-    LocalDateTime now = LocalDateTime.now();
-    return getSeancesByCoach(coachId).stream()
-            .filter(s -> s.getDateHeure().isAfter(now))
-            .sorted((s1, s2) -> s1.getDateHeure().compareTo(s2.getDateHeure()))
-            .findFirst()
-            .orElse(null);
-}
+    // Prochaine séance du coach
+    public SeanceCollective getNextSeance(int coachId) {
+        LocalDateTime now = LocalDateTime.now();
+        return getSeancesByCoach(coachId).stream()
+                .filter(s -> s.getDateHeure().isAfter(now))
+                .sorted((s1, s2) -> s1.getDateHeure().compareTo(s2.getDateHeure()))
+                .findFirst()
+                .orElse(null);
+    }
 
-// Nombre total de membres suivis par le coach
-public long getNbMembresSuivis(int coachId) {
-    return getSeancesByCoach(coachId).stream()
-            .flatMap(s -> s.getListeMembers().stream())
-            .distinct()
-            .count();
-}
+    // Nombre total de membres suivis par le coach
+    public long getNbMembresSuivis(int coachId) {
+        // Cette méthode est approximative car elle se base sur les objets chargés en mémoire.
+        // Pour plus de précision, il faudrait une requête SQL "COUNT(DISTINCT...)"
+        return getSeancesByCoach(coachId).stream()
+                .flatMap(s -> s.getListeMembers().stream())
+                .distinct()
+                .count();
+    }
 
-
+    // À ajouter dans SeanceIndividuelleRepository.java
+    public boolean reserverSession(int idSeance, int idMembre) {
+        // On met à jour le membre_id dans la table seanceindividuelle
+        String sql = "UPDATE seanceindividuelle SET membre_id = ? WHERE seance_id = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, idMembre);
+            stmt.setInt(2, idSeance);
+            
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

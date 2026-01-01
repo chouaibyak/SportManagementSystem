@@ -1,35 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.sport.controller.coach.CoachSeancesController"
       spacing="20"
-      style="-fx-background-color: #f4f6f7; -fx-padding: 20;"
-      stylesheets="@style.css">
+      styleClass="seances-root"
+      stylesheets="@/css/style_modern.css">
+    
+    <!-- Titre principal -->
+<Label text="Gestion des séances" styleClass="title-label"/>
 
-    <!-- Titre -->
-    <Label text="Gestion des Séances" styleClass="title-label"/>
+<!-- Petit texte / sous-titre -->
+<Label text="Organisez et suivez toutes vos séances facilement" 
+       style="-fx-font-size: 14px; -fx-text-fill: #cbd5e1; -fx-font-weight: 400;"/>
 
-    <!-- Boutons d'action -->
-    <HBox spacing="10">
-        <Button text="Ajouter Séance" fx:id="btnAddSeance" styleClass="button-primary"/>
-        <Button text="Modifier Séance" fx:id="btnEditSeance" styleClass="button-secondary"/>
-        <Button text="Supprimer Séance" fx:id="btnDeleteSeance" styleClass="button-secondary"/>
-        <Button text="Refresh" fx:id="btnRefresh" styleClass="button-primary"/>
+
+    <!-- Boutons et filtre en haut -->
+    <HBox spacing="15" styleClass="top-buttons">
+        <Button fx:id="btnAddSeance" text="Ajouter séance" styleClass="btn-primary"/>
+        <Button fx:id="btnRefresh" text="Actualiser" styleClass="btn-primary"/>
+
+        <!-- Filtre séances -->
+        
+        <ComboBox fx:id="comboFiltre" promptText="Tout"/>
     </HBox>
 
     <!-- Tableau des séances -->
-    <TableView fx:id="tableSeances" VBox.vgrow="ALWAYS">
+    <TableView fx:id="tableSeances" VBox.vgrow="ALWAYS" styleClass="table-view">
         <columns>
-            <TableColumn text="Nom" fx:id="colNom" prefWidth="150"/>
-            <TableColumn text="Type" fx:id="colType" prefWidth="120"/>
-            <TableColumn text="Date &amp; Heure" fx:id="colDateHeure" prefWidth="180"/>
-            <TableColumn text="Durée (min)" fx:id="colDuree" prefWidth="100"/>
-            <TableColumn text="Membres inscrits" fx:id="colMembres" prefWidth="120"/>
+            <TableColumn fx:id="colNom" text="Nom" prefWidth="160"/>
+            <TableColumn fx:id="colType" text="Type" prefWidth="120"/>
+            <TableColumn fx:id="colDateHeure" text="Date &amp; heure" prefWidth="190"/>
+            <TableColumn fx:id="colDuree" text="Durée (min)" prefWidth="110"/>
+            <TableColumn fx:id="colMembres" text="Membres" prefWidth="130"/>
+            <TableColumn fx:id="colActions" text="Actions" prefWidth="150"/>
+            <TableColumn fx:id="colVoirMembres" text="Membres" prefWidth="130"/>
         </columns>
     </TableView>
-
 </VBox>

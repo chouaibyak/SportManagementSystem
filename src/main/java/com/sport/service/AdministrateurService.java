@@ -1,6 +1,8 @@
 package com.sport.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import com.sport.model.Coach;
@@ -127,9 +129,9 @@ public class AdministrateurService {
         return salleRepository.listerSallesParType(type);
     }
 
-    public boolean verifierDisponibiliteSalle(int salleId, String dateHeure) {
-        return salleRepository.verifierDisponibiliteSalle(salleId, dateHeure);
-    }
+   public boolean verifierDisponibiliteSalle(int salleId, LocalDateTime dateHeure) {
+    return salleRepository.verifierDisponibiliteSalle(salleId, dateHeure);
+}
 
     // =========================
     // RAPPORTS

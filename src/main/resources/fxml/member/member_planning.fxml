@@ -2,8 +2,8 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -12,27 +12,23 @@
            xmlns:fx="http://javafx.com/fxml/1" 
            fx:controller="com.sport.controller.member.MemberPlanningController">
 
-    <VBox spacing="20.0">
+    <VBox spacing="20.0" style="-fx-background-color: #f4f6f7;">
         <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
 
-        <VBox>
+        <!-- En-tête simplifié -->
+        <VBox spacing="5">
             <Label text="PLANNING DES SÉANCES" styleClass="title-label"/>
-            <Label text="Réservez vos prochains cours" styleClass="subtitle-label"/>
+            <Label text="Retrouvez toutes vos séances collectives et individuelles" styleClass="subtitle-label"/>
         </VBox>
 
-        <TableView fx:id="tablePlanning" VBox.vgrow="ALWAYS">
-            <columns>
-                <TableColumn fx:id="colDate" text="Date &amp; Heure" prefWidth="140"/>
-                <TableColumn fx:id="colCours" text="Activité" prefWidth="150"/>
-                <TableColumn fx:id="colCoach" text="Coach" prefWidth="120"/>
-                <TableColumn fx:id="colSalle" text="Salle" prefWidth="100"/>
-                <TableColumn fx:id="colPlaces" text="Disponibilité" prefWidth="100"/>
-                <!-- Colonne magique pour le bouton -->
-                <TableColumn fx:id="colAction" text="Action" prefWidth="140"/>
-            </columns>
-            <placeholder>
-                <Label text="Aucune séance disponible cette semaine."/>
-            </placeholder>
-        </TableView>
+        <!-- Conteneur défilant pour les cartes -->
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;" VBox.vgrow="ALWAYS" hbarPolicy="NEVER">
+            <content>
+                <!-- FlowPane permet d'aligner les cartes en grille fluide -->
+                <FlowPane fx:id="cardsContainer" hgap="20" vgap="20" style="-fx-padding: 10;">
+                    <!-- Les cartes seront injectées ici par le contrôleur -->
+                </FlowPane>
+            </content>
+        </ScrollPane>
     </VBox>
 </StackPane>

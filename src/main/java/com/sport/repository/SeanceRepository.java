@@ -14,6 +14,9 @@ import java.util.List;
 import com.sport.model.Coach;
 import com.sport.model.Salle;
 import com.sport.model.Seance;
+import com.sport.model.SeanceCollective;
+import com.sport.model.SeanceIndividuelle;
+import com.sport.model.TypeCours;
 import com.sport.model.TypeSeance;
 import com.sport.utils.DBConnection;
 
@@ -100,67 +103,69 @@ public class SeanceRepository {
         }
     }
 
-   public List<Seance> getSeancesParPeriode(LocalDate debut, LocalDate fin) {
-    List<Seance> seances = new ArrayList<>();
+   // Dans SeanceRepository.java
+    public List<Seance> getSeancesParPeriode(LocalDate debut, LocalDate fin) {
+        List<Seance> seances = new ArrayList<>();
+        
+        // On sélectionne s.* (table seance) ET si.notesCoach (table seanceindividuelle)
+        String sql = "SELECT s.*, sa.nom as nom_salle, u.nom as nom_coach, u.prenom as prenom_coach, " +
+                    "si.notesCoach " + // <-- On récupère la note ici
+                    "FROM seance s " +
+                    "LEFT JOIN salle sa ON s.salle_id = sa.id " +
+                    "LEFT JOIN coach c ON s.entraineur_id = c.id_utilisateur " + 
+                    "LEFT JOIN utilisateur u ON c.id_utilisateur = u.id " +
+                    "LEFT JOIN seanceindividuelle si ON s.id = si.seance_id " + // <-- Jointure vers la table des notes
+                    "WHERE s.dateHeure >= ? AND s.dateHeure < ?";
 
-    // CORRECTION : c.id_utilisateur au lieu de c.id
-    String sql = "SELECT s.*, " +
-                 "sa.id as salle_id_r, sa.nom as nom_salle, sa.capacite as cap_salle, " +
-                 "u.nom as nom_coach, u.prenom as prenom_coach " +
-                 "FROM SEANCE s " +
-                 "JOIN SALLE sa ON s.salle_id = sa.id " +
-                 "JOIN COACH c ON s.entraineur_id = c.id_utilisateur " +  // <--- C'EST ICI LA CORRECTION
-                 "JOIN UTILISATEUR u ON c.id_utilisateur = u.id " +
-                 "WHERE s.dateHeure >= ? AND s.dateHeure < ?";
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-    LocalDateTime start = debut.atStartOfDay();
-    LocalDateTime endExclusive = fin.plusDays(1).atStartOfDay();
+            stmt.setTimestamp(1, Timestamp.valueOf(debut.atStartOfDay()));
+            stmt.setTimestamp(2, Timestamp.valueOf(fin.plusDays(1).atStartOfDay()));
 
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String typeStr = rs.getString("typeSeance");
+                    Seance seance;
 
-        stmt.setTimestamp(1, Timestamp.valueOf(start));
-        stmt.setTimestamp(2, Timestamp.valueOf(endExclusive));
+                    // Si c'est une séance INDIVIDUELLE, on crée l'objet spécifique pour stocker la note
+                    if ("INDIVIDUELLE".equalsIgnoreCase(typeStr)) {
+                        SeanceIndividuelle si = new SeanceIndividuelle();
+                        si.setNotesCoach(rs.getString("notesCoach")); // <-- On met la note dans l'objet
+                        seance = si;
+                    } else {
+                        seance = new SeanceCollective();
+                    }
 
-        try (ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                Seance seance = new Seance();
+                    // Remplissage des champs communs
+                    seance.setId(rs.getInt("id"));
+                    seance.setNom(rs.getString("nom"));
+                    seance.setDateHeure(rs.getTimestamp("dateHeure").toLocalDateTime());
+                    seance.setTypeSeance(TypeSeance.valueOf(typeStr.toUpperCase()));
+                    seance.setCapaciteMax(rs.getInt("capaciteMax"));
+                    seance.setDuree(rs.getInt("duree"));
 
-                seance.setId(rs.getInt("id"));
-                seance.setNom(rs.getString("nom"));
-                seance.setCapaciteMax(rs.getInt("capaciteMax"));
-                seance.setDateHeure(rs.getTimestamp("dateHeure").toLocalDateTime());
-                seance.setDuree(rs.getInt("duree"));
-                
-                // Remplissage Salle
-                Salle salle = new Salle();
-                salle.setId(rs.getInt("salle_id_r"));
-                salle.setNom(rs.getString("nom_salle"));
-                salle.setCapacite(rs.getInt("cap_salle"));
-                seance.setSalle(salle);
+                    // Salle et Coach
+                    Salle salle = new Salle();
+                    salle.setNom(rs.getString("nom_salle"));
+                    seance.setSalle(salle);
 
-                // Remplissage Coach
-                com.sport.model.Coach coach = new com.sport.model.Coach();
-                coach.setId(rs.getInt("entraineur_id"));
-                coach.setNom(rs.getString("nom_coach"));
-                coach.setPrenom(rs.getString("prenom_coach"));
-                seance.setEntraineur(coach);
+                    Coach coach = new Coach();
+                    coach.setNom(rs.getString("nom_coach"));
+                    coach.setPrenom(rs.getString("prenom_coach"));
+                    seance.setEntraineur(coach);
 
-                seances.add(seance);
+                    seances.add(seance);
+                }
             }
-        }
-    } catch (SQLException e) {
-        System.out.println("Erreur getSeancesParPeriode : " + e.getMessage());
+        } catch (SQLException e) { e.printStackTrace(); }
+        return seances;
     }
 
-    return seances;
-}
-
-
-// Vérifier disponibilité
-// On change le paramètre String -> LocalDateTime
-public boolean verifierDisponibiliteSalle(Salle salle, java.time.LocalDateTime dateHeure) {
-        
+    // Vérifier disponibilité
+    // On change le paramètre String -> LocalDateTime
+    public boolean verifierDisponibiliteSalle(Salle salle, java.time.LocalDateTime dateHeure) {
+            
         String query = "SELECT COUNT(*) FROM seance WHERE salle_id = ? AND dateHeure = ?";
         
         try (Connection conn = DBConnection.getConnection();
@@ -182,44 +187,44 @@ public boolean verifierDisponibiliteSalle(Salle salle, java.time.LocalDateTime d
         return false;
     }
 
-// Récupérer toutes les séances d'un coach
-public List<Seance> getSeancesByCoach(int coachId) {
-    List<Seance> liste = new ArrayList<>();
-    String query = "SELECT * FROM seance WHERE entraineur_id = ?";
+    // Récupérer toutes les séances d'un coach
+    public List<Seance> getSeancesByCoach(int coachId) {
+        List<Seance> liste = new ArrayList<>();
+        String query = "SELECT * FROM seance WHERE entraineur_id = ?";
 
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query)) {
 
-        stmt.setInt(1, coachId);
-        ResultSet rs = stmt.executeQuery();
+            stmt.setInt(1, coachId);
+            ResultSet rs = stmt.executeQuery();
 
-        while (rs.next()) {
-            Seance s = new Seance();
-            s.setId(rs.getInt("id"));
-            s.setNom(rs.getString("nom"));
-            s.setCapaciteMax(rs.getInt("capaciteMax"));
-            s.setDuree(rs.getInt("duree"));
-            s.setDateHeure(rs.getTimestamp("dateHeure").toLocalDateTime());
+            while (rs.next()) {
+                Seance s = new Seance();
+                s.setId(rs.getInt("id"));
+                s.setNom(rs.getString("nom"));
+                s.setCapaciteMax(rs.getInt("capaciteMax"));
+                s.setDuree(rs.getInt("duree"));
+                s.setDateHeure(rs.getTimestamp("dateHeure").toLocalDateTime());
 
-            // Salle
-            Salle salle = new Salle();
-            salle.setId(rs.getInt("salle_id"));
-            s.setSalle(salle);
+                // Salle
+                Salle salle = new Salle();
+                salle.setId(rs.getInt("salle_id"));
+                s.setSalle(salle);
 
-            // Coach
-            Coach coach = new Coach();
-            coach.setId(rs.getInt("entraineur_id"));
-            s.setEntraineur(coach);
+                // Coach
+                Coach coach = new Coach();
+                coach.setId(rs.getInt("entraineur_id"));
+                s.setEntraineur(coach);
 
-            liste.add(s);
+                liste.add(s);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return liste;
     }
-
-    return liste;
-}
 
 
 }

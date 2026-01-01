@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.sport.controller.coach.CoachSeanceMembresController"
+      spacing="20"
+      styleClass="bg-root"
+      stylesheets="@/css/seance_membres.css">
+
+    <!-- Titre -->
+    <Label text="Gestion des Membres de Séance" styleClass="title"/>
+
+    <!-- Tableau des membres -->
+    <TableView fx:id="tableMembres" VBox.vgrow="ALWAYS" styleClass="table-card">
+        <columns>
+            <TableColumn text="Nom" fx:id="colNom" prefWidth="150"/>
+            <TableColumn text="Prénom" fx:id="colPrenom" prefWidth="150"/>
+            <TableColumn text="Email" fx:id="colEmail" prefWidth="200"/>
+        </columns>
+    </TableView>
+
+    <!-- Actions -->
+    <HBox spacing="12" styleClass="actions">
+        <Button text="Ajouter Membre" fx:id="btnAjouterMembre" onAction="#ajouterMembre" styleClass="btn-primary"/>
+        <Button text="Supprimer Membre" fx:id="btnSupprimerMembre" onAction="#supprimerMembre" styleClass="btn-secondary"/>
+    </HBox>
+
+</VBox>
