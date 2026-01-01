@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.sport.controller.admin.AddAbonnementFormController"
+      spacing="15" >
+      <padding>
+          <Insets top="20" right="20" bottom="20" left="20"/>       
+      </padding>  
+
+    <Label text="Ajouter un Abonnement" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+
+    <!-- Member selection -->
+    <HBox spacing="10">
+        <Label text="Membre:" prefWidth="120"/>
+        <ComboBox fx:id="memberComboBox" prefWidth="250"/>
+    </HBox>
+
+    <!-- Type -->
+    <HBox spacing="10">
+        <Label text="Type:" prefWidth="120"/>
+        <ComboBox fx:id="typeComboBox" prefWidth="250"/>
+    </HBox>
+
+    <!-- Statut -->
+    <HBox spacing="10">
+        <Label text="Statut:" prefWidth="120"/>
+        <ComboBox fx:id="statutComboBox" prefWidth="250"/>
+    </HBox>
+
+    <!-- Dates -->
+    <HBox spacing="10">
+        <Label text="Date début:" prefWidth="120"/>
+        <DatePicker fx:id="dateDebutPicker"/>
+    </HBox>
+
+    <HBox spacing="10">
+        <Label text="Date fin:" prefWidth="120"/>
+        <DatePicker fx:id="dateFinPicker"/>
+    </HBox>
+
+    <!-- Auto-renouvellement -->
+    <HBox spacing="10">
+        <Label text="Auto-renouvellement:" prefWidth="120"/>
+        <CheckBox fx:id="autoCheckBox"/>
+    </HBox>
+
+    <!-- Montant -->
+    <HBox spacing="10">
+        <Label text="Montant:" prefWidth="120"/>
+        <TextField fx:id="montantField" prefWidth="250"/>
+    </HBox>
+
+    <!-- Buttons -->
+    <HBox spacing="15">
+        <Button text="Ajouter" onAction="#onAdd"/>
+        <Button text="Annuler" onAction="#onCancel"/>
+    </HBox>
+</VBox>

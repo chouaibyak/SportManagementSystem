@@ -11,6 +11,8 @@ public class Abonnement {
     private StatutAbonnement statutAbonnement;
     private boolean autorenouvellement;
     private double montant;
+    private Date dateDebut;
+    private Date dateFin;
 
 
     // Constructeur vide
@@ -42,6 +44,12 @@ public class Abonnement {
 
     public double getMontant() { return montant; }
     public void setMontant(double montant) { this.montant = montant; }
+
+    public Date getDateDebut() { return dateDebut; }
+    public void setDateDebut(Date dateDebut) { this.dateDebut = dateDebut; }
+
+    public Date getDateFin() { return dateFin; }
+    public void setDateFin(Date dateFin) { this.dateFin = dateFin; }
     
     // Méthodes Métier
     public void activerAbonnement() {

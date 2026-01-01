@@ -118,5 +118,8 @@ public class Membre extends Utilisateur {
     public void setDateEvaluation(LocalDate dateEvaluation) {
         this.dateEvaluation = dateEvaluation;
     }
+
+
+    
     
 }

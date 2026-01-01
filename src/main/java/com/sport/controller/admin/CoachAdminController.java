@@ -52,7 +52,7 @@ public class CoachAdminController {
 
         btnAddCoach.setOnAction(e -> openCoachForm(null));
     }
-
+   
     private void loadCoaches() {
         coachList = FXCollections.observableArrayList(coachService.getAllCoaches());
         coachTable.setItems(coachList);

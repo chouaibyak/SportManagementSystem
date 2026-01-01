@@ -5,22 +5,22 @@
 
 <VBox spacing="10"  xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.sport.controller.admin.CoachAdminController">
-       <padding>
-        <Insets top="10" right="10" bottom="10" left="10"/>
+    <padding>
+        <Insets top="10" right="25" bottom="10" left="30"/>
     </padding>
 
     <Label text="Coach Management" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
-    <TableView fx:id="coachTable" prefHeight="400">
+    <TableView fx:id="coachTable">
         <columns>
-            <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="colId" text="ID" prefWidth="100"/>
             <TableColumn fx:id="colNom" text="Nom" prefWidth="130"/>
             <TableColumn fx:id="colPrenom" text="Prénom" prefWidth="130"/>
             <TableColumn fx:id="colEmail" text="Email" prefWidth="180"/>
-            <TableColumn fx:id="colTelephone" text="Téléphone" prefWidth="150"/>
+            <TableColumn fx:id="colTelephone" text="Téléphone" prefWidth="160"/>
             <TableColumn fx:id="colSpecialites" text="Spécialités" prefWidth="180"/>
-            <TableColumn fx:id="colModify" text="Modifier" prefWidth="85"/>
-            <TableColumn fx:id="colDelete" text="Supprimer" prefWidth="85"/>
+            <TableColumn fx:id="colModify" text="Modifier" prefWidth="105"/>
+            <TableColumn fx:id="colDelete" text="Supprimer" prefWidth="105"/>
         </columns>
     </TableView>
                                                                           

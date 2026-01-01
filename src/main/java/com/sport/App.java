@@ -21,7 +21,7 @@ public class App extends Application {
         // On démarre sur le Register pour tester, ou Login selon ton choix
         //String fxmlPath = "/fxml/common/register.fxml"; 
        String fxmlPath = "/fxml/admin/admin_layout.fxml";
-        //String fxmlPath = "/fxml/admin/member-admin.fxml";
+     
 
 
         URL fxmlUrl = getClass().getResource(fxmlPath);
@@ -58,6 +58,8 @@ public class App extends Application {
         // IMPERATIF : On demande à la fenêtre de s'adapter à la nouvelle taille du contenu
         stage.sizeToScene(); 
         stage.centerOnScreen(); // Optionnel : recentre la fenêtre
+
+         stage.setMaximized(true);
     }
 
     public static void main(String[] args) {

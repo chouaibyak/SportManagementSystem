@@ -173,4 +173,8 @@ public class SalleRepository {
         return false;
     }
 
+    public boolean verifierDisponibiliteSalle(int id, LocalDateTime dateHeure) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

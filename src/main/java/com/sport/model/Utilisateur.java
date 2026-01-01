@@ -108,5 +108,11 @@ public abstract class Utilisateur {
     public void setRole(String role) {
         this.role = role;
     }
+
+    // add by youness
+    
+    public String getNomComplet() {
+        return getNom() + " " + getPrenom(); // getNom() and getPrenom() are from Utilisateur
+    }
 }
 

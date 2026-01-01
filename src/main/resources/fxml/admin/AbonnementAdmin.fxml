@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.sport.controller.admin.AbonnementAdminController">
+
+    <!-- Padding for the entire BorderPane -->
+    <padding>
+        <Insets top="10" right="30" bottom="10" left="30"/> 
+    </padding>
+
+    <!-- ===== TOP ===== -->
+    <top>
+        <Label text="Gestion des Abonnements" 
+               style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+    </top>
+
+    <!-- ===== CENTER ===== -->
+    <center>
+        <VBox spacing="15">
+            <!-- FILTER -->
+            <HBox spacing="10">
+                <Label text="Filtrer par statut :" />
+                <ComboBox fx:id="statutFilterCombo"/>
+                <Button text="Actualiser" onAction="#onRefresh"/>
+            </HBox>
+
+            <!-- TABLE -->
+            <TableView fx:id="abonnementTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                    <TableColumn fx:id="colMembre" text="Membre" prefWidth="180"/>
+                    <TableColumn fx:id="colType" text="Type" prefWidth="120"/>
+                    <TableColumn fx:id="colStatut" text="Statut" prefWidth="120"/>
+                    <TableColumn fx:id="colAuto" text="Auto-renouvellement" prefWidth="160"/>
+                    <TableColumn fx:id="colDateDebut" text="Date Début" prefWidth="120"/>
+                    <TableColumn fx:id="colDateFin" text="Date Fin" prefWidth="120"/>
+                    <TableColumn fx:id="colActions" text="Actions" prefWidth="220"/>
+                </columns>
+            </TableView>
+
+         <Button text="Ajouter Abonnement" onAction="#onAddAbonnement"/>
+        </VBox>
+
+    </center>
+
+</BorderPane>
