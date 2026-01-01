@@ -42,7 +42,6 @@ public class CoachSeancesController {
 
     @FXML
     public void initialize() {
-        // Coach connecté
         Utilisateur user = UserSession.getInstance().getUtilisateur();
         if (user instanceof Coach) coach = (Coach) user;
 
@@ -58,7 +57,8 @@ public class CoachSeancesController {
         colDuree.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDuree() + " min"));
         colMembres.setCellValueFactory(data -> {
             if (data.getValue() instanceof SeanceCollective sc) {
-                return new SimpleStringProperty(sc.getListeMembers().size() + "/" + sc.getCapaciteMax());
+                return new SimpleStringProperty(sc.getListeMembers() != null
+                        ? sc.getListeMembers().size() + "/" + sc.getCapaciteMax() : "0/" + sc.getCapaciteMax());
             } else if (data.getValue() instanceof SeanceIndividuelle si) {
                 return new SimpleStringProperty(si.getMembre() != null
                         ? si.getMembre().getNom() + " " + si.getMembre().getPrenom() : "—");
@@ -119,7 +119,7 @@ public class CoachSeancesController {
         btnAddSeance.setOnAction(e -> ouvrirPopupAjout(null));
         btnRefresh.setOnAction(e -> chargerSeances());
 
-        // --- Filtre ComboBox ---
+        // Filtre ComboBox
         comboFiltre.setItems(FXCollections.observableArrayList("Tout", "Collective", "Individuelle"));
         comboFiltre.getSelectionModel().select("Tout");
         comboFiltre.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> filtrerSeances(newVal));
@@ -134,13 +134,7 @@ public class CoachSeancesController {
         List<SeanceIndividuelle> individuelles = indivService.getSeancesByCoach(coach.getId());
         seancesData.addAll(collectives);
         seancesData.addAll(individuelles);
-
-        tableSeances.setItems(seancesData);
-        tableSeances.refresh();
-
-        // Appliquer filtre si sélectionnée
-        String selected = comboFiltre.getSelectionModel().getSelectedItem();
-        filtrerSeances(selected);
+        filtrerSeances(comboFiltre.getSelectionModel().getSelectedItem());
     }
 
     private void filtrerSeances(String type) {
@@ -185,11 +179,7 @@ public class CoachSeancesController {
             stage.setTitle(seance == null ? "Ajouter une séance" : "Modifier la séance");
             stage.setScene(new Scene(root));
             stage.initOwner(tableSeances.getScene().getWindow());
-            stage.setOnHiding(event -> {
-                Seance result = controller.getSeanceCreeeOuModifiee();
-                if (result != null && !seancesData.contains(result)) seancesData.add(result);
-                tableSeances.refresh();
-            });
+            stage.setOnHiding(event -> chargerSeances());
             stage.showAndWait();
         } catch (Exception e) { e.printStackTrace(); }
     }
@@ -203,11 +193,7 @@ public class CoachSeancesController {
 
             Stage stage = new Stage();
             stage.setTitle("Détails de la séance");
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
-            stage.setScene(scene);
-            stage.setWidth(650); stage.setHeight(600);
-            stage.setMinWidth(500); stage.setMinHeight(600);
+            stage.setScene(new Scene(root));
             stage.initOwner(tableSeances.getScene().getWindow());
             stage.show();
         } catch (Exception e) { e.printStackTrace(); }
@@ -219,7 +205,6 @@ public class CoachSeancesController {
             VBox root = loader.load();
             CoachSeanceMembresController controller = loader.getController();
             controller.setSeanceCollective(sc);
-
             Stage stage = new Stage();
             stage.setTitle("Membres - " + sc.getNom());
             stage.setScene(new Scene(root));
@@ -242,35 +227,5 @@ public class CoachSeancesController {
             stage.initOwner(tableSeances.getScene().getWindow());
             stage.show();
         } catch (Exception e) { e.printStackTrace(); }
-    }
-
-    private void assignerMembre(SeanceIndividuelle si) {
-        ComboBox<Membre> cbMembres = new ComboBox<>();
-        cbMembres.setItems(FXCollections.observableArrayList(new MembreService().getAllMembres()));
-
-        cbMembres.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(Membre item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : item.getNom() + " " + item.getPrenom());
-            }
-        });
-        cbMembres.setButtonCell(cbMembres.getCellFactory().call(null));
-
-        Button btnValider = new Button("Valider");
-        btnValider.getStyleClass().add("btn-primary");
-        btnValider.setOnAction(e -> {
-            if (cbMembres.getValue() == null) return;
-            indivService.assignerMembre(si.getId(), cbMembres.getValue());
-            tableSeances.refresh();
-            ((Stage) btnValider.getScene().getWindow()).close();
-        });
-
-        VBox root = new VBox(10, cbMembres, btnValider);
-        root.setStyle("-fx-padding: 15;");
-        Stage stage = new Stage();
-        stage.setScene(new Scene(root));
-        stage.setTitle("Assigner un membre");
-        stage.show();
     }
 }

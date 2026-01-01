@@ -14,22 +14,15 @@ import java.util.Optional;
 
 public class CoachSeanceMembresController {
 
-    @FXML
-    private TableView<Membre> tableMembres;
-    @FXML
-    private TableColumn<Membre, String> colNom;
-    @FXML
-    private TableColumn<Membre, String> colPrenom;
-    @FXML
-    private TableColumn<Membre, String> colEmail;
-    @FXML
-    private Button btnAjouterMembre;
-    @FXML
-    private Button btnSupprimerMembre;
+    @FXML private TableView<Membre> tableMembres;
+    @FXML private TableColumn<Membre, String> colNom;
+    @FXML private TableColumn<Membre, String> colPrenom;
+    @FXML private TableColumn<Membre, String> colEmail;
+    @FXML private Button btnAjouterMembre;
+    @FXML private Button btnSupprimerMembre;
 
     private SeanceCollectiveService seanceService;
     private MembreService membreService;
-
     private SeanceCollective selectedSeanceCollective;
     private ObservableList<Membre> membresObservable = FXCollections.observableArrayList();
 
@@ -56,57 +49,49 @@ public class CoachSeanceMembresController {
     }
 
     @FXML
-private void ajouterMembre() {
-    if (selectedSeanceCollective == null) return;
+    private void ajouterMembre() {
+        if (selectedSeanceCollective == null) return;
 
-    // Récupérer tous les membres disponibles
-    List<Membre> tousLesMembres = membreService.getAllMembres();
+        List<Membre> tousLesMembres = membreService.getAllMembres();
+        List<Membre> disponibles = tousLesMembres.stream()
+                .filter(m -> !selectedSeanceCollective.getListeMembers().contains(m))
+                .toList();
 
-    // Filtrer ceux qui ne sont pas déjà inscrits à cette séance
-    List<Membre> disponibles = tousLesMembres.stream()
-            .filter(m -> !selectedSeanceCollective.getListeMembers().contains(m))
-            .toList();
-
-    if (disponibles.isEmpty()) {
-        showAlert("Info", "Aucun membre disponible pour l'ajout.");
-        return;
-    }
-
-    // Créer liste lisible pour le ChoiceDialog
-    List<String> choix = disponibles.stream()
-            .map(m -> m.getNom() + " " + m.getPrenom() + " (" + m.getEmail() + ")")
-            .toList();
-
-    ChoiceDialog<String> dialog = new ChoiceDialog<>(choix.get(0), choix);
-    dialog.setTitle("Ajouter Membre");
-    dialog.setHeaderText("Sélectionner un membre à ajouter");
-    dialog.setContentText("Membre :");
-
-    Optional<String> result = dialog.showAndWait();
-    result.ifPresent(selection -> {
-        // Retrouver l'objet Membre correspondant à la sélection
-        Membre membreChoisi = disponibles.stream()
-                .filter(m -> (m.getNom() + " " + m.getPrenom() + " (" + m.getEmail() + ")").equals(selection))
-                .findFirst()
-                .orElse(null);
-
-        if (membreChoisi != null) {
-            boolean success = seanceService.reserverPlace(selectedSeanceCollective.getId(), membreChoisi);
-            if (success) {
-                // Recharge la liste depuis la DB pour être sûr qu'elle est à jour
-                selectedSeanceCollective.setListeMembers(
-                        seanceService.getById(selectedSeanceCollective.getId()).getListeMembers()
-                );
-                membresObservable.setAll(selectedSeanceCollective.getListeMembers());
-                showAlert("Succès", "Membre ajouté à la séance.");
-            } else {
-                showAlert("Erreur", "Impossible d'ajouter ce membre (place max atteinte).");
-            }
+        if (disponibles.isEmpty()) {
+            showAlert("Info", "Aucun membre disponible pour l'ajout.");
+            return;
         }
-    });
-}
 
+        List<String> choix = disponibles.stream()
+                .map(m -> m.getNom() + " " + m.getPrenom() + " (" + m.getEmail() + ")")
+                .toList();
 
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(choix.get(0), choix);
+        dialog.setTitle("Ajouter Membre");
+        dialog.setHeaderText("Sélectionner un membre à ajouter");
+        dialog.setContentText("Membre :");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(selection -> {
+            Membre membreChoisi = disponibles.stream()
+                    .filter(m -> (m.getNom() + " " + m.getPrenom() + " (" + m.getEmail() + ")").equals(selection))
+                    .findFirst()
+                    .orElse(null);
+
+            if (membreChoisi != null) {
+                boolean success = seanceService.reserverPlace(selectedSeanceCollective.getId(), membreChoisi);
+                if (success) {
+                    selectedSeanceCollective.setListeMembers(
+                            seanceService.getById(selectedSeanceCollective.getId()).getListeMembers()
+                    );
+                    membresObservable.setAll(selectedSeanceCollective.getListeMembers());
+                    showAlert("Succès", "Membre ajouté à la séance.");
+                } else {
+                    showAlert("Erreur", "Impossible d'ajouter ce membre (place max atteinte).");
+                }
+            }
+        });
+    }
 
     @FXML
     private void supprimerMembre() {

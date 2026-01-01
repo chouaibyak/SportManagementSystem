@@ -58,7 +58,7 @@ public class SeanceIndividuelleRepository {
             si.setTypeCours(TypeCours.valueOf(rs.getString("typeCours")));
             si.setTypeSeance(TypeSeance.valueOf(rs.getString("typeSeance")));
 
-            // ⚠️ membre peut être NULL
+            //  membre peut être NULL
             int membreId = rs.getInt("membre_id");
             if (rs.wasNull()) membreId = -1;
 

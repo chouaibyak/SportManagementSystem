@@ -5,7 +5,6 @@ com\sport\repository\SeanceIndividuelleRepository.class
 com\sport\model\TypeAbonnement.class
 com\sport\controller\common\RegisterMemberController.class
 com\sport\model\StatutReservation.class
-com\sport\service\RapportService.class
 com\sport\controller\member\MemberDashboardController.class
 com\sport\repository\MembreRepository.class
 com\sport\repository\SalleRepository.class
@@ -65,7 +64,4 @@ com\sport\repository\EquipementRepository.class
 com\sport\service\RapportService$1.class
 com\sport\repository\AbonnementRepository.class
 com\sport\model\Utilisateur.class
-com\sport\repository\ReservationRepository.class
-com\sport\controller\coach\CoachDashboardController.class
 com\sport\model\Rapport.class
-com\sport\service\AdministrateurService.class
