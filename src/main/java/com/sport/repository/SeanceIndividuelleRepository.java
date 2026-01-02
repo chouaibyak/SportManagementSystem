@@ -6,11 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
-import java.sql.Types;
 
-import com.sport.model.Coach;
 import com.sport.model.Membre;
 import com.sport.model.SeanceIndividuelle;
 import com.sport.model.TypeCours;
@@ -20,13 +19,10 @@ import com.sport.utils.DBConnection;
 public class SeanceIndividuelleRepository {
 
   // GET ALL
-// Dans SeanceIndividuelleRepository.java
-
-    public List<SeanceIndividuelle> getAll() {
+  public List<SeanceIndividuelle> getAll() {
         List<SeanceIndividuelle> list = new ArrayList<>();
 
         String query = """
-            SELECT s.id, s.nom, s.capaciteMax, s.dateHeure, s.duree,
                 s.type AS typeCours, s.typeSeance,
                 s.salle_id, s.entraineur_id,
                 si.membre_id, si.tarif, si.notesCoach

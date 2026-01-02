@@ -51,6 +51,8 @@
             <Button fx:id="btnProfil" text="Mon Profil" onAction="#afficherProfil" 
                     maxWidth="Infinity" styleClass="nav-button"/>
 
+          
+
             <!-- Espace flexible pour pousser la déconnexion en bas -->
             <VBox VBox.vgrow="ALWAYS" /> 
 

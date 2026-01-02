@@ -1,21 +1,30 @@
 package com.sport.controller.coach;
 
-import com.sport.model.*;
-import com.sport.service.SeanceCollectiveService;
-import com.sport.service.SeanceIndividuelleService;
-import com.sport.service.SalleService;
-import com.sport.utils.UserSession;
-import javafx.collections.FXCollections;
-import javafx.fxml.FXML;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
+
+import com.sport.model.Coach;
+import com.sport.model.Salle;
+import com.sport.model.Seance;
+import com.sport.model.SeanceCollective;
+import com.sport.model.SeanceIndividuelle;
+import com.sport.model.TypeCours;
+import com.sport.model.TypeSeance;
+import com.sport.model.Utilisateur;
+import com.sport.service.SalleService;
+import com.sport.service.SeanceCollectiveService;
+import com.sport.service.SeanceIndividuelleService;
+import com.sport.utils.UserSession;
+
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 public class CoachSeanceFormController {
 

@@ -67,10 +67,12 @@ public class MemberLayoutController {
         setButtonActive(btnProfil);
     }
 
+
+
     // --- LOGIQUE DE CHANGEMENT DE VUE ---
 
     private void chargerVue(String fxmlPath) {
-       try {
+    try {
         var url = getClass().getResource(fxmlPath);
         if (url == null) {
             System.err.println("ERREUR : Fichier introuvable -> " + fxmlPath);
@@ -78,8 +80,15 @@ public class MemberLayoutController {
         }
 
         FXMLLoader loader = new FXMLLoader(url);
-        Parent vue = loader.load();   // si ça plante, on verras l'exception
+        Parent vue = loader.load();
+
         contentArea.getChildren().setAll(vue);
+
+        // IMPORTANT pour StackPane
+        StackPane.setAlignment(vue, javafx.geometry.Pos.TOP_LEFT);
+        if (vue instanceof javafx.scene.layout.Region region) {
+            region.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        }
 
         System.out.println("Vue chargée: " + fxmlPath);
 
@@ -87,7 +96,8 @@ public class MemberLayoutController {
         System.err.println("ERREUR chargement vue: " + fxmlPath);
         e.printStackTrace();
     }
-    }
+}
+
 
     /**
      * Change le style du bouton cliqué pour montrer qu'il est actif.
@@ -102,13 +112,10 @@ public class MemberLayoutController {
 
     private void resetButtonStyles() {
         // Retire la classe 'nav-button-active' de tous les boutons
-        if (btnDashboard != null) btnDashboard.getStyleClass().remove("nav-button-active");
-        if (btnSeances != null) btnSeances.getStyleClass().remove("nav-button-active");
-        if (btnPerformance != null) btnPerformance.getStyleClass().remove("nav-button-active");
-        if (btnProfil != null) btnProfil.getStyleClass().remove("nav-button-active");
-        
-        // <--- 3. AJOUT DE LA REMISE A ZERO DU STYLE
-        if (btnPlanning != null) btnPlanning.getStyleClass().remove("nav-button-active");
+        btnDashboard.getStyleClass().remove("nav-button-active");
+        btnSeances.getStyleClass().remove("nav-button-active");
+        btnPerformance.getStyleClass().remove("nav-button-active");
+        btnProfil.getStyleClass().remove("nav-button-active");
     }
 
     // --- DECONNEXION ---
