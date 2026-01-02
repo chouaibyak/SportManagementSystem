@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+
+<BorderPane fx:id="rootPane"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.sport.controller.admin.AdminLayoutController"
+            stylesheets="@../../css/admin.css">
+
+    
+    <!-- ===================== SIDEBAR ===================== -->
+    <left>
+        <VBox fx:id="sidebar" styleClass="sidebar" spacing="5" >
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+            <Label text="ADMIN PANEL" styleClass="sidebar-logo"/>
+            <Label text="Gestion Sport" styleClass="sidebar-subtitle"/>
+
+            <Button text="Dashboard" fx:id="btnDashboard" styleClass="nav-button" onAction="#showDashboard"/>
+            <Button text="Members" fx:id="btnMembers" styleClass="nav-button" onAction="#showMembers"/>
+            <Button text="Abonnements" fx:id="btnMemberShip" styleClass="nav-button" onAction="#showMemberShip"/>
+            <Button text="Coaches" fx:id="btnCoaches" styleClass="nav-button" onAction="#showCoaches"/>
+            <Button text="Salles" fx:id="btnSalles" styleClass="nav-button" onAction="#showSalles"/>
+            <Button text="Equipements" fx:id="btnEquipements" styleClass="nav-button" onAction="#showEquipements"/>
+            <Button text="Rapports" fx:id="btnRapports" styleClass="nav-button" onAction="#showRapports"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+             <Button text="Déconnecter" fx:id="btnLogout" onAction="#logout" styleClass="button-secondary"/>
+        </VBox>
+    </left>
+
+    <!-- ===================== MAIN CONTENT ===================== -->
+    <center>
+        <AnchorPane fx:id="mainContainer" style="-fx-background-color: #f4f6f7;"/>
+    </center>
+
+</BorderPane>

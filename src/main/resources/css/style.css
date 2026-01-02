@@ -95,7 +95,7 @@
     -fx-background-color: #27ae60;
 }
 
-/* --- SIDEBAR --- */
+
 .sidebar {
     -fx-background-color: #2c3e50;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);
@@ -162,7 +162,7 @@
     -fx-background-radius: 15;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 5);
     -fx-padding: 25;
-    -fx-min-width: 220;
+    -fx-min-width: 200;    /* Largeur minimale pour les cartes */
     -fx-transition: all 0.3s ease;
 }
 
@@ -174,7 +174,7 @@
 .card-title {
     -fx-font-size: 14px;
     -fx-text-fill: #7f8c8d;
-    -fx-font-weight: 600;
+    -fx-font-weight: 600; /* Semi-bold */
 }
 
 .card-value {
@@ -182,6 +182,7 @@
     -fx-font-weight: bold;
     -fx-text-fill: #27ae60;
 }
+
 
 /* --- BAR CHART --- */
 .bar-chart .chart-plot-background {
@@ -348,7 +349,7 @@
 }
 
 .table-view .column-header .label {
-    -fx-text-fill: white;
+    -fx-text-fill:  rgb(15, 4, 4); /* Texte blanc ####################*/
     -fx-font-weight: bold;
     -fx-font-size: 13px;
     -fx-font-family: 'Segoe UI', sans-serif;
@@ -521,6 +522,7 @@
    PROFILE PAGE
    ===================================================== */
 
+
 /* Fond spécifique au profil */
 .profile-root {
     -fx-background-color: transparent;
@@ -529,6 +531,7 @@
 .profile-root .viewport {
     -fx-background-color: #f6f8fa;
 }
+
 
 .profile-root .dashboard-card {
     -fx-background-color: white;
@@ -542,6 +545,7 @@
 .profile-root .dashboard-card:hover {
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.14), 22, 0, 0, 10);
 }
+
 
 .profile-root .tab-pane {
     -fx-background-color: transparent;
@@ -577,6 +581,54 @@
     -fx-text-fill: #2c3e50;
     -fx-font-weight: bold;
 }
+
+/* ---- Champs du profil ---- */
+.profile-root .text-field,
+.profile-root .password-field,
+.profile-root .date-picker,
+.profile-root .combo-box {
+    -fx-background-color: #f1f3f5;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: transparent;
+    -fx-padding: 10 14;
+}
+
+.profile-root .text-field:focused,
+.profile-root .password-field:focused,
+.profile-root .date-picker:focused,
+.profile-root .combo-box:focused {
+    -fx-background-color: white;
+    -fx-border-color: rgba(39,174,96,0.8);
+    -fx-effect: dropshadow(three-pass-box, rgba(39,174,96,0.18), 12, 0, 0, 0);
+}
+
+/* ---- Boutons profil ---- */
+.profile-root .button {
+    -fx-background-radius: 14;
+    -fx-padding: 10 20;
+}
+
+/* Boutons existants (compatibles avec ton code actuel) */
+.profile-root .btn-primary,
+.profile-root .button-primary {
+    -fx-effect: dropshadow(three-pass-box, rgba(39,174,96,0.25), 12, 0, 0, 5);
+}
+
+.profile-root .btn-warning {
+    -fx-effect: dropshadow(three-pass-box, rgba(243,156,18,0.25), 12, 0, 0, 5);
+}
+
+/* ---- Séparateurs ---- */
+.profile-root .separator .line {
+    -fx-border-color: rgba(44,62,80,0.12);
+}
+
+/* ---- Labels ---- */
+.profile-root .label {
+    -fx-text-fill: #2c3e50;
+}
+
 /*  **********************************/
 /*          Fin de Coach_Dashboard        */
 /*************************************/
@@ -870,6 +922,7 @@
     -fx-background-radius: 12;
 }
 
+
 /* VBox Cards principales - INTERACTIVES */
 .performance-card {
     -fx-background-color: white;
@@ -962,4 +1015,5 @@
     -fx-background-color: linear-gradient(to right, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
     -fx-scale-x: 1.01;
 }
+
 

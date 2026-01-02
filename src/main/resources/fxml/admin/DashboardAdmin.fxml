@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.geometry.Insets?>
+
+<ScrollPane
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="com.sport.controller.admin.DashboardAdminController"
+    fitToWidth="true"
+    vbarPolicy="AS_NEEDED"
+    hbarPolicy="NEVER">
+
+    <content>
+        <VBox spacing="20">
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+    <Label text=" Admin Dashboard"
+           style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+    <!-- KPI Cards -->
+    <HBox spacing="20" alignment="CENTER">
+
+        <VBox styleClass="kpi-card">
+            <Label text="👥 Members"/>
+            <Label fx:id="membersCountLabel" styleClass="kpi-value"/>
+        </VBox>
+
+        <VBox styleClass="kpi-card">
+            <Label text="👥 Coaches"/>
+            <Label fx:id="coachesCountLabel" styleClass="kpi-value"/>
+        </VBox>
+
+        <VBox styleClass="kpi-card">
+            <Label text="🏷️ Subscriptions"/>
+            <Label fx:id="subscriptionsCountLabel" styleClass="kpi-value"/>
+        </VBox>
+
+        <VBox styleClass="kpi-card">
+            <Label text="📅 Today Reservations"/>
+            <Label fx:id="todayReservationsLabel" styleClass="kpi-value"/>
+        </VBox>
+
+        <VBox styleClass="kpi-card">
+            <Label text="🚪 Occupancy"/>
+            <Label fx:id="occupancyLabel" styleClass="kpi-value"/>
+        </VBox>
+
+    </HBox>
+
+    <!-- Charts Section -->
+     <VBox styleClass="dashboard-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+        <LineChart fx:id="reservationChart" prefHeight="200">
+            <xAxis>
+                <CategoryAxis label="Day"/>
+            </xAxis>
+            <yAxis>
+                <NumberAxis label="Reservations"/>
+            </yAxis>
+        </LineChart>
+    </VBox>
+    <VBox styleClass="dashboard-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
+    <LineChart fx:id="memberChart" prefHeight="200">
+        <xAxis>
+            <CategoryAxis label="Month"/>
+        </xAxis>
+        <yAxis>
+            <NumberAxis label="Members"/>
+        </yAxis>
+    </LineChart>
+    </VBox>
+    </VBox>
+    </content>
+</ScrollPane>
+

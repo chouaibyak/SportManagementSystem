@@ -11,7 +11,11 @@ import com.sport.model.Rapport;
 import com.sport.model.Reservation;
 import com.sport.model.Seance;
 import com.sport.model.TypeSeance;
-import com.sport.repository.*;
+import com.sport.repository.AbonnementRepository;
+import com.sport.repository.MembreRepository;
+import com.sport.repository.RapportRepository;
+import com.sport.repository.ReservationRepository;
+import com.sport.repository.SeanceRepository;
 
 
 public class RapportService {

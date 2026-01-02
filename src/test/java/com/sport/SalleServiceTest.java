@@ -1,7 +1,7 @@
 package com.sport;
 
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 import com.sport.model.Salle;
 import com.sport.model.TypeSalle;
@@ -13,7 +13,7 @@ public class SalleServiceTest {
     public static void main(String[] args) {
 
         SalleRepository repository = new SalleRepository();
-        SalleService service = new SalleService(repository);
+        SalleService service = new SalleService();
 
         // ⚠️ Ajuste l’ID si tu utilises une salle déjà existante
         Salle salle = new Salle("Salle Test Main", 40, TypeSalle.MUSCULATION);

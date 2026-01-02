@@ -3,6 +3,7 @@ package com.sport.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.sport.model.Abonnement;
 import com.sport.model.Coach;
 import com.sport.model.Equipement;
 import com.sport.model.EtatEquipement;
@@ -10,6 +11,7 @@ import com.sport.model.Membre;
 import com.sport.model.Rapport;
 import com.sport.model.Salle;
 import com.sport.model.TypeSalle;
+import com.sport.repository.AbonnementRepository;
 import com.sport.repository.CoachRepository;
 import com.sport.repository.EquipementRepository;
 import com.sport.repository.MembreRepository;
@@ -25,6 +27,8 @@ public class AdministrateurService {
     private SalleRepository salleRepository = new SalleRepository();
     private RapportService rapportService = new RapportService();
     private RapportRepository rapportRepository = new RapportRepository();
+    private AbonnementRepository abonnementRepository = new AbonnementRepository();
+    
     
     // =========================
     // MEMBRES
@@ -144,6 +148,21 @@ public class AdministrateurService {
     public void supprimerRapport(int rapportId) {
         rapportService.supprimerRapport(rapportId);
     }
+
+    // =========================
+    // Abonnements
+    // =========================
+    public void ajouterAbonnement(Abonnement abonnement) {
+        abonnementRepository.ajouterAbonnement(abonnement);
+    }
+    public void modifierAbonnement(Abonnement abonnement) {
+        abonnementRepository.modifierAbonnement(abonnement);
+    }
+    public void supprimerAbonnement(int abonnementId) {
+        abonnementRepository.supprimerAbonnement(abonnementId);
+    }
+    
+    
 
    
 }

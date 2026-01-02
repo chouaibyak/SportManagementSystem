@@ -32,7 +32,7 @@ public class Membre extends Utilisateur {
                   TypeObjectif objectifSportif, TypePreference preferences) {
 
         
-        super(nom, prenom, dateNaissance, email, telephone, adresse, motDePasse);
+        super(nom, prenom, dateNaissance, email, telephone, adresse, motDePasse, "membre");
         
         this.objectifSportif = objectifSportif;
         this.preferences = preferences;
@@ -118,5 +118,8 @@ public class Membre extends Utilisateur {
     public void setDateEvaluation(LocalDate dateEvaluation) {
         this.dateEvaluation = dateEvaluation;
     }
+
+
+   
     
 }

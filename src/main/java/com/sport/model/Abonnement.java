@@ -11,6 +11,8 @@ public class Abonnement {
     private StatutAbonnement statutAbonnement;
     private boolean autorenouvellement;
     private double montant;
+    private Date dateDebut;
+    private Date dateFin;
 
 
     // Constructeur vide
@@ -31,6 +33,19 @@ public class Abonnement {
     public Membre getMembre() { return membre; }
     public void setMembre(Membre membre) { this.membre = membre; }
 
+   
+   
+    private String membreFullname ;
+
+    public String getMembreFullname() {
+        return membreFullname;
+    }
+
+    public void setMembreFullname(String membreFullname) {
+        this.membreFullname = membreFullname;
+    }
+
+
     public TypeAbonnement getTypeAbonnement() { return typeAbonnement; }
     public void setTypeAbonnement(TypeAbonnement typeAbonnement) { this.typeAbonnement = typeAbonnement; }
 
@@ -42,6 +57,12 @@ public class Abonnement {
 
     public double getMontant() { return montant; }
     public void setMontant(double montant) { this.montant = montant; }
+
+    public Date getDateDebut() { return dateDebut; }
+    public void setDateDebut(Date dateDebut) { this.dateDebut = dateDebut; }
+
+    public Date getDateFin() { return dateFin; }
+    public void setDateFin(Date dateFin) { this.dateFin = dateFin; }
     
     // Méthodes Métier
     public void activerAbonnement() {
@@ -52,14 +73,24 @@ public class Abonnement {
         this.statutAbonnement = StatutAbonnement.RESILIE;
     }
 
-    public Date calculerProchaineDateFin() {
-        if (typeAbonnement == null) return new Date();
+   public Date calculerProchaineDateFin() {
+        if (typeAbonnement == null || dateDebut == null) return dateFin;
+
         Calendar cal = Calendar.getInstance();
+        cal.setTime(dateDebut);
+
         switch (typeAbonnement) {
-            case MENSUEL: cal.add(Calendar.MONTH, 1); break;
-            case TRIMESTRIEL: cal.add(Calendar.MONTH, 3); break;
-            case ANNUEL: cal.add(Calendar.YEAR, 1); break;
+            case MENSUEL -> cal.add(Calendar.MONTH, 1);
+            case TRIMESTRIEL -> cal.add(Calendar.MONTH, 3);
+            case ANNUEL -> cal.add(Calendar.YEAR, 1);
         }
+
         return cal.getTime();
     }
+
+    public void calculerEtSetDateFin() {
+        this.dateFin = calculerProchaineDateFin();
+    }
+
+
 }

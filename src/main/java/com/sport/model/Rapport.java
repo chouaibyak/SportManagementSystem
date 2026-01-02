@@ -5,7 +5,11 @@ public class Rapport {
     private String type;
     private String dateDebut;
     private String dateFin;
-    private String donnees;
+   
+   // private String donnees;
+
+    // transient (not stored)
+    private transient String donnees;
 
     // Constructeur
     public Rapport(int id, String type, String dateDebut, String dateFin, String donnees) {

@@ -29,11 +29,22 @@ public class Salle {
      * Vérifie la disponibilité (Logique simplifiée pour le modèle).
      * En réalité, cela nécessiterait souvent l'accès au planning des réservations.
      */
-    public boolean verifierDisponibilite(Date date) {
-        // Logique fictive ici : on pourrait vérifier si la salle est en travaux
-        // ou simplement retourner true par défaut si aucune contrainte interne n'existe.
-        System.out.println("Vérification disponibilité salle " + this.nom + " pour le " + date);
-        return true; 
+   public boolean verifierDisponibilite(Date date) {
+        if (date == null) return false;
+
+        // Exemple fictif : liste de dates réservées
+        List<Date> datesReservees = new ArrayList<>();
+
+        // Vérifie si la date est déjà réservée
+        for (Date d : datesReservees) {
+            if (d.equals(date)) {
+                System.out.println("Salle " + this.nom + " non disponible pour le " + date);
+                return false;
+            }
+        }
+
+        System.out.println("Salle " + this.nom + " disponible pour le " + date);
+        return true;
     }
 
     public void ajouterEquipement(Equipement eq) {

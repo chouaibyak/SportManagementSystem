@@ -13,19 +13,20 @@ public abstract class Utilisateur {
     protected String motDePasse;
     protected String telephone;
     protected String adresse;
-
+    protected String role;
     // ----- Constructeurs -----
 
     public Utilisateur() {
     }
 
     public Utilisateur(String nom, String prenom, String dateNaissance,
-                       String email, String telephone, String adresse, String motdePasse) {
+                       String email, String telephone, String adresse, String motdePasse, String role) {
         this.id = 0;
         this.nom = nom;
         this.prenom = prenom;
         this.dateNaissance = dateNaissance;
         this.email = email;
+        this.role = role;
         this.telephone = telephone;
         this.adresse = adresse;
         this.motDePasse = motdePasse;
@@ -93,4 +94,36 @@ public abstract class Utilisateur {
     public String toString() {
         return nom + " " + prenom + " (" + email + ")";
     }
+
+
+    public String getRole() {
+        return role;
+    }
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    // add by youness
+    
+    public String getNomComplet() {
+        return getNom() + " " + getPrenom(); // getNom() and getPrenom() are from Utilisateur
+    }
+    public void setNomComplet(String nomComplet) {
+        if (nomComplet == null || nomComplet.trim().isEmpty()) {
+            return;
+        }
+
+        String[] parts = nomComplet.trim().split("\\s+", 2);
+
+        this.setNom(parts[0]);
+
+        if (parts.length > 1) {
+            this.setPrenom(parts[1]);
+        } else {
+            this.setPrenom("");
+        }
+    }
+
 }
+
+
