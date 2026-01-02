@@ -20,89 +20,103 @@ import com.sport.utils.DBConnection;
 public class SeanceIndividuelleRepository {
 
   // GET ALL
-  public List<SeanceIndividuelle> getAll() {
+// Dans SeanceIndividuelleRepository.java
 
-    List<SeanceIndividuelle> list = new ArrayList<>();
+    public List<SeanceIndividuelle> getAll() {
+        List<SeanceIndividuelle> list = new ArrayList<>();
 
-    String query = """
-        SELECT s.id, s.nom, s.capaciteMax, s.dateHeure, s.duree,
-               s.type AS typeCours, s.typeSeance,
-               s.salle_id, s.entraineur_id,
-               si.membre_id, si.tarif, si.notesCoach
-        FROM seance s
-        LEFT JOIN seanceindividuelle si ON s.id = si.seance_id
-        WHERE UPPER(s.typeSeance) = 'INDIVIDUELLE'
-    """;
+        String query = """
+            SELECT s.id, s.nom, s.capaciteMax, s.dateHeure, s.duree,
+                s.type AS typeCours, s.typeSeance,
+                s.salle_id, s.entraineur_id,
+                si.membre_id, si.tarif, si.notesCoach
+            FROM seance s
+            LEFT JOIN seanceindividuelle si ON s.id = si.seance_id
+            WHERE UPPER(s.typeSeance) = 'INDIVIDUELLE'
+        """;
 
-    List<Integer> salleIds = new ArrayList<>();
-    List<Integer> coachIds = new ArrayList<>();
-    List<Integer> membreIds = new ArrayList<>();
+        List<Integer> salleIds = new ArrayList<>();
+        List<Integer> coachIds = new ArrayList<>();
+        List<Integer> membreIds = new ArrayList<>();
 
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(query);
-         ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery()) {
 
-        while (rs.next()) {
+            while (rs.next()) {
+                SeanceIndividuelle si = new SeanceIndividuelle();
+                si.setId(rs.getInt("id"));
+                si.setNom(rs.getString("nom"));
+                si.setCapaciteMax(rs.getInt("capaciteMax"));
 
-            SeanceIndividuelle si = new SeanceIndividuelle();
+                Timestamp ts = rs.getTimestamp("dateHeure");
+                if (ts != null) si.setDateHeure(ts.toLocalDateTime());
 
-            si.setId(rs.getInt("id"));
-            si.setNom(rs.getString("nom"));
-            si.setCapaciteMax(rs.getInt("capaciteMax"));
+                si.setDuree(rs.getInt("duree"));
+                
+                // Gestion safe des ENUMs
+                try {
+                    si.setTypeCours(TypeCours.valueOf(rs.getString("typeCours")));
+                    si.setTypeSeance(TypeSeance.valueOf(rs.getString("typeSeance")));
+                } catch (Exception e) {
+                    System.err.println("Erreur Enum pour séance ID " + si.getId());
+                }
 
-            Timestamp ts = rs.getTimestamp("dateHeure");
-            if (ts != null) {
-                si.setDateHeure(ts.toLocalDateTime());
+                // Gestion ID Membre
+                int membreId = rs.getInt("membre_id");
+                if (rs.wasNull()) membreId = -1; // -1 signifie "pas de membre"
+
+                Double tarif = rs.getDouble("tarif");
+                if (rs.wasNull()) tarif = null;
+                si.setTarif(tarif);
+                
+                si.setNotesCoach(rs.getString("notesCoach"));
+
+                salleIds.add(rs.getInt("salle_id"));
+                coachIds.add(rs.getInt("entraineur_id"));
+                membreIds.add(membreId);
+
+                list.add(si);
             }
 
-            si.setDuree(rs.getInt("duree"));
-            si.setTypeCours(TypeCours.valueOf(rs.getString("typeCours")));
-            si.setTypeSeance(TypeSeance.valueOf(rs.getString("typeSeance")));
-
-            //  membre peut être NULL
-            int membreId = rs.getInt("membre_id");
-            if (rs.wasNull()) membreId = -1;
-
-            Double tarif = rs.getDouble("tarif");
-            if (rs.wasNull()) tarif = null;
-
-            si.setTarif(tarif);
-            si.setNotesCoach(rs.getString("notesCoach"));
-
-            salleIds.add(rs.getInt("salle_id"));
-            coachIds.add(rs.getInt("entraineur_id"));
-            membreIds.add(membreId);
-
-            list.add(si);
-
-            // 🔍 LOG DEBUG
-            System.out.println("INDIV LOADED → " + si.getNom() + " | coach=" + rs.getInt("entraineur_id"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return list;
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
+        // ====== CHARGEMENT DES OBJETS COMPLETS (C'est ici que ça se joue) ======
+        SalleRepository salleRepo = new SalleRepository();
+        CoachRepository coachRepo = new CoachRepository();
+        MembreRepository membreRepo = new MembreRepository();
+
+        for (int i = 0; i < list.size(); i++) {
+            SeanceIndividuelle si = list.get(i);
+
+            // 1. Salle
+            si.setSalle(salleRepo.getSalleById(salleIds.get(i)));
+
+            // 2. Coach
+            si.setEntraineur(coachRepo.getCoachById(coachIds.get(i)));
+
+            // 3. Membre
+            int mId = membreIds.get(i);
+            if (mId != -1) {
+                Membre m = membreRepo.trouverParId(mId); // <--- Vérifier cette méthode !
+                si.setMembre(m);
+                
+                // DEBUG : AFFICHER SI LE MEMBRE EST CHARGÉ
+                if (m != null) {
+                    System.out.println("✅ Séance " + si.getId() + " : Membre chargé -> " + m.getNom());
+                } else {
+                    System.err.println("⚠️ Séance " + si.getId() + " : ID membre=" + mId + " MAIS MembreRepository retourne NULL !");
+                }
+            } else {
+                si.setMembre(null);
+            }
+        }
+
         return list;
     }
-
-    // ====== Chargement des objets complets ======
-    SalleRepository salleRepo = new SalleRepository();
-    CoachRepository coachRepo = new CoachRepository();
-    MembreRepository membreRepo = new MembreRepository();
-
-    for (int i = 0; i < list.size(); i++) {
-        SeanceIndividuelle si = list.get(i);
-
-        si.setSalle(salleRepo.getSalleById(salleIds.get(i)));
-        si.setEntraineur(coachRepo.getCoachById(coachIds.get(i)));
-
-        int membreId = membreIds.get(i);
-        si.setMembre(membreId != -1 ? membreRepo.trouverParId(membreId) : null);
-    }
-
-    System.out.println("TOTAL SEANCES INDIV CHARGÉES = " + list.size());
-    return list;
-}
-
     // GET BY ID
     public SeanceIndividuelle getById(int seanceId) {
         return getAll().stream().filter(s -> s.getId() == seanceId).findFirst().orElse(null);

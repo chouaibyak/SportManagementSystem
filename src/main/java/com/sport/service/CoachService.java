@@ -204,30 +204,34 @@ public boolean verifierDisponibiliteSalle(Coach coach, Seance seance) {
 
 
     public List<Membre> getMembresParCoach(Coach coach) {
-    Set<Membre> membres = new HashSet<>();
+        Set<Membre> membres = new HashSet<>();
 
-    // Membres des séances collectives
-    List<SeanceCollective> seancesCollectives = seanceCollectiveRepository.getAll().stream()
-            .filter(s -> s.getEntraineur().getId() == coach.getId())
-            .collect(Collectors.toList());
+        // 1. Membres des séances collectives
+        // J'ajoute aussi la sécurité ici par précaution
+        List<SeanceCollective> seancesCollectives = seanceCollectiveRepository.getAll().stream()
+                .filter(s -> s.getEntraineur() != null && s.getEntraineur().getId() == coach.getId())
+                .collect(Collectors.toList());
 
-    for (SeanceCollective s : seancesCollectives) {
-        membres.addAll(s.getListeMembers());
-    }
-
-    // Membres des séances individuelles
-    List<SeanceIndividuelle> seancesIndividuelles = seanceIndividuelleRepository.getAll().stream()
-            .filter(s -> s.getEntraineur().getId() == coach.getId())
-            .collect(Collectors.toList());
-
-    for (SeanceIndividuelle s : seancesIndividuelles) {
-        if (s.getMembre() != null) {
-            membres.add(s.getMembre());
+        for (SeanceCollective s : seancesCollectives) {
+            if (s.getListeMembers() != null) {
+                membres.addAll(s.getListeMembers());
+            }
         }
-    }
 
-    return new ArrayList<>(membres); // conversion en liste
-}
+        // 2. Membres des séances individuelles
+        // C'est ICI que ça plantait : ajout de "s.getEntraineur() != null"
+        List<SeanceIndividuelle> seancesIndividuelles = seanceIndividuelleRepository.getAll().stream()
+                .filter(s -> s.getEntraineur() != null && s.getEntraineur().getId() == coach.getId())
+                .collect(Collectors.toList());
+
+        for (SeanceIndividuelle s : seancesIndividuelles) {
+            if (s.getMembre() != null) {
+                membres.add(s.getMembre());
+            }
+        }
+
+        return new ArrayList<>(membres); // conversion en liste
+    }
 
 
     public void ajouterSpecialite(Coach coach, String specialite) {

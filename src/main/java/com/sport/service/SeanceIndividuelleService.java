@@ -83,7 +83,8 @@ public class SeanceIndividuelleService {
 // Retourne toutes les séances individuelles du coach donné
 public List<SeanceIndividuelle> getSeancesByCoach(int coachId) {
     return getAll().stream()
-            .filter(s -> s.getEntraineur().getId() == coachId)
+            // AJOUT DE LA VÉRIFICATION : s.getEntraineur() != null
+            .filter(s -> s.getEntraineur() != null && s.getEntraineur().getId() == coachId)
             .collect(Collectors.toList());
 }
 
