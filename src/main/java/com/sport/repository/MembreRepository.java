@@ -15,7 +15,7 @@ import com.sport.utils.DBConnection;
 
 public class MembreRepository {
 
-    // CREATE (Reste inchangé car l'INSERT ne nomme pas l'ID utilisateur explicitement)
+    // ➤ CREATE
     public void ajouterMembre(Membre membre) {
         String sqlUser = "INSERT INTO UTILISATEUR (nom, prenom, dateNaissance, email, telephone, adresse, mot_de_passe) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String sqlMembre = "INSERT INTO MEMBRE (id_utilisateur, objectifSportif, preferences) VALUES (?, ?, ?)";
@@ -29,7 +29,7 @@ public class MembreRepository {
             try (PreparedStatement stmtUser = conn.prepareStatement(sqlUser, Statement.RETURN_GENERATED_KEYS)) {
                 stmtUser.setString(1, membre.getNom());
                 stmtUser.setString(2, membre.getPrenom());
-                stmtUser.setString(3, membre.getDateNaissance()!= null ? membre.getDateNaissance():"2000-01-01"); 
+                stmtUser.setString(3, membre.getDateNaissance() != null ? membre.getDateNaissance() : "2000-01-01"); 
                 stmtUser.setString(4, membre.getEmail());
                 stmtUser.setString(5, membre.getTelephone());
                 stmtUser.setString(6, membre.getAdresse());
@@ -53,40 +53,38 @@ public class MembreRepository {
             }
 
             conn.commit();
-            System.out.println("Membre ajouté avec succès !");
-
         } catch (SQLException e) {
             if (conn != null) try { conn.rollback(); } catch (SQLException ex) {}
-            System.out.println("Erreur ajout membre : " + e.getMessage());
+            e.printStackTrace();
         } finally {
             if (conn != null) try { conn.setAutoCommit(true); conn.close(); } catch (SQLException e) {}
         }
     }
 
-    // ➤ READ (Tout) - CORRECTION ICI
+    // ➤ LISTER TOUS LES MEMBRES
     public List<Membre> listerMembres() {
         List<Membre> membres = new ArrayList<>();
-        // CORRECTION : u.id au lieu de u.id_utilisateur
-        String sql = "SELECT * FROM MEMBRE m JOIN UTILISATEUR u ON m.id_utilisateur = u.id";
+        // On sélectionne explicitement u.id pour éviter les confusions
+        String sql = "SELECT u.id as user_id, u.*, m.* FROM MEMBRE m JOIN UTILISATEUR u ON m.id_utilisateur = u.id";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                membres.add(mapResultSetToMembre(rs));
+                Membre m = mapResultSetToMembre(rs);
+                if (m != null) membres.add(m);
             }
 
         } catch (SQLException e) {
-            System.out.println("Erreur récupération des membres : " + e.getMessage());
+            e.printStackTrace();
         }
         return membres;
     }
 
-    // ➤ READ (Par ID) - CORRECTION ICI
+    // ➤ TROUVER PAR ID (CRUCIAL POUR VOTRE PROBLÈME)
     public Membre trouverParId(int id) {
-        // CORRECTION : u.id au lieu de u.id_utilisateur
-        String sql = "SELECT * FROM MEMBRE m JOIN UTILISATEUR u ON m.id_utilisateur = u.id WHERE m.id_utilisateur = ?";
+        String sql = "SELECT u.id as user_id, u.*, m.* FROM MEMBRE m JOIN UTILISATEUR u ON m.id_utilisateur = u.id WHERE m.id_utilisateur = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -99,14 +97,13 @@ public class MembreRepository {
             }
 
         } catch (SQLException e) {
-            System.out.println("Erreur recherche membre : " + e.getMessage());
+            System.err.println("Erreur SQL trouverParId : " + e.getMessage());
         }
         return null;
     }
 
-    // ➤ UPDATE - CORRECTION ICI
+    // ➤ UPDATE
     public void modifierMembre(Membre membre) {
-        // CORRECTION : WHERE id=? (car dans la table utilisateur c'est 'id')
         String sqlUser = "UPDATE UTILISATEUR SET nom=?, prenom=?, email=?, telephone=?, adresse=? WHERE id=?";
         String sqlMembre = "UPDATE MEMBRE SET objectifSportif=?, preferences=? WHERE id_utilisateur=?";
 
@@ -121,7 +118,7 @@ public class MembreRepository {
                 stmtUser.setString(3, membre.getEmail());
                 stmtUser.setString(4, membre.getTelephone());
                 stmtUser.setString(5, membre.getAdresse());
-                stmtUser.setInt(6, membre.getId()); // C'est bien l'ID qu'on passe ici
+                stmtUser.setInt(6, membre.getId());
                 stmtUser.executeUpdate();
             }
 
@@ -133,20 +130,17 @@ public class MembreRepository {
             }
 
             conn.commit();
-            System.out.println("Membre modifié avec succès !");
-
         } catch (SQLException e) {
             if (conn != null) try { conn.rollback(); } catch (SQLException ex) {}
-            System.out.println("Erreur modification membre : " + e.getMessage());
+            e.printStackTrace();
         } finally {
             if (conn != null) try { conn.setAutoCommit(true); conn.close(); } catch (SQLException e) {}
         }
     }
 
-    // ➤ DELETE - CORRECTION ICI
+    // ➤ DELETE
     public void supprimerMembre(int membreId) {
         String sqlMembre = "DELETE FROM MEMBRE WHERE id_utilisateur = ?";
-        // CORRECTION : WHERE id = ?
         String sqlUser = "DELETE FROM UTILISATEUR WHERE id = ?";
 
         Connection conn = null;
@@ -164,70 +158,82 @@ public class MembreRepository {
             }
 
             conn.commit();
-            System.out.println("Membre supprimé !");
-
         } catch (SQLException e) {
             if (conn != null) try { conn.rollback(); } catch (SQLException ex) {}
-            System.out.println("Erreur suppression membre : " + e.getMessage());
+            e.printStackTrace();
         } finally {
             if (conn != null) try { conn.setAutoCommit(true); conn.close(); } catch (SQLException e) {}
         }
     }
 
-    // MAPPING 
+    // ➤ MAPPING SÉCURISÉ (C'EST ICI QUE ÇA PLANTAIT SOUVENT)
     private Membre mapResultSetToMembre(ResultSet rs) throws SQLException {
         Membre m = new Membre();
-        m.setId(rs.getInt("id")); 
+        
+        // Utilisation de l'alias 'user_id' pour être sûr de prendre le bon ID
+        try {
+            m.setId(rs.getInt("user_id"));
+        } catch (SQLException e) {
+            // Fallback si l'alias n'existe pas (ex: select *)
+            m.setId(rs.getInt("id"));
+        }
 
         m.setNom(rs.getString("nom"));
         m.setPrenom(rs.getString("prenom"));
         m.setEmail(rs.getString("email"));
         m.setTelephone(rs.getString("telephone"));
         m.setAdresse(rs.getString("adresse"));
-        m.setDateNaissance(String.valueOf(rs.getDate("dateNaissance"))); // Conversion Date -> String
+        
+        // Gestion sécurisée de la date
+        if (rs.getDate("dateNaissance") != null) {
+            m.setDateNaissance(rs.getDate("dateNaissance").toString());
+        } else {
+            m.setDateNaissance("");
+        }
 
-        String objectif = rs.getString("objectifSportif");
-        if (objectif != null) m.setObjectifSportif(TypeObjectif.valueOf(objectif));
+        // Gestion sécurisée des Enums (try-catch pour éviter que tout plante si l'enum change)
+        try {
+            String objectif = rs.getString("objectifSportif");
+            if (objectif != null && !objectif.isEmpty()) {
+                m.setObjectifSportif(TypeObjectif.valueOf(objectif));
+            }
+        } catch (IllegalArgumentException e) {
+            System.err.println("Erreur Enum Objectif pour le membre ID " + m.getId() + " : " + e.getMessage());
+        }
 
-        String pref = rs.getString("preferences");
-        if (pref != null) m.setPreferences(TypePreference.valueOf(pref));
+        try {
+            String pref = rs.getString("preferences");
+            if (pref != null && !pref.isEmpty()) {
+                m.setPreferences(TypePreference.valueOf(pref));
+            }
+        } catch (IllegalArgumentException e) {
+            System.err.println("Erreur Enum Preferences pour le membre ID " + m.getId() + " : " + e.getMessage());
+        }
 
         return m;
     }
 
-
-
     public List<Membre> trouverParSeanceCollective(int seanceId) {
-    List<Membre> membres = new ArrayList<>();
-    String sql = "SELECT u.* " +
-                 "FROM seancecollective_membre scm " +
-                 "JOIN membre m ON scm.membre_id = m.id_utilisateur " +
-                 "JOIN utilisateur u ON m.id_utilisateur = u.id " +
-                 "WHERE scm.seance_id = ?";
+        List<Membre> membres = new ArrayList<>();
+        String sql = "SELECT u.id as user_id, u.*, m.* " +
+                     "FROM seancecollective_membre scm " +
+                     "JOIN membre m ON scm.membre_id = m.id_utilisateur " +
+                     "JOIN utilisateur u ON m.id_utilisateur = u.id " +
+                     "WHERE scm.seance_id = ?";
 
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        stmt.setInt(1, seanceId);
-        try (ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                Membre m = new Membre();
-                m.setId(rs.getInt("id"));
-                m.setNom(rs.getString("nom"));
-                m.setPrenom(rs.getString("prenom"));
-                m.setEmail(rs.getString("email"));
-                m.setTelephone(rs.getString("telephone"));
-                m.setAdresse(rs.getString("adresse"));
-                m.setDateNaissance(rs.getString("dateNaissance"));
-                membres.add(m);
+            stmt.setInt(1, seanceId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    membres.add(mapResultSetToMembre(rs));
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+
+        return membres;
     }
-
-    return membres;
 }
-
-}
-

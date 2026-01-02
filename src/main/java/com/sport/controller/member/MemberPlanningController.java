@@ -63,6 +63,10 @@ public class MemberPlanningController {
         // 2. Récupérer les séances
         List<Seance> toutesLesSeances = seanceRepo.getSeancesParPeriode(LocalDate.now(), LocalDate.now().plusDays(14));
 
+        //DEBUG
+        System.out.println("Nombre de séances récupérées : " + toutesLesSeances.size());
+
+
         // 3. Trier par date (la plus proche en premier)
         toutesLesSeances.sort(Comparator.comparing(Seance::getDateHeure));
 
@@ -73,6 +77,7 @@ public class MemberPlanningController {
             cardsContainer.getChildren().add(emptyLbl);
         } else {
             for (Seance s : toutesLesSeances) {
+                System.out.println("Séance : " + s.getNom() + " | Type : " + s.getTypeSeance());
                 // IMPORTANT : On passe la séance ET le membre connecté
                 cardsContainer.getChildren().add(creerCarteSession(s, membreConnecte));
             }
@@ -137,6 +142,28 @@ public class MemberPlanningController {
         salleBox.getChildren().addAll(salleIcon, salleLbl);
         salleBox.setAlignment(Pos.CENTER_LEFT);
 
+        // --- AJOUT : AFFICHAGE DE LA NOTE DU COACH (Seulement pour Individuelle) ---
+        if (s instanceof SeanceIndividuelle) {
+            SeanceIndividuelle si = (SeanceIndividuelle) s;
+            if (si.getNotesCoach() != null && !si.getNotesCoach().isEmpty()) {
+                HBox noteBox = new HBox(5);
+                SVGPath noteIcon = new SVGPath();
+                // Icône de petit crayon/note
+                noteIcon.setContent("M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z");
+                noteIcon.setScaleX(0.6); noteIcon.setScaleY(0.6); 
+                noteIcon.setStyle("-fx-fill: #3498db;"); // Bleu pour différencier
+                
+                Label noteLbl = new Label(si.getNotesCoach());
+                noteLbl.setStyle("-fx-text-fill: #2980b9; -fx-font-style: italic; -fx-font-size: 11px;");
+                noteLbl.setWrapText(true);
+                noteLbl.setMaxWidth(180); // Pour éviter que la note ne déforme la carte
+
+                noteBox.getChildren().addAll(noteIcon, noteLbl);
+                noteBox.setAlignment(Pos.CENTER_LEFT);
+                body.getChildren().add(noteBox);
+            }
+        }
+
         // --- GESTION INTELLIGENTE DE LA DISPONIBILITÉ ---
         boolean complet = false;
         boolean dejaInscrit = false;
@@ -156,16 +183,16 @@ public class MemberPlanningController {
         } else {
             // === LOGIQUE INDIVIDUELLE (COACHING) ===
             // On vérifie qui est inscrit sur ce créneau (0 = personne)
-            int membreIdInscrit = indivService.getMembreInscrit(s.getId());
+            Membre membreIdInscrit = indivService.getMembreInscrit(s.getId());
             
-            if (membreIdInscrit == 0) {
+            if (membreIdInscrit == null) {
                 // Créneau libre
                 complet = false;
                 dejaInscrit = false;
                 texteDispo = "Créneau Disponible";
             } else {
                 // Créneau pris
-                if (membre != null && membreIdInscrit == membre.getId()) {
+                if (membre != null && membreIdInscrit.getId() == membre.getId()) {
                     // C'est MOI
                     dejaInscrit = true;
                     complet = true; // Complet pour les autres

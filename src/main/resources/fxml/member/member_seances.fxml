@@ -24,25 +24,17 @@
         </VBox>
 
         <!-- Tableau des réservations -->
-        <TableView fx:id="tableSeances" VBox.vgrow="ALWAYS">
+        <TableView fx:id="tableSeances" VBox.vgrow="ALWAYS" styleClass="modern-table">
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
             <columns>
-                <!-- Colonne Date -->
-                <TableColumn fx:id="colDate" prefWidth="150.0" text="Date &amp; Heure" />
-                
-                <!-- Colonne Nom du Cours -->
-                <TableColumn fx:id="colNom" prefWidth="200.0" text="Cours" />
-                
-                <!-- Colonne Durée -->
-                <TableColumn fx:id="colDuree" prefWidth="100.0" text="Durée" />
-                
-                <!-- Colonne Statut -->
-                <TableColumn fx:id="colStatut" prefWidth="150.0" text="Statut" />
-                
-                <!-- Colonne Action (Bouton Annuler) -->
-                <TableColumn fx:id="colAction" prefWidth="120.0" text="Action" />
+                <TableColumn fx:id="colNom" text="COURS" />
+                <TableColumn fx:id="colDate" text="DATE &amp; HEURE" />
+                <TableColumn fx:id="colDuree" text="DURÉE" />
+                <TableColumn fx:id="colStatut" text="STATUT" />
+                <TableColumn fx:id="colAction" text="ACTION" />
             </columns>
-            
-            <!-- Message si vide -->
             <placeholder>
                 <Label text="Aucune réservation trouvée." />
             </placeholder>

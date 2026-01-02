@@ -157,7 +157,7 @@ public class ReservationRepository {
         List<Reservation> list = new ArrayList<>();
     
         // On fait un JOIN pour récupérer les infos de la séance en même temps
-        String sql = "SELECT r.*, s.nom as seance_nom, s.dateHeure, s.duree, s.salle_id " +
+        String sql = "SELECT r.*, s.nom as seance_nom, s.dateHeure, s.duree, s.salle_id, s.typeSeance " +
                     "FROM RESERVATION r " +
                     "JOIN SEANCE s ON r.seance_id = s.id " +
                     "WHERE r.membre_id = ? " +
@@ -182,6 +182,11 @@ public class ReservationRepository {
                 s.setId(rs.getInt("seance_id"));
                 s.setNom(rs.getString("seance_nom")); // On a récupéré le nom !
                 s.setDuree(rs.getInt("duree"));
+
+                String typeStr = rs.getString("typeSeance");
+                if(typeStr != null){
+                    s.setTypeSeance(TypeSeance.valueOf(typeStr.toUpperCase()));
+                }
                 
                 Timestamp tsSeance = rs.getTimestamp("dateHeure");
                 if (tsSeance != null) s.setDateHeure(tsSeance.toLocalDateTime());

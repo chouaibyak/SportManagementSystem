@@ -302,47 +302,42 @@ public class SeanceCollectiveRepository {
     // ANNULER RESERVATION
     public boolean annulerReservation(int idSeance, Membre membre) {
         String deleteSQL = "DELETE FROM seancecollective_membre WHERE seance_id = ? AND membre_id = ?";
-        String updatePlacesSQL = """
-            UPDATE seancecollective sc
-            SET placesDisponibles = sc.capaciteMax - (
-                SELECT COUNT(*) 
-                FROM seancecollective_membre 
-                WHERE seance_id = ?
-            )
-            WHERE seance_id = ?;
-        """;
+        String updatePlacesSQL = "UPDATE seancecollective SET placesDisponibles = placesDisponibles + 1 WHERE seance_id = ?";
 
         try (Connection conn = DBConnection.getConnection()) {
-            conn.setAutoCommit(false);
-
+            conn.setAutoCommit(false); // Transaction pour garantir la cohérence
+            
             try (PreparedStatement stmtDelete = conn.prepareStatement(deleteSQL);
-                 PreparedStatement stmtUpdate = conn.prepareStatement(updatePlacesSQL)) {
+                PreparedStatement stmtUpdate = conn.prepareStatement(updatePlacesSQL)) {
 
                 stmtDelete.setInt(1, idSeance);
                 stmtDelete.setInt(2, membre.getId());
-                int deleted = stmtDelete.executeUpdate();
+                int rowsDeleted = stmtDelete.executeUpdate();
+                
+                // LOG CRITIQUE : Tu dois voir ce message dans ta console !
+                System.out.println(">>> REPO : Lignes supprimées dans seancecollective_membre = " + rowsDeleted);
 
-                if (deleted == 0) {
+                if (rowsDeleted > 0) {
+                    // Seulement si la suppression a réussi, on rajoute une place
+                    stmtUpdate.setInt(1, idSeance);
+                    stmtUpdate.executeUpdate();
+                    
+                    conn.commit();
+                    System.out.println(">>> REPO : Succès total de l'annulation en BDD.");
+                    return true;
+                } else {
+                    System.err.println(">>> REPO : ECHEC ! Aucune ligne trouvée pour S:" + idSeance + " M:" + membre.getId());
                     conn.rollback();
                     return false;
                 }
-
-                stmtUpdate.setInt(1, idSeance);
-                stmtUpdate.setInt(2, idSeance);
-                stmtUpdate.executeUpdate();
-
-                conn.commit();
-                return true;
             } catch (SQLException ex) {
                 conn.rollback();
                 ex.printStackTrace();
                 return false;
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
-
 }
