@@ -65,8 +65,8 @@ public class CoachSeanceFormController {
 
         // Coach connecté
         Utilisateur user = UserSession.getInstance().getUtilisateur();
-        if (user instanceof Coach) {
-            coach = (Coach) user;
+        if (user instanceof Coach coach1) {
+            coach = coach1;
         }
 
         // Types de séance
