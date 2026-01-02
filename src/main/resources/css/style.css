@@ -924,79 +924,7 @@
 
 
 
-/* =====================================================
-   ADMIN 
-   ===================================================== */
-   /* --- 1111111 --- */
 
-/* --- TEXT FIELDS, COMBO BOX, DATE PICKER --- */
-.text-field, .password-field, .date-picker, .combo-box {
-    -fx-background-color: #ecf0f1;
-    -fx-background-radius: 5;
-    -fx-border-color: transparent;
-    -fx-padding: 10;
-    -fx-prompt-text-fill: #95a5a6;
-    -fx-font-size: 13px;
-}
-.combo-box .list-cell, .date-picker .text-field {
-    -fx-background-color: transparent; 
-}
-/* --- TABLES --- */
-.table-view {
-    -fx-background-color: white;
-    -fx-border-color: #dcdcdc;
-    -fx-border-radius: 5;
-    -fx-padding: 10;
-}
-
-.table-view .column-header-background {
-    -fx-background-color: #ecf0f1;
-}
-
-.table-view .column-header, .table-view .filler {
-    -fx-size: 30;
-}
-/* --- NOTIFICATIONS BOX --- */
-.notifications-box {
-    -fx-background-color: #ecf0f1;
-    -fx-background-radius: 10;
-    -fx-padding: 15;
-    -fx-spacing: 5;
-}
-
-/* --- LABELS --- */
-.label-title {
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #2c3e50;
-}
-
-.label-subtitle {
-    -fx-font-size: 12px;
-    -fx-text-fill: #7f8c8d;
-}
-.kpi-container {
-    -fx-padding: 20;
-}
-
-.kpi-card {
-    -fx-background-color: white;
-    -fx-padding: 15;
-    -fx-alignment: CENTER;
-    -fx-pref-width: 170;
-    -fx-background-radius: 10;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 4);
-}
-
-.kpi-title {
-    -fx-font-size: 13px;
-    -fx-text-fill: #666;
-}
-
-.kpi-value {
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-}
 
 
 

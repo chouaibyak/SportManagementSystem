@@ -9,7 +9,7 @@
             xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.sport.controller.admin.AdminLayoutController"
-            stylesheets="@../../css/style.css">
+            stylesheets="@../../css/admin.css">
 
     
     <!-- ===================== SIDEBAR ===================== -->
