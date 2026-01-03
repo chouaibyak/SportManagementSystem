@@ -64,6 +64,24 @@
         <Spinner fx:id="spMaxMembres" prefWidth="120"/>
     </VBox>
 
+    <!-- ============================================ -->
+    <!-- AJOUTS INDISPENSABLES POUR CORRIGER L'ERREUR -->
+    <!-- ============================================ -->
+
+    <!-- Tarif (Individuelle uniquement) -->
+    <VBox spacing="5">
+        <Label fx:id="lblTarif" text="Tarif (€) :"/>
+        <Spinner fx:id="spTarif" prefWidth="120" editable="true"/>
+    </VBox>
+
+    <!-- Notes (Individuelle uniquement) -->
+    <VBox spacing="5">
+        <Label fx:id="lblNotes" text="Notes / Feedback initial :"/>
+        <TextArea fx:id="txtNotes" promptText="Note pour la séance..." prefHeight="80" wrapText="true"/>
+    </VBox>
+
+    <!-- ============================================ -->
+
     <!-- Boutons -->
     <HBox spacing="10" style="-fx-alignment: center;">
         <Button fx:id="btnSave" text="Enregistrer" styleClass="button-primary"/>

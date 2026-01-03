@@ -46,7 +46,7 @@ public class LoginController {
 }
  else {
                 // Admin...
-                errorLabel.setText("Interface Admin en construction...");
+                redirigerVers("/fxml/admin/admin_layout.fxml", "Espace Admin");
             }
 
         } else {

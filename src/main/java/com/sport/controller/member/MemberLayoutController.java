@@ -67,6 +67,12 @@ public class MemberLayoutController {
         setButtonActive(btnProfil);
     }
 
+    @FXML
+    private void afficherAbonnement() {
+        chargerVue("/fxml/member/member_subscription.fxml");
+        // Optionnel : mettre à jour le style du bouton actif
+    }
+
 
 
     // --- LOGIQUE DE CHANGEMENT DE VUE ---

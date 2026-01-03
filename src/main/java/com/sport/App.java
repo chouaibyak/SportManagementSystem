@@ -20,7 +20,7 @@ public class App extends Application {
         
         // On démarre sur le Register pour tester, ou Login selon ton choix
         //String fxmlPath = "/fxml/common/register.fxml"; 
-       String fxmlPath = "/fxml/admin/admin_layout.fxml";
+       String fxmlPath = "/fxml/common/login.fxml";
      
 
 

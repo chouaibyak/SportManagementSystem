@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="20" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.sport.controller.member.MemberSubscriptionController">
+    
+    <!-- TITRE DE LA PAGE -->
+    <VBox spacing="5">
+        <Label text="MES ABONNEMENTS" styleClass="page-title"/>
+        <Label text="Gérez vos formules et suivez leur validité" styleClass="page-subtitle"/>
+    </VBox>
+
+    <!-- ZONE DES CARTES (Scrollable si beaucoup d'abonnements) -->
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+        <content>
+            <!-- FlowPane permet d'aligner les cartes horizontalement puis à la ligne -->
+            <FlowPane fx:id="cardsContainer" hgap="20" vgap="20" prefWrapLength="800">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+            </FlowPane>
+        </content>
+    </ScrollPane>
+    
+</VBox>

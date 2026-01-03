@@ -515,6 +515,49 @@
     -fx-cursor: hand;
 }
 
+
+/* --- PAGE ABONNEMENT --- */
+
+.subscription-card {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 5);
+    -fx-min-width: 280px;
+    -fx-min-height: 380px;
+}
+
+/* Badges Statut */
+.badge-active {
+    -fx-background-color: #dff9fb;
+    -fx-text-fill: #27ae60; /* Vert */
+    -fx-background-radius: 5;
+    -fx-padding: 5 10 5 10;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.badge-inactive {
+    -fx-background-color: #ffeaa7;
+    -fx-text-fill: #e74c3c; /* Rouge */
+    -fx-background-radius: 5;
+    -fx-padding: 5 10 5 10;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+/* Titres de page */
+.page-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.page-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #7f8c8d;
+}
+
+
 /*  **********************************/
 /*           end memeber         */
 /*************************************/
