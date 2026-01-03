@@ -19,10 +19,14 @@ import com.sport.utils.DBConnection;
 public class SeanceIndividuelleRepository {
 
   // GET ALL
-  public List<SeanceIndividuelle> getAll() {
+  // GET ALL
+    public List<SeanceIndividuelle> getAll() {
         List<SeanceIndividuelle> list = new ArrayList<>();
 
+        // CORRECTION ICI : Ajout du mot "SELECT" au début !
         String query = """
+            SELECT 
+                s.id, s.nom, s.capaciteMax, s.dateHeure, s.duree,
                 s.type AS typeCours, s.typeSeance,
                 s.salle_id, s.entraineur_id,
                 si.membre_id, si.tarif, si.notesCoach
@@ -50,17 +54,15 @@ public class SeanceIndividuelleRepository {
 
                 si.setDuree(rs.getInt("duree"));
                 
-                // Gestion safe des ENUMs
                 try {
                     si.setTypeCours(TypeCours.valueOf(rs.getString("typeCours")));
                     si.setTypeSeance(TypeSeance.valueOf(rs.getString("typeSeance")));
                 } catch (Exception e) {
-                    System.err.println("Erreur Enum pour séance ID " + si.getId());
+                    // ignore
                 }
 
-                // Gestion ID Membre
                 int membreId = rs.getInt("membre_id");
-                if (rs.wasNull()) membreId = -1; // -1 signifie "pas de membre"
+                if (rs.wasNull()) membreId = -1;
 
                 Double tarif = rs.getDouble("tarif");
                 if (rs.wasNull()) tarif = null;
@@ -80,32 +82,19 @@ public class SeanceIndividuelleRepository {
             return list;
         }
 
-        // ====== CHARGEMENT DES OBJETS COMPLETS (C'est ici que ça se joue) ======
+        // Hydratation des objets liés
         SalleRepository salleRepo = new SalleRepository();
         CoachRepository coachRepo = new CoachRepository();
         MembreRepository membreRepo = new MembreRepository();
 
         for (int i = 0; i < list.size(); i++) {
             SeanceIndividuelle si = list.get(i);
-
-            // 1. Salle
             si.setSalle(salleRepo.getSalleById(salleIds.get(i)));
-
-            // 2. Coach
             si.setEntraineur(coachRepo.getCoachById(coachIds.get(i)));
-
-            // 3. Membre
+            
             int mId = membreIds.get(i);
             if (mId != -1) {
-                Membre m = membreRepo.trouverParId(mId); // <--- Vérifier cette méthode !
-                si.setMembre(m);
-                
-                // DEBUG : AFFICHER SI LE MEMBRE EST CHARGÉ
-                if (m != null) {
-                    System.out.println("✅ Séance " + si.getId() + " : Membre chargé -> " + m.getNom());
-                } else {
-                    System.err.println("⚠️ Séance " + si.getId() + " : ID membre=" + mId + " MAIS MembreRepository retourne NULL !");
-                }
+                si.setMembre(membreRepo.trouverParId(mId));
             } else {
                 si.setMembre(null);
             }
@@ -144,71 +133,71 @@ public class SeanceIndividuelleRepository {
     }
 
     // ADD
-   public int ajouter(SeanceIndividuelle si) {
+    public int ajouter(SeanceIndividuelle si) {
+        String insertSeance = "INSERT INTO seance (nom, capaciteMax, salle_id, dateHeure, entraineur_id, type, typeSeance, duree) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        // C'est cette ligne qui manquait ou n'était pas appelée :
+        String insertIndiv = "INSERT INTO seanceindividuelle (seance_id, membre_id, tarif, notesCoach) VALUES (?, ?, ?, ?)";
 
-    String insertSeance =
-        "INSERT INTO seance (nom, capaciteMax, salle_id, dateHeure, entraineur_id, type, typeSeance, duree) " +
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        int generatedId = -1;
 
-    String insertIndiv =
-        "INSERT INTO seanceindividuelle (seance_id, membre_id, tarif, notesCoach) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DBConnection.getConnection()) {
+            conn.setAutoCommit(false); // Début de transaction
 
-    int generatedId = -1;
+            try (PreparedStatement s1 = conn.prepareStatement(insertSeance, Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement s2 = conn.prepareStatement(insertIndiv)) {
 
-    try (Connection conn = DBConnection.getConnection()) {
-        conn.setAutoCommit(false);
+                // 1. Insertion dans la table parent (SEANCE)
+                s1.setString(1, si.getNom());
+                s1.setInt(2, 1); // Capacité 1 pour individuelle
+                s1.setInt(3, si.getSalle().getId());
+                s1.setTimestamp(4, Timestamp.valueOf(si.getDateHeure()));
+                s1.setInt(5, si.getEntraineur().getId());
+                s1.setString(6, si.getTypeCours().toString());
+                s1.setString(7, TypeSeance.INDIVIDUELLE.toString());
+                s1.setInt(8, si.getDuree());
+                s1.executeUpdate();
 
-        try (PreparedStatement s1 = conn.prepareStatement(insertSeance, Statement.RETURN_GENERATED_KEYS);
-             PreparedStatement s2 = conn.prepareStatement(insertIndiv)) {
+                // Récupération de l'ID
+                ResultSet rs = s1.getGeneratedKeys();
+                if (rs.next()) {
+                    generatedId = rs.getInt(1);
+                    si.setId(generatedId);
+                }
 
-            // ====== INSERT SEANCE ======
-            s1.setString(1, si.getNom());
-            s1.setInt(2, 1); // capacité fixe pour individuelle
-            s1.setInt(3, si.getSalle().getId());
-            s1.setTimestamp(4, Timestamp.valueOf(si.getDateHeure()));
-            s1.setInt(5, si.getEntraineur().getId());
-            s1.setString(6, si.getTypeCours().toString());
-            s1.setString(7, si.getTypeSeance().toString());
-            s1.setInt(8, si.getDuree());
-            s1.executeUpdate();
+                // 2. Insertion dans la table enfant (SEANCEINDIVIDUELLE)
+                s2.setInt(1, generatedId);
 
-            // Récupérer ID généré
-            ResultSet rs = s1.getGeneratedKeys();
-            if (rs.next()) {
-                generatedId = rs.getInt(1);
-                si.setId(generatedId);
+                // Gestion Membre (NULL possible)
+                if (si.getMembre() != null) s2.setInt(2, si.getMembre().getId());
+                else s2.setNull(2, java.sql.Types.INTEGER);
+
+                // Gestion Tarif (NULL possible)
+                if (si.getTarif() != null) s2.setDouble(3, si.getTarif());
+                else s2.setNull(3, java.sql.Types.DOUBLE);
+
+                // Gestion Notes
+                s2.setString(4, si.getNotesCoach());
+
+                s2.executeUpdate();
+                conn.commit(); // Validation
+
+            } catch (SQLException ex) {
+                conn.rollback();
+                ex.printStackTrace();
+            } finally {
+                conn.setAutoCommit(true);
             }
-
-            // ====== INSERT SEANCE INDIVIDUELLE ======
-            s2.setInt(1, generatedId);
-
-            // membre_id peut être NULL
-            if (si.getMembre() != null) {
-                s2.setInt(2, si.getMembre().getId());
-            } else {
-                s2.setNull(2, java.sql.Types.INTEGER);
-            }
-
-            s2.setDouble(3, si.getTarif());
-            s2.setString(4, si.getNotesCoach());
-            s2.executeUpdate();
-
-            conn.commit();
-        } catch (SQLException ex) {
-            conn.rollback();
-            ex.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return generatedId;
     }
 
-    return generatedId;
-}
-
  // UPDATE
-     public boolean update(SeanceIndividuelle si) {
-        String updateSeance = "UPDATE seance SET nom = ?, capaciteMax = ?, salle_id = ?, dateHeure = ?, type = ?, typeSeance = ?, duree = ? WHERE id = ?";
+    public boolean update(SeanceIndividuelle si) {
+        String updateSeance = "UPDATE seance SET nom = ?, capaciteMax = ?, salle_id = ?, dateHeure = ?, type = ?, duree = ? WHERE id = ?";
+        
+        // Utilisation de INSERT ... ON DUPLICATE KEY UPDATE pour gérer les cas où la ligne manquerait
         String upsertIndiv = """
             INSERT INTO seanceindividuelle (seance_id, membre_id, tarif, notesCoach)
             VALUES (?, ?, ?, ?)
@@ -221,45 +210,40 @@ public class SeanceIndividuelleRepository {
         try (Connection conn = DBConnection.getConnection()) {
             conn.setAutoCommit(false);
 
-            try (PreparedStatement stmt1 = conn.prepareStatement(updateSeance);
-                 PreparedStatement stmt2 = conn.prepareStatement(upsertIndiv)) {
+            try (PreparedStatement s1 = conn.prepareStatement(updateSeance);
+                PreparedStatement s2 = conn.prepareStatement(upsertIndiv)) {
 
-                // Update seance
-                stmt1.setString(1, si.getNom());
-                stmt1.setInt(2, si.getCapaciteMax());
-                stmt1.setInt(3, si.getSalle().getId());
-                stmt1.setTimestamp(4, Timestamp.valueOf(si.getDateHeure()));
-                stmt1.setString(5, si.getTypeCours().toString());
-                stmt1.setString(6, si.getTypeSeance().toString());
-                stmt1.setInt(7, si.getDuree());
-                stmt1.setInt(8, si.getId());
-                stmt1.executeUpdate();
+                // Update SEANCE
+                s1.setString(1, si.getNom());
+                s1.setInt(2, 1);
+                s1.setInt(3, si.getSalle().getId());
+                s1.setTimestamp(4, Timestamp.valueOf(si.getDateHeure()));
+                s1.setString(5, si.getTypeCours().toString());
+                s1.setInt(6, si.getDuree());
+                s1.setInt(7, si.getId());
+                s1.executeUpdate();
 
-                // Upsert seanceindividuelle
-                stmt2.setInt(1, si.getId());
-                if (si.getMembre() != null) {
-                    stmt2.setInt(2, si.getMembre().getId());
-                } else {
-                    stmt2.setNull(2, Types.INTEGER);
-                }
+                // Update SEANCEINDIVIDUELLE
+                s2.setInt(1, si.getId());
+                
+                if (si.getMembre() != null) s2.setInt(2, si.getMembre().getId());
+                else s2.setNull(2, java.sql.Types.INTEGER);
 
-                if (si.getTarif() != null) {
-                    stmt2.setDouble(3, si.getTarif());
-                } else {
-                    stmt2.setNull(3, Types.DOUBLE);
-                }
+                if (si.getTarif() != null) s2.setDouble(3, si.getTarif());
+                else s2.setNull(3, java.sql.Types.DOUBLE);
 
-                stmt2.setString(4, si.getNotesCoach() != null ? si.getNotesCoach() : "");
-                stmt2.executeUpdate();
-
+                s2.setString(4, si.getNotesCoach());
+                
+                s2.executeUpdate();
                 conn.commit();
                 return true;
 
             } catch (SQLException ex) {
                 conn.rollback();
                 ex.printStackTrace();
+            } finally {
+                conn.setAutoCommit(true);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }

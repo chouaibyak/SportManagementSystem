@@ -13,6 +13,7 @@ public class Membre extends Utilisateur {
     private TypePreference preferences;
      private Double noteSatisfaction;  // Note de 1 à 5
     private LocalDate dateEvaluation; // Date de la dernière évaluation
+    private LocalDate dateInscription;
 
     // Relations (Listes)
     private List<HistoriqueActivite> historiqueActivite;
@@ -24,6 +25,7 @@ public class Membre extends Utilisateur {
         this.historiqueActivite = new ArrayList<>();
         this.listeSeances = new ArrayList<>();
         this.performances = new ArrayList<>();
+        this.dateInscription = LocalDate.now(); 
     }
 
     // --- Constructeur 1 : CRÉATION (Sans ID) ---
@@ -119,6 +121,14 @@ public class Membre extends Utilisateur {
         this.dateEvaluation = dateEvaluation;
     }
 
+    // ➤ AJOUTER LES GETTERS ET SETTERS POUR DATE INSCRIPTION
+    public LocalDate getDateInscription() {
+        return dateInscription;
+    }
+
+    public void setDateInscription(LocalDate dateInscription) {
+        this.dateInscription = dateInscription;
+    }
 
    
     

@@ -115,9 +115,9 @@ public class DashboardRepository {
         series.setName("Reservations per Day");
 
         String sql = """
-            SELECT DATE(date_reservation) AS jour, COUNT(*) AS total
+            SELECT DATE(dateReservation) AS jour, COUNT(*) AS total
             FROM reservation
-            GROUP BY DATE(date_reservation)
+            GROUP BY DATE(dateReservation)
             ORDER BY jour
         """;
 

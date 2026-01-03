@@ -18,7 +18,7 @@ public class MembreRepository {
     // ➤ CREATE
     public void ajouterMembre(Membre membre) {
         String sqlUser = "INSERT INTO UTILISATEUR (nom, prenom, dateNaissance, email, telephone, adresse, mot_de_passe) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        String sqlMembre = "INSERT INTO MEMBRE (id_utilisateur, objectifSportif, preferences) VALUES (?, ?, ?)";
+        String sqlMembre = "INSERT INTO MEMBRE (id_utilisateur, objectifSportif, preferences, date_inscription ) VALUES (?, ?, ?, ?)";
 
         Connection conn = null;
         try {
@@ -48,6 +48,7 @@ public class MembreRepository {
                     stmtMembre.setInt(1, userId);
                     stmtMembre.setString(2, membre.getObjectifSportif() != null ? membre.getObjectifSportif().name() : null);
                     stmtMembre.setString(3, membre.getPreferences() != null ? membre.getPreferences().name() : null);
+                    stmtMembre.setDate(4, java.sql.Date.valueOf(java.time.LocalDate.now()));
                     stmtMembre.executeUpdate();
                 }
             }
@@ -189,6 +190,16 @@ public class MembreRepository {
             m.setDateNaissance(rs.getDate("dateNaissance").toString());
         } else {
             m.setDateNaissance("");
+        }
+        
+        // ➤ AJOUTER CECI : Récupération de la date d'inscription
+        try {
+            java.sql.Date dateSql = rs.getDate("date_inscription");
+            if (dateSql != null) {
+                m.setDateInscription(dateSql.toLocalDate());
+            }
+        } catch (SQLException e) {
+            System.out.println("Info : date_inscription non trouvée dans ce ResultSet (ce n'est pas grave)");
         }
 
         // Gestion sécurisée des Enums (try-catch pour éviter que tout plante si l'enum change)

@@ -120,6 +120,28 @@ public class AbonnementRepository {
         return null;
     }
 
+    //trouver par nom de memeber
+    public List<Abonnement> trouverParNomMembre(String nomComplet) {
+        List<Abonnement> list = new ArrayList<>();
+        // Adapte 'member_fullname' si ta colonne s'appelle différemment
+        String sql = "SELECT * FROM abonnement WHERE member_fullname = ? ORDER BY date_fin DESC";
+
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, nomComplet);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                list.add(mapResultSetToAbonnement(rs));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     /* ===================== READ BY STATUS ===================== */
     public List<Abonnement> trouverParStatut(StatutAbonnement statut) {
         List<Abonnement> list = new ArrayList<>();
