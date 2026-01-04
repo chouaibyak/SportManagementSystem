@@ -2,13 +2,17 @@ package com.sport.controller.admin;
 
 import java.io.IOException;
 
+import com.sport.utils.UserSession;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 public class AdminLayoutController {
 
@@ -69,10 +73,7 @@ public class AdminLayoutController {
         loadSection("RapportAdmin.fxml", "Rapports");
     }
 
-    @FXML
-    private void logout() {
-        System.out.println("Logout clicked");
-    }
+   
 
     // ✅ SAFE LOADER FOR ANY FXML ROOT
     private void loadSection(String fxmlFile, String title) {
@@ -98,4 +99,25 @@ public class AdminLayoutController {
             e.printStackTrace();
         }
     }
+
+     // --- DECONNEXION ---
+
+    @FXML
+    private void logout() {
+        UserSession.getInstance().cleanUserSession();
+        
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/common/login.fxml"));
+            Stage stage = (Stage) mainContainer.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            
+            stage.sizeToScene();
+            stage.centerOnScreen();
+            stage.setResizable(false);
+            
+        } catch (IOException e) { 
+            e.printStackTrace(); 
+        }
+    }
+
 }
